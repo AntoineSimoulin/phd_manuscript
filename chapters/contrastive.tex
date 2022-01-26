@@ -1,0 +1,15 @@
+\setchapterstyle{kao}
+%\setchapterpreamble[u]{\margintoc}
+\chapter{Training sentence embedding models using discriminative objective}
+\labch{references}
+
+Inspired from linguistic insights, I assume structure is crucial to building consistent representations. I indeed expect sentence meaning to be a function of both syntax and semantic aspects. In that regard, I proposed a self-supervised method that builds sentence embeddings from the combination of diverse explicit syntactic structures of a sentence [4]. The novelty consists in jointly learning structured models in a contrastive multi-view framework that induces an explicit interaction between models during the training phase. I pre-trained various models using a contrastive objective with a 40 million sentences corpus. I then evaluate my models on sentence embedding benchmarks and obtain state-of-the-art results. In particular on tasks that are expected, by hypothesis, to be more sensitive to sentence structure. From a practical point of view, implementing tree-structured models can be hard. I open-sourced the code I developed for recursive models under a library called PyTree . The library was distinguished and listed among the winners of the PyTorch Hackathon 2021. Motivated to share state-of-the-art models, I also participated in a hackathon  to develop, train and release large sentence embeddings models. We used a similar contrastive objective and trained models on a 1 billion sentences corpora. We developed specific evaluation benchmarks for sentence embeddings and obtained state-of-the-art results. Our project was among the winners of the competition and received an honorable mention.
+
+\section{Multi-views}
+
+\section{Contrastive learning}
+
+\section{Creating a dataset with 1B sentence pairs}
+
+\section{Evaluation on downstream tasks}
+

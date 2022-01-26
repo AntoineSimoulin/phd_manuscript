@@ -1,0 +1,11 @@
+\setchapterpreamble[u]{\margintoc}
+\chapter{Jointly learning model structure and compositional operations}
+\labch{options}
+
+I focus on tree-structured neural networks, which naturally encode the structure of language. For each sentence, the network computes text units following a syntactic tree, starting from the leaf nodes, up to the root. However, such models suffer from practical constraints that limit their application. In particular, tree-based models not only require raw text as input but also the sentence structure in the form of a parse tree. Such structure may be tedious to obtain as it requires manual annotations and external parsers. To overcome such limitations, I formulated a novel tree-based model that learns its composition function together with its structure [1]. The model includes two modules, a biaffine graph parser, and a Tree-LSTM. The parsing and the composition functions are explicitly connected and, therefore, learned jointly. The method differs from previous work as the representation is not computed from the whole forest of potential trees. Moreover, training the full model directly does not require supervision from a parsing objective. The model outperforms tree-based models relying on external parsers on downstream tasks. In some configurations, it is even competitive with BERT-base model.
+
+\section{Model}
+
+\section{Evaluation}
+
+\section{Impact of the parser initialization}

@@ -1348,3 +1348,56 @@
 \newcommand{\monthyear}{\ifcase\month\or January\or February\or March\or 
 April\or May\or June\or July\or August\or September\or October\or 
 November\or December\fi\space\number\year}
+
+% **************************************************
+% Mishmash
+% **************************************************
+%
+% defines general colors
+\definecolor{ctcolorblack}{gray}{0}
+\definecolor{ctcolorgray}{gray}{.5}
+\definecolor{ctcolorgraylight}{gray}{.8}
+%
+% own font definitions
+\newcommand{\helv}{\fontfamily{phv}\fontsize{9}{11}\selectfont}
+\newcommand{\book}{\fontfamily{pbk}\fontseries{m}\fontsize{11}{13}\selectfont}
+%
+% Clean chapter quotations
+\newcommand{\hugequote}{%
+	{\book\fontsize{75}{80}\selectfont%
+	\hspace*{-.475em}\color{ctcolorgraylight}%
+	\textit{\glqq}%
+	\vskip -.26em}%
+}
+\newcommand{\cleanchapterquote}[3]{%
+	\begin{minipage}{.865\textwidth}%
+		\begin{flushright}
+			\begin{minipage}{.65\textwidth}%
+				\begin{flushleft}
+					{\hugequote}\textit{#1}
+				\end{flushleft}
+	    		\begin{flushright}
+    				--- \textbf{#2} \\
+    				#3
+		    	\end{flushright}
+		    \end{minipage}%
+		\end{flushright}
+	\end{minipage}%
+	\bigskip
+}
+%
+% Clean Quotation environment
+\newenvironment{thesis_quotation}%
+	{%
+	\begin{minipage}{.865\textwidth}%
+		\begin{flushright}
+			\begin{minipage}{.95\textwidth}%
+	}%
+	{%
+			\end{minipage}%
+		\end{flushright}
+	\end{minipage}%
+	}%
+%
+% Clean signs around word origins in definitions
+%\newcommand{\cthesisorigin}[1]{\textsf{\textlangle}#1\textsf{\textrangle}}

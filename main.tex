@@ -41,6 +41,7 @@
 	\usepackage[english]{babel} % Load characters and hyphenation
 \fi
 \usepackage[english=british]{csquotes}	% English quotes
+% \usepackage{quotchap}
 
 % Load packages for testing
 \usepackage{blindtext}
@@ -113,44 +114,44 @@
 %	COPYRIGHT PAGE
 %----------------------------------------------------------------------------------------
 
-\makeatletter
-\uppertitleback{\@titlehead} % Header
+% \makeatletter
+% \uppertitleback{\@titlehead} % Header
 
-\lowertitleback{
-	\textbf{Disclaimer}\\
-	You can edit this page to suit your needs. For instance, here we have a no copyright statement, a colophon and some other information. This page is based on the corresponding page of Ken Arroyo Ohori's thesis, with minimal changes.
+% \lowertitleback{
+% 	\textbf{Disclaimer}\\
+% 	You can edit this page to suit your needs. For instance, here we have a no copyright statement, a colophon and some other information. This page is based on the corresponding page of Ken Arroyo Ohori's thesis, with minimal changes.
 	
-	\medskip
+% 	\medskip
 	
-	\textbf{No copyright}\\
-	\cczero\ This book is released into the public domain using the CC0 code. To the extent possible under law, I waive all copyright and related or neighbouring rights to this work.
+% 	\textbf{No copyright}\\
+% 	\cczero\ This book is released into the public domain using the CC0 code. To the extent possible under law, I waive all copyright and related or neighbouring rights to this work.
 	
-	To view a copy of the CC0 code, visit: \\\url{http://creativecommons.org/publicdomain/zero/1.0/}
+% 	To view a copy of the CC0 code, visit: \\\url{http://creativecommons.org/publicdomain/zero/1.0/}
 	
-	\medskip
+% 	\medskip
 	
-	\textbf{Colophon} \\
-	This document was typeset with the help of \href{https://sourceforge.net/projects/koma-script/}{\KOMAScript} and \href{https://www.latex-project.org/}{\LaTeX} using the \href{https://github.com/fmarotta/kaobook/}{kaobook} class.
+% 	\textbf{Colophon} \\
+% 	This document was typeset with the help of \href{https://sourceforge.net/projects/koma-script/}{\KOMAScript} and \href{https://www.latex-project.org/}{\LaTeX} using the \href{https://github.com/fmarotta/kaobook/}{kaobook} class.
 	
-	The source code of this book is available at:\\\url{https://github.com/fmarotta/kaobook}
+% 	The source code of this book is available at:\\\url{https://github.com/fmarotta/kaobook}
 	
-	(You are welcome to contribute!)
+% 	(You are welcome to contribute!)
 	
-	\medskip
+% 	\medskip
 	
-	\textbf{Publisher} \\
-	First printed in May 2019 by \@publishers
-}
-\makeatother
+% 	\textbf{Publisher} \\
+% 	First printed in May 2019 by \@publishers
+% }
+% \makeatother
 
 %----------------------------------------------------------------------------------------
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-\dedication{
-	The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
-	\flushright -- D'Arcy Wentworth Thompson
-}
+% \dedication{
+% 	The harmony of the world is made manifest in Form and Number, and the heart and soul and all the poetry of Natural Philosophy are embodied in the concept of mathematical beauty.\\
+% 	\flushright -- D'Arcy Wentworth Thompson
+% }
 
 %----------------------------------------------------------------------------------------
 %	OUTPUT TITLE PAGE AND PREVIOUS
@@ -158,14 +159,14 @@
 
 % Note that \maketitle outputs the pages before here
 
-\maketitle
+% \maketitle
 
 %----------------------------------------------------------------------------------------
 %	PREFACE
 %----------------------------------------------------------------------------------------
 
-\input{chapters/preface.tex}
-\index{preface}
+% \input{chapters/preface.tex}
+% \index{preface}
 
 %----------------------------------------------------------------------------------------
 %	TABLE OF CONTENTS & LIST OF FIGURES/TABLES
@@ -184,13 +185,13 @@
 
 \tableofcontents % Output the table of contents
 
-\listoffigures % Output the list of figures
+% \listoffigures % Output the list of figures
 
 % Comment both of the following lines to have the LOF and the LOT on different pages
-\let\cleardoublepage\bigskip
-\let\clearpage\bigskip
+% \let\cleardoublepage\bigskip
+% \let\clearpage\bigskip
 
-\listoftables % Output the list of tables
+% \listoftables % Output the list of tables
 
 \endgroup
 
@@ -204,28 +205,36 @@
 \input{chapters/introduction.tex}
 
 \pagelayout{wide} % No margins
-\addpart{Class Options, Commands and Environments}
+\addpart{Background}
 \pagelayout{margin} % Restore margins
 
-\input{chapters/options.tex}
-\input{chapters/textnotes.tex}
-\input{chapters/figsntabs.tex}
-\input{chapters/references.tex}
+\input{chapters/meaning.tex}
+\input{chapters/training}
+\input{chapters/evaluating}
 
 \pagelayout{wide} % No margins
-\addpart{Design and Additional Features}
+\addpart{Toward integrating linguistic biases into neural networks}
 \pagelayout{margin} % Restore margins
 
-\input{chapters/layout.tex}
-\input{chapters/mathematics.tex}
-
-\appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
+\input{chapters/tree.tex}
+\input{chapters/transformers.tex}
+\input{chapters/arithmetics.tex}
 
 \pagelayout{wide} % No margins
-\addpart{Appendix}
+\addpart{Training language models at scale}
 \pagelayout{margin} % Restore margins
 
-\input{chapters/appendix.tex}
+\input{chapters/contrastive.tex}
+\input{chapters/generative.tex}
+\input{chapters/conclusion.tex}
+
+% \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
+
+% \pagelayout{wide} % No margins
+% \addpart{Appendix}
+% \pagelayout{margin} % Restore margins
+
+% \input{chapters/appendix.tex}
 
 %----------------------------------------------------------------------------------------
 
@@ -241,80 +250,80 @@
 \defbibnote{bibnote}{Here are the references in citation order.\par\bigskip} % Prepend this text to the bibliography
 \printbibliography[heading=bibintoc, title=Bibliography, prenote=bibnote] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
 
-%----------------------------------------------------------------------------------------
-%	NOMENCLATURE
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	NOMENCLATURE
+% %----------------------------------------------------------------------------------------
 
-% The nomenclature needs to be compiled on the command line with 'makeindex main.nlo -s nomencl.ist -o main.nls' from the template directory
+% % The nomenclature needs to be compiled on the command line with 'makeindex main.nlo -s nomencl.ist -o main.nls' from the template directory
 
-\nomenclature{$c$}{Speed of light in a vacuum inertial frame}
-\nomenclature{$h$}{Planck constant}
+% \nomenclature{$c$}{Speed of light in a vacuum inertial frame}
+% \nomenclature{$h$}{Planck constant}
 
-\renewcommand{\nomname}{Notation} % Rename the default 'Nomenclature'
-\renewcommand{\nompreamble}{The next list describes several symbols that will be later used within the body of the document.} % Prepend this text to the nomenclature
+% \renewcommand{\nomname}{Notation} % Rename the default 'Nomenclature'
+% \renewcommand{\nompreamble}{The next list describes several symbols that will be later used within the body of the document.} % Prepend this text to the nomenclature
 
-\printnomenclature % Output the nomenclature
+% \printnomenclature % Output the nomenclature
 
-%----------------------------------------------------------------------------------------
-%	GREEK ALPHABET
-% 	Originally from https://gitlab.com/jim.hefferon/linear-algebra
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	GREEK ALPHABET
+% % 	Originally from https://gitlab.com/jim.hefferon/linear-algebra
+% %----------------------------------------------------------------------------------------
 
-\vspace{1cm}
+% \vspace{1cm}
 
-{\usekomafont{chapter}Greek Letters with Pronunciations} \\[2ex]
-\begin{center}
-	\newcommand{\pronounced}[1]{\hspace*{.2em}\small\textit{#1}}
-	\begin{tabular}{l l @{\hspace*{3em}} l l}
-		\toprule
-		Character & Name & Character & Name \\ 
-		\midrule
-		$\alpha$ & alpha \pronounced{AL-fuh} & $\nu$ & nu \pronounced{NEW} \\
-		$\beta$ & beta \pronounced{BAY-tuh} & $\xi$, $\Xi$ & xi \pronounced{KSIGH} \\ 
-		$\gamma$, $\Gamma$ & gamma \pronounced{GAM-muh} & o & omicron \pronounced{OM-uh-CRON} \\
-		$\delta$, $\Delta$ & delta \pronounced{DEL-tuh} & $\pi$, $\Pi$ & pi \pronounced{PIE} \\
-		$\epsilon$ & epsilon \pronounced{EP-suh-lon} & $\rho$ & rho \pronounced{ROW} \\
-		$\zeta$ & zeta \pronounced{ZAY-tuh} & $\sigma$, $\Sigma$ & sigma \pronounced{SIG-muh} \\
-		$\eta$ & eta \pronounced{AY-tuh} & $\tau$ & tau \pronounced{TOW (as in cow)} \\
-		$\theta$, $\Theta$ & theta \pronounced{THAY-tuh} & $\upsilon$, $\Upsilon$ & upsilon \pronounced{OOP-suh-LON} \\
-		$\iota$ & iota \pronounced{eye-OH-tuh} & $\phi$, $\Phi$ & phi \pronounced{FEE, or FI (as in hi)} \\
-		$\kappa$ & kappa \pronounced{KAP-uh} & $\chi$ & chi \pronounced{KI (as in hi)} \\
-		$\lambda$, $\Lambda$ & lambda \pronounced{LAM-duh} & $\psi$, $\Psi$ & psi \pronounced{SIGH, or PSIGH} \\
-		$\mu$ & mu \pronounced{MEW} & $\omega$, $\Omega$ & omega \pronounced{oh-MAY-guh} \\
-		\bottomrule
-	\end{tabular} \\[1.5ex]
-	Capitals shown are the ones that differ from Roman capitals.
-\end{center}
+% {\usekomafont{chapter}Greek Letters with Pronunciations} \\[2ex]
+% \begin{center}
+% 	\newcommand{\pronounced}[1]{\hspace*{.2em}\small\textit{#1}}
+% 	\begin{tabular}{l l @{\hspace*{3em}} l l}
+% 		\toprule
+% 		Character & Name & Character & Name \\ 
+% 		\midrule
+% 		$\alpha$ & alpha \pronounced{AL-fuh} & $\nu$ & nu \pronounced{NEW} \\
+% 		$\beta$ & beta \pronounced{BAY-tuh} & $\xi$, $\Xi$ & xi \pronounced{KSIGH} \\ 
+% 		$\gamma$, $\Gamma$ & gamma \pronounced{GAM-muh} & o & omicron \pronounced{OM-uh-CRON} \\
+% 		$\delta$, $\Delta$ & delta \pronounced{DEL-tuh} & $\pi$, $\Pi$ & pi \pronounced{PIE} \\
+% 		$\epsilon$ & epsilon \pronounced{EP-suh-lon} & $\rho$ & rho \pronounced{ROW} \\
+% 		$\zeta$ & zeta \pronounced{ZAY-tuh} & $\sigma$, $\Sigma$ & sigma \pronounced{SIG-muh} \\
+% 		$\eta$ & eta \pronounced{AY-tuh} & $\tau$ & tau \pronounced{TOW (as in cow)} \\
+% 		$\theta$, $\Theta$ & theta \pronounced{THAY-tuh} & $\upsilon$, $\Upsilon$ & upsilon \pronounced{OOP-suh-LON} \\
+% 		$\iota$ & iota \pronounced{eye-OH-tuh} & $\phi$, $\Phi$ & phi \pronounced{FEE, or FI (as in hi)} \\
+% 		$\kappa$ & kappa \pronounced{KAP-uh} & $\chi$ & chi \pronounced{KI (as in hi)} \\
+% 		$\lambda$, $\Lambda$ & lambda \pronounced{LAM-duh} & $\psi$, $\Psi$ & psi \pronounced{SIGH, or PSIGH} \\
+% 		$\mu$ & mu \pronounced{MEW} & $\omega$, $\Omega$ & omega \pronounced{oh-MAY-guh} \\
+% 		\bottomrule
+% 	\end{tabular} \\[1.5ex]
+% 	Capitals shown are the ones that differ from Roman capitals.
+% \end{center}
 
-%----------------------------------------------------------------------------------------
-%	GLOSSARY
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	GLOSSARY
+% %----------------------------------------------------------------------------------------
 
-% The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
+% % The glossary needs to be compiled on the command line with 'makeglossaries main' from the template directory
 
-\setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
-\printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
+% \setglossarystyle{listgroup} % Set the style of the glossary (see https://en.wikibooks.org/wiki/LaTeX/Glossary for a reference)
+% \printglossary[title=Special Terms, toctitle=List of Terms] % Output the glossary, 'title' is the chapter heading for the glossary, toctitle is the table of contents heading
 
-%----------------------------------------------------------------------------------------
-%	INDEX
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	INDEX
+% %----------------------------------------------------------------------------------------
 
-% The index needs to be compiled on the command line with 'makeindex main' from the template directory
+% % The index needs to be compiled on the command line with 'makeindex main' from the template directory
 
-\printindex % Output the index
+% \printindex % Output the index
 
-%----------------------------------------------------------------------------------------
-%	BACK COVER
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
+% %	BACK COVER
+% %----------------------------------------------------------------------------------------
 
-% If you have a PDF/image file that you want to use as a back cover, uncomment the following lines
+% % If you have a PDF/image file that you want to use as a back cover, uncomment the following lines
 
-%\clearpage
-%\thispagestyle{empty}
-%\null%
-%\clearpage
-%\includepdf{cover-back.pdf}
+% %\clearpage
+% %\thispagestyle{empty}
+% %\null%
+% %\clearpage
+% %\includepdf{cover-back.pdf}
 
-%----------------------------------------------------------------------------------------
+% %----------------------------------------------------------------------------------------
 
 \end{document}
