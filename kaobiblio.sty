@@ -20,24 +20,26 @@
 % passed to this package.
 \PassOptionsToPackage{
     %style=numeric-comp,
+    citestyle=authoryear-comp,
     %citestyle=authortitle-icomp,
-    citestyle=numeric-comp,
-    %bibstyle=authoryear,
-    bibstyle=numeric,
+    %citestyle=numeric-comp,
+    bibstyle=musuos, %authortitle,
+    %bibstyle=numeric,
     sorting=none,
     %sorting=nyt,
     %sortcites=true,
     %autocite=footnote,
     backend=biber, % Compile the bibliography with biber
     hyperref=true,
-    backref=true,
+    backref=false, %true
     citecounter=true,
-    pagetracker=true,
+    pagetracker=true, %true
     citetracker=true,
     ibidtracker=context,
     autopunct=true,
     autocite=plain,
 }{biblatex}
+
 
 % Pass the unknown options to biblatex, overwriting the previous settings. Avoid passing the kao-specific options.
 \DeclareDefaultOption{%

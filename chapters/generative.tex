@@ -1,9 +1,10 @@
-\setchapterimage[6cm]{seaside}
+% \setchapterimage[6cm]{seaside}
+\setchapterstyle{kao}
 \setchapterpreamble[u]{\margintoc}
 \chapter{Training the first large language model for French using a generative objective}
 \labch{layout}
 
-As observed in [5], deep neural networks have shocking grammatical competencies. For example, GPT-2 generates correct text with plural and long-distance agreement despite any prior linguistic knowledge. Such agreements are determined by abstract structures and not just linear order of words. Surprisingly, models can learn such specific linguistic patterns (subject-verb, noun-adverb, verb-verb) with no prior information about linguistic theory. Within my laboratory, I led the project to train the first large language model in French [6]. We obtained a dedicated computation grant on public French HPC computer Jean Zay. The model, equivalent to GPT-2 in English, contains more than 1 billion parameters. We built a dedicated training corpus and parallelized the training between multiple nodes and compute units. I am particularly proud of this project, as we contributed to the resources available in French. We released the model in Open-Source for research and business application purposes . 
+As observed in \textcite{linzen_2020}, deep neural networks have shocking grammatical competencies. For example, GPT-2 generates correct text with plural and long-distance agreement despite any prior linguistic knowledge. Such agreements are determined by abstract structures and not just linear order of words. Surprisingly, models can learn such specific linguistic patterns (subject-verb, noun-adverb, verb-verb) with no prior information about linguistic theory. Within my laboratory, I led the project to train the first large language model in French \parencite{simoulin_2021c}. We obtained a dedicated computation grant on public French HPC computer Jean Zay. The model, equivalent to GPT-2 in English, contains more than 1 billion parameters. We built a dedicated training corpus and parallelized the training between multiple nodes and compute units. I am particularly proud of this project, as we contributed to the resources available in French. We released the model in Open-Source for research and business application purposes . 
 
 \section{building the corpus}
 

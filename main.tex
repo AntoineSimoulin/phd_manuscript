@@ -49,8 +49,9 @@
 %\usepackage{showlabels} % Uncomment to output the content of \label commands to the document where they are used
 
 % Load the bibliography package
-\usepackage{kaobiblio}
+\usepackage{kaobiblio} %[backend=bibtex, linkeverything]
 \addbibresource{main.bib} % Bibliography file
+% \usepackage{natbib} % [authoryear,round,longnamesfirst]
 
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
@@ -221,7 +222,7 @@
 \input{chapters/arithmetics.tex}
 
 \pagelayout{wide} % No margins
-\addpart{Training language models at scale}
+\addpart{Training neural models at scale}
 \pagelayout{margin} % Restore margins
 
 \input{chapters/contrastive.tex}
@@ -249,6 +250,7 @@
 
 \defbibnote{bibnote}{Here are the references in citation order.\par\bigskip} % Prepend this text to the bibliography
 \printbibliography[heading=bibintoc, title=Bibliography, prenote=bibnote] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
+% \bibliography{main}
 
 % %----------------------------------------------------------------------------------------
 % %	NOMENCLATURE
