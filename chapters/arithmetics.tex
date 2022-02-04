@@ -4,6 +4,11 @@
 %\chapter[Figures and Tables]{Figures and Tables\footnotemark[0]}
 \chapter{Characterizing compositional properties of neural architectures}
 
+\cleanchapterquote{
+cette langue serait merveilleuse [...] car alors raisonner et calculer sera la même chose.}{Gottfried Wilhelm Leibniz
+}{}
+
+
 While transformers show outstanding performances on many NLP benchmarks, they also have some linguistic limitations. In particular, regarding their ability to generalize outside their training range and to learn elementary composition rules. The benchmark COGS \parencite{kim_2020} for example highlights deep learning models struggle to generalize to longer sequences or sentences with deeper level of recursion than seen during training. Following my work on integrating structure into neural architecture, I aim at better characterizing how the model structure may affect their degree of compositionality. This work is currently in an experimentation phase. I am building an evaluation setup with arithmetic expressions containing specific properties. I train various models on specific subsets and observe how models generalize outside their domain. In particular, I compare models relying on different degrees of structure constraints such as sequential, recursive, or unstructured models.
 
 
