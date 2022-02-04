@@ -581,7 +581,8 @@ We either freeze the parser component or continue to update it, given the downst
 
 We also observe that models using the full or partial annotated data outperform models relying on the sole downstream supervision (PTB-$\emptyset$). This observation is more clear on the SICK-R task. We previously observed that fine-tuning the parser can lead to tree structure diverging from linguistic patterns. Nonetheless, regarding the downstream performances, human annotation appears as a good initialization for our model. 
 
-For technical reasons, we had to limit the batch size to 16 when fine-tuning \textsc{Bert} parsing module. Therefore, the benefit from fine-tuning the parser when using \textsc{Bert} is difficult to interpret. However, we can observe model relying on linguistic-driven structures seems to achieve better performances. Nonetheless, the difference is thin, and we present here an average score across trees obtained from all attention heads. Therefore some attention heads might present structures as efficient as linguistic patterns.
+% For technical reasons, we had to limit the batch size to 16 when fine-tuning \textsc{Bert} parsing module. Therefore, the benefit from fine-tuning the parser when using \textsc{Bert} is difficult to interpret. However, 
+We can observe model relying on linguistic-driven structures seems to achieve better performances. Nonetheless, the difference is thin, and we present here an average score across trees obtained from all attention heads. Therefore some attention heads might present structures as efficient as linguistic patterns.
 
 \section{Conclusion}
 
