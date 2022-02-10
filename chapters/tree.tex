@@ -1,15 +1,18 @@
 \setchapterstyle{kao}
 \setchapterpreamble[u]{\margintoc}
 \chapter{Jointly learning model structure and compositional operations}
-\labch{options}
+\labch{tree}
 
-\cleanchapterquote{Language is a process of free creation; its laws and principles are fixed, but the manner in which the principles of generation are used is free and infinitely varied. Even the interpretation and use of words involves a process of free creation.}{Noam Chomsky}{Professor Emeritus at Massachusetts Institute of Technology}
+\newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue}#2}}
 
-This chapter investigates the relevance of incorporating explicit tree structural bias in the context of sentence semantic inference. We propose a model that jointly parses sentences into discrete trees and composes a semantic vector along with these trees. Our model is based on well-known components and could therefore accommodate a variety of parsing architectures such as graph parsers or attention matrices from \textsc{Bert}. We train the full model with distant downstream supervision on textual entailment and semantic similarity tasks. 
+
+\cleanchapterquote{Language is a process of free creation; its laws and principles are fixed, but the manner in which the principles of generation are used is free and infinitely varied. Even the interpretation and use of words involves a process of free creation.}{Noam Chomsky}{\bcomment{remove status}{} Professor Emeritus at Massachusetts Institute of Technology}
+
+This chapter investigates the relevance of incorporating explicit tree structural bias\bcomment{es}{} in the context of sentence semantic inference. We propose a model that jointly parses sentences into discrete trees and composes a semantic vector along with these trees. Our model is based on well-known components and could therefore accommodate a variety of parsing architectures such as graph parsers or attention matrices from \textsc{Bert}. We train the full model with distant downstream supervision on textual entailment and semantic similarity tasks. 
 
 % We propose a framework relying explicitly on syntactic trees rather than analyzing the patterns learned by statistical models. 
 
-To compute semantic representations, tree structure models rely on an explicit and discrete structure. It favors the integration of linguistic information and inductive biases. Moreover, it favors the analysis of the composition since it explicitly relies on syntactic trees. Yet, such models require raw text and linguistic structure in the form of parse trees to calculate the semantic representation. This prerequisite limits their use in practice. By using tree structure neural models without the need for labeled parses, we hope to overcome this limitation.
+To compute semantic representations, tree structured models rely on an explicit and discrete structure. It favors the integration of linguistic information and inductive biases. Moreover, it favors the analysis of the composition since it explicitly relies on syntactic trees. Yet, such models require \bcomment{raw text and linguistic structure}{not only raw text but also linguistic structure} in the form of parse trees to calculate the semantic representation. This prerequisite limits their use in practice \bcomment{}{because it requires annotations in the supervised case}. By using tree structure neural models without the need for labeled parses, we hope to overcome this limitation.
 
 % We evaluate our model on textual entailment and semantic similarity tasks and outperform sequential models and tree-structured models relying on external parsers. Moreover, when initialized on human-annotated structures, our model improves inference close to \textsc{Bert} base performances on the semantic similarity task. 
 
@@ -17,22 +20,22 @@ To compute semantic representations, tree structure models rely on an explicit a
 
 \section{Principle of compositionality for building semantic representations}
 
-\begin{figure}[h!]
+\begin{figure}[htb!]
 	\includegraphics[width=10cm]{images/lambda_form.png}
 	\caption[Lambda form]{A Montague-style \parencite{montague_1973} derivation of a semantic representation for the sentence “Every man loves a woman.” Credits: by Alexander Koller and Manfred Pinkal \url{https://www.coli.uni-saarland.de/~koller/papers/sem-handbook.pdf}}
 	\labfig{lambda-form}
 \end{figure}
 
-There is this strong intuition in natural language processing that language has a recursive structure \parencite{chomsky_56, shen_19}. As illustrated in \reffig{lambda-form} computing sentence semantic representations traditionally calls for a recursive compositional function whose structure is tree-shaped. Using syntax driven semantic analysis \parencite{jurafsky_2009}, we can map a sentence to a logical form that reflects its meaning—following the definition from \refsec{meaning:formal}. In this perspective, the draw the sentence meaning using the compositionality principle. In its essence, the principle states that we can draw the meaning of a sentence by composing the meaning of its parts. We first infer the sentence structure\sidenote{The structure may consist in various trees such as constituency, dependency or binary parses.}. We then recursively compute the semantic representation along the structure, by augmenting and combining each node with semantic attachments. These attachments follow explicit combination rules.
+There is this strong \bcomment{intuition}{hypothesis} \bcomment{in natural language processing}{computational linguistics} that language has a recursive structure \parencite{chomsky_56, shen_19}. As illustrated in \reffig{lambda-form} computing sentence semantic representations traditionally calls for a recursive compositional function whose structure is tree-shaped. Using syntax driven semantic analysis \parencite{jurafsky_2009}, we can map a sentence to a logical form that reflects its meaning—following the definition from \refsec{meaning:formal}. In this perspective, \bcomment{nonsense}{} we compute the sentence meaning using the compositionality principle. In its essence, the principle states that we can draw the meaning of a sentence by composing the meaning of its parts. \bcomment{That's an operational statement}{} We first infer the sentence structure\sidenote{The structure may consist in various trees such as constituency, dependency or binary parses.}. We then recursively compute the semantic representation along the structure, by \bcomment{rephrase the sentence}{} augmenting and combining each node with semantic attachments. These attachments follow explicit combination rules.
 
-\begin{figure}[h!]
+\begin{figure}[htb!]
 	\includegraphics[width=10cm]{images/tree_rnn.png}
 	\caption[Tree LSTM]{Semantic encoding of a sentence using a tree-structured neural model.}
 	\labfig{tree-rnn}
 \end{figure}
 
 % As detailed in \refsec{training:architectures}, computing sentence semantic representations traditionally calls for a recursive compositional function whose structure is tree-shaped. 
-Neural models can emulate this composition procedure using tree-structured networks. As for the logical form, such models proceed in two stages: first we infer the syntactic structure of the sentence, then we recursively compose the semantic representation along the structure. We illustrate the composition procedure in \reffig{tree-rnn}. Here, the semantic representations consist of vectors composed with linear algebra operations—as detailed in \refsec{meaning:distributional}. The parameters of the semantic algebraic operators are \textit{learned} by optimizing a loss function given a dataset. Regarding the sentence structure, we usually infer it using a dedicated parser, learned on labeled data.
+\bcomment{}{\sidenote{Yep. the neural models cannot handle quantification naturally. Change the example to sentiment analysis and maybe refer to previous chapters on differences between logical representations and neural representations. Problematize : You might also state what gains you expect from structuring a neural model with a tree shape rather than using say an LSTM.}} Neural models can emulate this composition procedure using tree-structured networks. As for the logical form, such models proceed in two stages: first we infer the syntactic structure of the sentence, then we recursively compose the semantic representation along the structure. We illustrate the composition procedure in \reffig{tree-rnn}. Here, the semantic representations consist of vectors composed with linear algebra operations—as detailed in \refsec{meaning:distributional}. The parameters of the semantic algebraic operators are \textit{learned} by optimizing a loss function given a dataset. Regarding the sentence structure, we usually infer it using a dedicated parser, learned on labeled data.
 
 % and enable better generalization and abstraction properties.
 
@@ -40,18 +43,22 @@ Neural models can emulate this composition procedure using tree-structured netwo
 \section{Latent tree learning}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tree-based models need carefully hand-annotated data to be trained. One method of overcoming this limitation is to induce trees from raw text and computes semantic representations along with the inferred structure. Such methods preserve explicit recursive computation and produce intelligible tree structures. The learning method is called \textit{latent tree learning}, and it usually consists of two components: a parser and a \textsc{TreeLSTM} that uses those parses. The parser and composition function are learned jointly and are specific to a given task or domain. 
+\bcomment{not really true}{in the supervised setting} Tree-based models need carefully hand-annotated data to be trained. One method of overcoming this limitation is to induce trees from raw text and computes semantic representations along with the inferred structure. Such methods preserve explicit recursive computation and produce intelligible tree structures. The learning method is called \textit{latent tree learning}, and it \bcomment{usually}{that's not usual} consists of two components: a parser and a \textsc{TreeLSTM} that uses those parses. The parser and composition function are learned jointly and are specific to a given task or domain. 
 
 % All models differ from the syntactic formalism used and the training method.
 
 The first set of latent tree models introduces an intermediate objective to train the parser component. \textcite{socher_11c} parse the sentence by selecting and merging adjacent nodes. The parser model is trained using an auxiliary reconstruction task. The Shift reduce Parser-Interpreter Neural Network (SPINN) model from \textcite{bowman_16} obtains the structure using a shift-reduce parser. The parser component also uses an intermediate objective that compares parses with gold-standard trees.
 
-\textcite{maillard_19} introduce a model entirely trainable using backpropagation. However, the model does not rely on a soft structure and does not maintain the discreteness of the tree composition process. It is, therefore, memory intensive as it explicitly computes a whole forest of 
+\textcite{maillard_19} introduce a model entirely trainable using backpropagation. However, the model does not rely on a soft structure and does not maintain the discreteness of the tree composition process\bcomment{a bit elliptic. what do they do really ?}{more details would be welcome}. It is, therefore, memory intensive as it explicitly computes a whole forest of 
 % $\smallO{N^2}$ 
 potential trees. 
 %for $N$ words
 
 \textcite{yogatama_17} adapt \textsc{SPINN} and jointly train its parsing and sentence embedding components. The model produces a discrete structure, but the resulting architecture is not fully differentiable and must thus be trained using a reinforcement learning proxy objective, limiting the convergence speed. \textcite{choi_18} compute a single tree instead of combinations from partial trees by using the Gumbel-Softmax estimator. The input is greedily and sequentially parsed.
+
+\bcomment{overall at the end of this section, I miss some more details on what these guys really do. It requires to read the papers to get an idea. Lacks of self containment}{}
+
+
 % a reconstruction error in \citet{socher_11c} and a comparison with gold-standard trees in \citet{bowman_16}.}
 
 %A \treelstm{} is then applied on the parse to embed the sentence. But both models train the parser with an auxiliary task.
@@ -111,9 +118,9 @@ potential trees.
 Architectures listed above  have practical limitations, requiring either complex learning paradigm such as reinforcement learning, intensive computations or requiring an external parser module.
 
 % To limit the need for an external parser, w
-We propose a unified architecture, which infers an explicit tree structure and trains recursively a sentence embedding model. Our method is fully differentiable and relies on existing and well-known components. We use a standard dependency parsing structure, obtained using a graph-based biaffine dependency parser \parencite{dozat_17}. However, our model is not limited to a particular parser architecture as long as it is differentiable. This flexibility gives us the freedom to explore the impact of the parser choice.
+We propose a unified architecture, which infers an explicit tree structure and trains recursively a sentence embedding model. Our method is fully differentiable and relies on existing and well-known components. We use a standard dependency parsing structure, obtained using a graph-based biaffine dependency parser \parencite{dozat_17}. However, our model is not limited to a particular parser architecture as long as it is differentiable. This flexibility gives us the freedom to explore the impact of the parser choice. \bcomment{apparent contradiction, you said earlier that using an external parser is a weakness}{}
 
-Our model performs jointly sentence parsing and the prediction of a sentence embedding. The sentence embedding is predicted by a weighted \textsc{TreeLSTM} whose tree structure is provided by a dependency parser.
+\bcomment{}{State more clearly that you designed a joint model by contrasting with others} Our model performs jointly sentence parsing and the prediction of a sentence embedding. The sentence embedding is predicted by a \bcomment{weighted}{why weighted ?} \textsc{TreeLSTM} whose tree structure is provided by a dependency parser.
 The \textsc{TreeLSTM} recursive composition function crucially uses a weighted sum of the child representations whose weights are provided by the parser edges, hence linking the parser outputs to the \textsc{TreeLSTM} recursion.
 % \footnote{The model is illustrated in Appendix~\ref{sec:figure}.}.
 
@@ -128,7 +135,7 @@ it computes a weight matrix that is interpreted as weighted directed graph whose
     a_j^{(head)} &= W^{(head)}h_j + b^{(head)} \label{eq:biaffine-2}\\
     s^{(arc)}_{kj} &= \text{Biaff}(a_k,a_j) \label{eq:biaffine-3}
 \end{align}%}
-The second step performs parsing by computing a maximum spanning tree from the graph. As in \textcite{dozat_17}, we use the Max Spanning Tree (MST) algorithm to ensure the well-formedness of the tree: 
+The second step performs parsing by computing a maximum spanning tree from the graph. As in \textcite{dozat_17}, we use the Max Spanning Tree (MST) algorithm \bcomment{cite Edmonds as it is a non standard -directed- MST algorithm}{} to ensure the well-formedness of the tree: 
 \begin{align}
  \alpha_{kj} &= \mathbb{1}_{mst(s^{(arc)}_{kj})} s^{(arc)}_{kj} \label{eq:biaffine-alpha}
 \end{align}
@@ -164,9 +171,9 @@ The tree shape and the edge weights are given by the best prediction of a graph 
 
 % The method described here differs from previous work as the representation is not computed from the whole forest of potential trees \citep{yogatama_17, maillard_19, williams_18, shen_18, liu_18} but instead on the single best tree while being completely differential. Thus, it can be trained using back-propagation on a supervised task for which we want to provide relevant sentence embeddings. The architecture is, in principle, generic and adaptable to any other downstream task. 
 
-Our model, illustrated in \reffig{biaffine-tree-lstm}, is fully differentiable and preserve the discreteness of the tree composition process. It relies on a dependency parsing formalism and could accommodate any differentiable parser.
+Our model, illustrated in \reffig{biaffine-tree-lstm}, is fully differentiable and preserve the discreteness of the tree composition process. It relies on a dependency parsing formalism and could accommodate any \bcomment{differentiable}{Let's talk about differentiabiliy\ldots} parser.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 	\includegraphics[width=7cm]{images/biaffine-12.png}
 	\caption[Biaffine tree lstm]{We illustrate the architecture detailed in Eq. \ref{eq:biaffine-1} to \ref{eq:treelstm-last}. The Biaffine parser provides the sentence structure from which the \textsc{TreeLSTM} computes sentence embeddings. The full pipeline is differentiable as the \textsc{TreeLSTM} weights are given by the parser.}
 	\labfig{biaffine-tree-lstm}
@@ -185,11 +192,14 @@ Our architecture primarily aims to produce relevant embeddings for downstream ta
 
 We first evaluate our model on the SICK-R downstream task \parencite{marelli_14}, which is dedicated to assessing models' compositional properties. 
 %The task intends to discriminate models that rely on shallow lexical pattern matching from those that take advantage of the sentence underlying structure. 
-The dataset comprises 9,927 sentence pairs, distributed in a 4500/500/4927 train/dev/test split, annotated for semantic similarity on a 1 to 5 real range. It includes specific examples of variations on passive and active forms, quantifier and modifier switches, or negations. 
+The dataset comprises 9,927 sentence pairs, distributed in a 4,500/500/4,927 train/dev/test split, annotated for semantic similarity on a 1 to 5 real range. It includes specific examples of variations on passive and active forms, quantifier and modifier switches, or negations. 
 %This is a SentEval task \cite{conneau_18} specifically
+\bcomment{to get a more self contained doc you might present the task with slightly more details, provide examples etc.}{}
+
 
 \paragraph{Training configuration}
 
+\bcomment{with more details on the task, the following parag would be easier to understand}{}
 We use a similar training procedure
 %\footnote{Hyperparameters such as hidden size, optimization procedure such or learning rate are fixed as proposed in \citet{tai_15} and are detailed in Appendix.} 
 as in \textcite{tai_15}. We transform the target $y$ from the SICK-R task into the distribution $p$ defined by:
@@ -218,9 +228,9 @@ Finally during inference, the similarity score $\hat{y}$ is computed as $\hat{y}
 
 % We use a standard training configuration, inspired from \citet{tai_15} and combine the embeddings obtained with our model for each sentence with a similarity module\footnote{The setup is detailed in Appendix \ref{sec:sick-train}.}.
 
-\paragraph{hyper-parameters} We set the hyperparameters given literature on the domain, in particular regarding choices made in \textcite{tai_15}. For all experiments detailed in the current Section, the batch size is fixed to 25, weight decay to $1e^{-4}$ and gradient clipping set to $5.0$. The learning rate is set to $0.025$ for the \textsc{TreeLSTM} parameters. When using a pre-training procedure for the parser, we set the learning rate to $5e^{-3}$ and use the following warm-up: for the first epoch, the parser is frozen. For the following epochs, all parameters are trained. At each epoch, the parser learning rate is divided by a factor of two. Without pre-training, the learning rate is set to $5e^{-4}$ for the parser. All model weights are initialized with a Xavier distribution. The hidden size of the similarity architecture is set to 50. The \textsc{TreeLSTM} hidden size is set to 150. We use the Adagrad optimizer. We do not apply any dropout. We perform training for a maximum of 20 epochs and stop when no improvement was observed on the development set for 3 consecutive epochs.
+\paragraph{hyper-parameters} \bcomment{We set the hyperparameters given literature on the domain}{reformulate}, in particular regarding choices made in \textcite{tai_15}. For all experiments detailed in the current Section, the batch size is fixed to 25, weight decay to $1e^{-4}$ and gradient clipping set to $5.0$. The learning rate is set to $0.025$ for the \textsc{TreeLSTM} parameters. When using a pre-training procedure for the parser, we set the learning rate to $5e^{-3}$ and use the following warm-up: for the first epoch, the parser is frozen. For the following epochs, all parameters are trained. At each epoch, the parser learning rate is divided by a factor of two. Without pre-training, the learning rate is set to $5e^{-4}$ for the parser. All model weights are initialized with a Xavier distribution. The hidden size of the similarity architecture is set to 50. The \textsc{TreeLSTM} hidden size is set to 150. We use the Adagrad optimizer. We do not apply any dropout. We perform training for a maximum of 20 epochs and stop when no improvement was observed on the development set for 3 consecutive epochs.
 %  and biases set to 0
-Regarding the vocabulary, we limit the size to 20,000 words and initialize the embeddings layer with 300-dimensional GloVe embeddings\sidenote{\url{https://nlp.stanford.edu/projects/glove/}}. The embeddings are not updated during training. \sidenote{We trained all models on a single 1080 Ti Nvidia GPU. Training time for each epoch is approximately 1 minute. The model counts 13.7M parameters. Data can be downloaded using the SentEval package \url{https://github.com/facebookresearch/SentEval}.}
+Regarding the vocabulary, we limit the size to 20,000 words and initialize the embeddings layer with 300-dimensional GloVe embeddings\sidenote{\url{https://nlp.stanford.edu/projects/glove/}}. The embeddings are not updated during training\sidenote{We trained all models on a single 1080 Ti Nvidia GPU. Training time for each epoch is approximately 1 minute. The model counts 13.7M parameters. Data can be downloaded using the SentEval package \url{https://github.com/facebookresearch/SentEval}.}.
 
 % We set the hyper-paremeter given literature on the domain, in particular regarding choices made in \citet{tai_15}. We detail the full setup in Appendix  \ref{sec:sick-train}.
 
@@ -243,10 +253,10 @@ Table \ref{table:supervised} reports the results from the test set. As expected,
 \textsc{LSTM}$^\dagger$ & 84.6 \scriptsize{(0.4)}  \\
 Bidirectional \textsc{LSTM}$^\dagger$ & 85.1 \scriptsize{(0.4)} \\
 % \midrule
-N-ary \textsc{TreeLSTM}$^\dagger$ \cite{tai_15} & 85.3 \scriptsize{(0.7)} \\
-Childsum \textsc{TreeLSTM}$^\dagger$ \cite{tai_15} & 86.5 \scriptsize{(0.4)}  \\
+N-ary \textsc{TreeLSTM}$^\dagger$ \parencite{tai_15} & 85.3 \scriptsize{(0.7)} \\
+Childsum \textsc{TreeLSTM}$^\dagger$ \parencite{tai_15} & 86.5 \scriptsize{(0.4)}  \\
 % \midrule
-\textsc{Bert}-base \cite{devlin_19} & 87.3 \scriptsize{(0.9)} \\
+\textsc{Bert}-base \parencite{devlin_19} & 87.3 \scriptsize{(0.9)} \\
 % \bert{}-large & 89.4 \scriptsize{(0.6)} & 84.7 \scriptsize{(1.0)} & 21.5 \scriptsize{(1.3)} \\
 \midrule
 \multicolumn{2}{c}{\textit{Our model}}\\
@@ -265,7 +275,7 @@ Unified \textsc{TreeLSTM}$^\dagger$ & 87.0 \scriptsize{(0.3)} \\
 \label{sec:ste}
 
 We also test our model on the Stanford Natural Language Inference (SNLI) task \parencite{bowman_15}, which includes 570k pairs of sentences with the labels entailment, contradiction, and neutral. It is distributed in a 550k/10k/10k train/dev/test split. 
-
+\bcomment{self containment}{provide some more details. what are the inputs, the outputs ?}
 
 \paragraph{Training configuration}
 
@@ -289,8 +299,8 @@ J(\theta) = -\frac{1}{N}\sum_{k=1}^{N}p^{(k)} log \hat{p}_{\theta}^{(k)} + \lamb
 
 %We set the hyper-paremeter given literature on the domain, in particular regarding choices made in \citet{choi_18}. We detail the full setup in Appendix  \ref{sec:snli-train}.
 
-\paragraph{hyper-parameters} We set the hyper-parameters given literature on the domain, in particular regarding choices made in \textcite{choi_18}. For all experiments detailed in Section \ref{sec:ste}, the batch size is fixed to 128, weight decay to $0$, and gradient clipping set to $5.0$. The learning rate is set to $1e^{-3}$ for the \textsc{TreeLSTM} and the parser. The hidden size of the similarity architecture is set to 1024. The \textsc{TreeLSTM} hidden size is set to 600. We use the Adam optimizer. We apply a 0.2 dropout within the similarity architecture. We perform training for a maximum of 20 epochs and stop when no improvement was observed on the development set for 3 consecutive epochs.
-Regarding the vocabulary, we limit the size to 100,000 words and initialize the embeddings layer with 300-dimensional GloVe embeddings. The embeddings are not updated during training. % \cite{pennington_14}
+\paragraph{hyper-parameters} \bcomment{We set the hyper-parameters given literature on the domain}{reformulate}, in particular regarding choices made in \textcite{choi_18}. For all experiments detailed in Section \ref{sec:ste}, the batch size is fixed to 128, weight decay to $0$, and gradient clipping set to $5.0$. The learning rate is set to $1e^{-3}$ for the \textsc{TreeLSTM} and the parser. The hidden size of the similarity architecture is set to 1024. The \textsc{TreeLSTM} hidden size is set to 600. We use the Adam optimizer. We apply a 0.2 dropout within the similarity architecture. We perform training for a maximum of 20 epochs and stop when no improvement was observed on the development set for 3 consecutive epochs.
+Regarding the vocabulary, we limit the size to 100,000 words \bcomment{why a different setup than earlier ?}{} and initialize the embeddings layer with 300-dimensional GloVe embeddings. The embeddings are not updated during training. % \cite{pennington_14}
 
 \begin{table}[!htb]
   \centering
@@ -326,7 +336,7 @@ Regarding the vocabulary, we limit the size to 100,000 words and initialize the 
   \label{table:snli}
 \end{table}
 
-We report the results in Table \ref{table:snli}. Our results are close to \textcite{choi_18}, which also compute semantic representations along to discrete tree structures but relies on a distinct syntactic formalism.
+We report the results in Table \ref{table:snli}. Our results are close to \textcite{choi_18}, which also compute semantic representations along to discrete tree structures but relies on a distinct syntactic formalism. \bcomment{conjecture what explains the differences ?}{}
 
 In models from \textcite{liu_18} and \textcite{zhang_20} sentences are encoded with direct interaction using an attention mechanism. These architectures relying on cross sentence attention outperform those without.
 % , but our work focuses on the underlying sentence structure
@@ -359,7 +369,7 @@ on this textual entailment task, the final prediction cannot be directly deduced
 Our framework primarily aims to be a structured sentence encoder. Accordingly, we have demonstrated in the previous Section that our architecture is competitive with comparable approaches and might even be competitive with \textsc{Bert}-based models. We are also interested in interpreting the structures the model actually learns and how such structures impact downstream performances.
 
 In the previous experimental section, we pre-trained the parser on human annotated data. %Indeed, we expect the optimal structure to exhibit intuitive patterns such as subject-verb or verb-object connection. 
-However, the optimal structure might differ from the task. Moreover, for computational reasons, it might even differ significantly from linguistic insights. In this Section we perform an ablation study to better understand how the initialization of the parser impacts the resulting structures (Section \ref{sec:parses-impact}) and the final downstream performances (Section \ref{sec:dowstream-impact}). We begin by defining the different initialization scenarios we considered.
+\bcomment{However, the optimal structure might differ from the task}{reformulate}. Moreover, for computational reasons, it might even differ significantly from linguistic insights. In this Section we perform an ablation study to better understand how the initialization of the parser impacts the resulting structures (Section \ref{sec:parses-impact}) and the final downstream performances (Section \ref{sec:dowstream-impact}). We begin by defining the different initialization scenarios we considered.
 
 \paragraph{Linguistic annotations} Tree-structured models traditionally rely on linguistic structures obtained by parsers \parencite{tai_15}. For languages such as English, linguistic resources are available; it is technically possible to pre-train the parser. However, resources such as the PTB are not available in all languages. To better quantify the benefits of using linguistic annotations, we propose the following configurations, using various proportions of the PTB to initialize the parser:
 
@@ -380,7 +390,7 @@ However, the optimal structure might differ from the task. Moreover, for computa
 
 % These models often choose a Transformer architecture largely owing to its at- tractive scalability. Studies (Hewitt and Manning, 2019; Jawahar et al., 2019)  have shown that a pre- trained transformer is able to capture certain syn- tactic information implicitly by learning from suf- ficient examples. However, there is still a big gap between the syntactic structures implicitly learned and the golden syntax trees created by human ex- perts.
 
-\paragraph{Unsupervised structures} We  also interested in structures emerging from large pre-trained models. Such models present similarities with recent graph parser architecture. Although they are not trained with a direct parsing objective, many lines of work investigate if attention matrix can reflect syntactic structures \parencite{jawahar_19, clark_19, ravishankar_21} or, on the contrary, if it is efficient to integrate tree structural information within transformers \parencite{wang_19, bai_21}. 
+\paragraph{Unsupervised structures}\bcomment{transition à discuter}{} We are also interested in structures emerging from large pre-trained models. Such models present similarities with recent graph parser architecture. Although they are not trained with a direct parsing objective, many lines of work investigate if attention matrix can reflect syntactic structures \parencite{jawahar_19, clark_19, ravishankar_21} or, on the contrary, if it is efficient to integrate tree structural information within transformers \parencite{wang_19, bai_21}. 
 
 As stated in the Introduction, our model is not specific to any parser architecture. It is, therefore, possible to use any model or heuristic to infer sentence structure. 
 %We observed in the previous Section that parser initialized on only a sub-sample from the PTB lead to intelligible parses. In this Section we analyze to which extend it is possible to initialize the parser without linguistic insights.
@@ -398,10 +408,10 @@ In particular, we can use a pre-trained model such as \textsc{Bert} to infer str
 \end{align}
 % \quad \forall n \in [1, L]
 
-We induce a tree structure following a procedure close from \textcite{ravishankar_21}. The method interprets the combination weights $s$ as a weighted graph whose nodes are tokens. We then apply Eq~\ref{eq:biaffine-3} to induce a maximum spanning tree from the attention matrix as detailed in \refsec{sec:model}. We make use of the last layer and induce a tree for each attention head taken separately. Given the tree structure induced from \textsc{Bert}, we apply our \textsc{TreeLSTM} model detailed in Eq. \ref{eq:treelstm-weighted} to \ref{eq:treelstm-last}. We stress the fact that in this configuration, we only use \textsc{Bert} as an unsupervised parser to infer a sentence structure. The semantic composition along with the structure to produce a sentence embedding is solely computed by the weighted \textsc{TreeLSTM}.
+We induce a tree structure following a procedure close from \textcite{ravishankar_21}. The method interprets the combination weights $s$ as a weighted graph whose nodes are tokens. We then apply Eq~\ref{eq:biaffine-3} to induce a maximum spanning tree from the attention matrix as detailed in \refsec{sec:model}. We make use of the last layer and induce a tree for each attention head taken separately. Given the tree structure induced from \textsc{Bert}, we apply our \textsc{TreeLSTM} model detailed in Eq. \ref{eq:treelstm-weighted} to \ref{eq:treelstm-last}. We stress the fact that in this configuration, we only use \textsc{Bert} as an unsupervised parser to infer a sentence structure. The semantic composition along with the structure to produce a sentence embedding is solely computed by the weighted \textsc{TreeLSTM}.\bcomment{you do not state how you combine the weights of the heads}{}
 
 %\footnote{Parameters initialization is detailed in Appendix.}.
-In both linguistic and unsupervised configurations, we either continue to update the parser when fine-tuning the model on downstream tasks or freeze the parser and only train the \textsc{TreeLSTM}. These two configurations are indicated with respectively \textbf{$\checkmark$} and \textbf{$\times$} symbols. 
+\bcomment{move this elsewhere}{}In both linguistic and unsupervised configurations, we either continue to update the parser when fine-tuning the model on downstream tasks or freeze the parser and only train the \textsc{TreeLSTM}. These two configurations are indicated with respectively \textbf{$\checkmark$} and \textbf{$\times$} symbols. 
 % 
 
 
@@ -411,6 +421,8 @@ In both linguistic and unsupervised configurations, we either continue to update
 
 
 % However, we not interested solely in tackling downstream tasks, but also to produce consistent syntactic structures. Therefore, we focus in the next Section on the tree produced by our method.
+
+\bcomment{structural issue}{introduce PTB 100 etc here}
 
 In this Section, we analyze to which extend the structures generated by our model are comparable with meaningful linguistic annotations. We compare the parses generated by two distinct models differing by their initialization on the development set of both tasks. Our reference is the silver parses from the PTB-All configuration, where the parser is previously pre-trained on the full PTB and not updated during training.   
 
@@ -461,7 +473,7 @@ For the initialization with an unsupervised structure, we only evaluate our setu
 
 % We observe the downstream task performances as well as the underlying structures differs given the attention head. We observed human linguistic annotations can be a good initialization setup for our model since they lead to an improvement on downstream results. However, depending on the training configuration, the initial structure may deeply change during training. Therefore, we explore if other initialization methods  could be good prior for tree-structured model.
 
-\paragraph{Visualization of the parses} We illustrate the effect summarize on Table~\ref{table:parse} on some random examples. Figures from the first column (\ref{subfig:expl1-1}, \ref{subfig:expl1-3} and \ref{subfig:expl1-5}) show the parses obtained without updating the parser component on the downstream task. Figures from the second column(\ref{subfig:expl1-2}, \ref{subfig:expl1-4} and \ref{subfig:expl1-6}) show the evolution of the parses for the same initialization but after fine-tuning the parser on the SNLI task. Figures from the first raw (\ref{subfig:expl1-1} and \ref{subfig:expl1-2}) are initialized using the full PTB, the second raw (\ref{subfig:expl1-3} and \ref{subfig:expl1-4}) is initialized using 100 PTB samples while the one from the last raw (\ref{subfig:expl1-5} and \ref{subfig:expl1-6}) are initialized using unsupervised patterns.
+\paragraph{Visualization of the parses} We illustrate the effect summarized in Table~\ref{table:parse} on some \bcomment{random}{chosen} examples. Figures from the first column (\ref{subfig:expl1-1}, \ref{subfig:expl1-3} and \ref{subfig:expl1-5}) show the parses obtained without updating the parser component on the downstream task. Figures from the second column(\ref{subfig:expl1-2}, \ref{subfig:expl1-4} and \ref{subfig:expl1-6}) show the evolution of the parses for the same initialization but after fine-tuning the parser on the SNLI task. Figures from the first raw (\ref{subfig:expl1-1} and \ref{subfig:expl1-2}) are initialized using the full PTB, the second raw (\ref{subfig:expl1-3} and \ref{subfig:expl1-4}) is initialized using 100 PTB samples while the one from the last raw (\ref{subfig:expl1-5} and \ref{subfig:expl1-6}) are initialized using unsupervised patterns.
 
 \begin{figure}[htb!]
     \centering
@@ -512,7 +524,7 @@ For the initialization with an unsupervised structure, we only evaluate our setu
     \label{fig:parse-expl}
 \end{figure}
 
-For the initialization with the PTB, we observe the fine-tuning makes the tree evolve to trivial structures and tend to connect every node to an arbitrary root. We hypothesize, such trivial structures present advantages from a computational point of view. As observed in \textcite{shi_18}, trivial trees without syntax properties might lead to surprisingly good results. \textcite{shi_18} hypothesize that trivial trees gain might benefit from shallow and balanced properties.
+For the initialization with the PTB, we observe the fine-tuning makes the tree evolve to trivial structures and tend to connect every node to an arbitrary root. We hypothesize, such trivial structures present advantages from a computational point of view. As observed in \textcite{shi_18}, trivial trees without syntax properties might lead to surprisingly good results. \textcite{shi_18} hypothesize that trivial trees gain might benefit from shallow and balanced properties. \bcomment{un peu mystérieux ce parag}{}
 
 For \textsc{Bert} parser initialization, we observe the fine-tuning produces rather sequential patterns, with words connected to direct neighbors. Some isolated groups of words also present inner connections.
 
