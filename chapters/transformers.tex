@@ -17,16 +17,15 @@
 
 % performance increment in downstream applications
 Because of their practical constraints and limited performance increment, the community has lost some interest in tree-structured models. In contrast, alternative methods such as recurrent neural networks \parencite{hochreiter_97, cho_14} or transformers \parencite{vaswani_17} have gained proportional popularity in recent years. Unlike tree-based models, these methods require only raw text as input.
-% \textsc{Bert} \parencite{devlin_19} 
 
-% Transformers introduce a deep paradigm shift in NLP neural architectures. 
-Transformers introduce significant design shift compared to recurrent sequential or tree networks. They rely on self-attention: a mechanism that transforms a \textit{set of vectors} into what is known as \textit{contextualized vectors}. Each contextualized vector is a weighted average of the vectors from the original set. 
+Transformers introduce a profound paradigm shift with recurrent and recursive architectures. For the latter, the input structure determines the computational path: recurrent networks process words sequentially given their order ; recursive networks process words in a bottom up manner—starting from the leaves, up to the root. In contrast, Transformers process all words simultaneously through a fixed number of layers and do not appear to follow a specific structure. Yet, as many results suggest \parencite{linzen_16, jawahar_19, clark_19}, these new models acquire some sort of tree structure.
 
-The mechanism induces different premises about structure: sequential recurrent networks operate with sequences as input, tree recurrent networks with trees
-%, and transformers with sets. 
-Sequences and trees induce a notion of hierarchy. We can assign: an index to each element in a sequence, based on their order~; a depth to each element in a tree, based on the length of the shortest path to the root node. This hierarchy directly impacts the computational order of the corresponding architectures. Sequential recurrent networks process words sequentially given their order. Tree recurrent networks process words in a bottom up manner: starting from the leaves, up to the root.
+This chapter makes the parallel with transformers and sequential or tree structured models. We interpret transformers as structured neural networks and layers as operations on trivial fully connected graphs. We challenge our formalism by conducting an empirical investigation of the role of multiple layers in deep transformer models. We propose a variant of \textsc{Albert} \parencite{simoulin_2021b} that dynamically adapts the number of layers applied to each token and analyze token transformation across the network depth.
 
-In this chapter, we aim to better characterize the latent structure in transformers and provide the tools to analyze them.
+% After reviewing the related work (\refsec{transformers:dynamic-depth}), we detail the model and the training methodology in \refsec{transformers:architecture}. In particular, we encourage our model to be parsimonious and limit the total number of iterations performed on each token. In \refsec{transformers:experiments}, we analyze iterations of the model during pre-training, fine-tuning and inference. 
+
+
+% In this chapter, we aim to better characterize the latent structure in transformers and provide the tools to analyze them.
 
 % Indeed, these methods, unlike tree-based models, require only raw text as input. On the other hand, as many results suggest \parencite{linzen_16, jawahar_19, clark_19}, these new models acquire some sort of tree structure.
 
@@ -58,7 +57,7 @@ In this chapter, we aim to better characterize the latent structure in transform
 % \section{Towards defining structure}
 % \labsec{transformers:structure}
 
-\section{Transformers as graph neural networks}
+\section{Sequences, trees, graphs}
 \labsec{transformers:graph}
 
 % As observed in \labsec{sec:parses-impact}, these tree might have little in common
@@ -70,7 +69,10 @@ In this Section, we aim at better defining and characterizing the notion of stru
 Artificial neural networks consist of connected units called neurons. Neurons define a vector space transformation based on linear algebra operators and nonlinear activation functions. Neural networks typically contain a very large number of neurons, which may be arranged into layers. Neurons—and by extension layers—are inter-connected: they receive input from their inner connections and send their output to their outer connections. Each layer has its own inner structure and connection pattern. The collection of layers and their connections forms a directed \textit{computational graph}. 
 % Feed forward networks produce a directed acyclic computational graph. But Recurrent networks allow for connection between the same or previous layer, thus introducing cycles in the computational graph.
 
-Static neural networks have a fixed computational graph. In such case, inputs are all formatted according to a given standard, for instance images with $64 \times 64$ pixels. While the inputs numerically differ, they all follow the same sequence of transformation across layers. Other networks (such as the \textsc{LSTM} and \textsc{TreeLSTM} introduced in \refch{tree}) process inputs with variable format. In this case, the computational graph varies for each input sample\sidenote{We refer to such architectures as dynamic networks \parencite{han_2021}.}. For recurrent or recursive neural networks, the computational graph follows the topological structure of the input, respectively a sequence or a tree. Transformers operate on fixed length input and apparently fall on the static network category. We argue in the next section that we may interpret transformers as a structured network operating on fully connected directional graph.
+Static neural networks have a fixed computational graph. In such case, inputs are all formatted according to a given standard, for instance images with $64 \times 64$ pixels. While the inputs numerically differ, they all follow the same sequence of transformation across layers. Other networks (such as the \textsc{LSTM} and \textsc{TreeLSTM} introduced in \refch{tree}) process inputs with variable format. In this case, the computational graph varies for each input sample\sidenote{We refer to such architectures as dynamic networks \parencite{han_2021}.}. Sequential recurrent networks operate with sequences as input, tree recurrent networks with trees. Sequences and trees induce a notion of hierarchy. We can assign: an index to each element in a sequence, based on their order~; a depth to each element in a tree, based on the length of the shortest path to the root node. This hierarchy directly impacts the computational order of the corresponding architectures. For recurrent or recursive neural networks, the computational graph follows the topological structure of the input, respectively a sequence or a tree.
+
+% Sequential recurrent networks process words sequentially given their order. Tree recurrent networks process words in a bottom up manner: starting from the leaves, up to the root.
+Transformers operate on fixed length input and apparently fall on the static network category. As \textcite{hamilton_2020, joshi_2020}, we argue in the next section that we may interpret transformers as a structured network operating on fully connected directional graph.
 % We refer to intermediate layer outputs as hidden states. 
 
 % Neural networks process samples trough the layers, along with the computational graph. We refer to intermediate layer outputs as hidden states. The hidden states consist of latent distributed representations. They are not design such that their coordinates reflect some specific semantic information. Yet, for the architectures introduced in \refsec{training:architectures} (\textsc{LSTM}, \textsc{TreeLSTM}, or transformers) it is possible to associate the hidden states $h_t$ to a specific word $w_t$ from the input sequence.
@@ -118,14 +120,12 @@ We define a graph $\mathscr{G}$ by a tuple of sets $\mathscr{G} = (\mathcal{V}, 
   \labtab{graph-structure}
 \end{table}
 
-Regarding language, we can decompose a sentence using the linear order of words. In this case, we represent the sentence by an \textit{ordered sequence} of words $W = (w_1, w_2, \cdots, w_N)$. An equivalent formalism will be to represent the sentence as a \textit{set} of words $W = \{w_1, w_2, \cdots, w_N\}$ and a set of relations between them $S =\{(w_i, w_{i+1})\}_{i=1 \cdots N}$. Dependency parsing describe the sentence as a tree for which each node corresponds to a sentence word and each vertex corresponds to a relation between two words. Formally, the sentence can still be described as as a \textit{set} of words $W$ and a set of relations between them $S$. However, in such case, the set of relations will describe a tree. Finally, constituency parsing describes the sentence as a tree. Except, intermediary nodes are used. We can still use the same formalism but we need to include intermediate consituents in the definition: a \textit{set} of words and constituents $W = \{w_1, w_2, \cdots, w_N, c_1, c_2, \cdots, c_M\}$.
+Regarding language, we can decompose a sentence using the linear order of words. In this case, we represent the sentence by an \textit{ordered sequence} of words $W = (w_1, w_2, \cdots, w_N)$. An equivalent formalism will be to represent the sentence as a \textit{set} of words $\mathcal{V} = \{w_1, w_2, \cdots, w_N\}$ and a set of relations between them $\mathcal{E} =\{(w_i, w_{i+1})\}_{i=1 \cdots N}$. In \reftab{graph-structure}, we formalize the input structure of \textsc{LSTM}, Childsum \textsc{TreeLSTM} and Nary \textsc{TreeLSTM} as graphs.
 
-\subsection{Transformers data structure}
+% Dependency parsing describe the sentence as a tree for which each node corresponds to a sentence word and each vertex corresponds to a relation between two words. Formally, the sentence can still be described as as a \textit{set} of words $W$ and a set of relations between them $S$. However, in such case, the set of relations will describe a tree. Finally, constituency parsing describes the sentence as a tree. Except, intermediary nodes are used. We can still use the same formalism but we need to include intermediate consituents in the definition: a \textit{set} of words and constituents $W = \{w_1, w_2, \cdots, w_N, c_1, c_2, \cdots, c_M\}$.
+
+\subsection{Transformers as graph neural networks}
 \labsec{transformers:structure}
-
-The proximity between graph neural networks and transformers is highlighted in \parencite{hamilton_2020, joshi_2020}
-
-We argue that the underlying structure for transformers is a graph. Since their is an alignment between model and data structure.
 
 \begin{figure}[htb!]
     \centering
@@ -171,22 +171,27 @@ We argue that the underlying structure for transformers is a graph. Since their 
         \label{subfig:structure-6}
     \end{subfigure}
     \caption{Latent structure for distinct standard NLP architectures. Illustration on the first line of the poem: "The Sleeper" by Edgar Allan Poe (published 1831). We obtain the constituency tree for \reffig{subfig:structure-3} using Berkley neural parser \parencite{klein_18}. For \reffig{subfig:structure-4}, we parse the sentence using the dependency parser from Spacy (\url{https://spacy.io/api/dependencyparser}) \parencite{honnibal_15}.} 
-    \label{fig:structure}
+    \labfig{structure}
 \end{figure}
 
-\section{Analyzing transformers shallow structure}
+% Transformers introduce a deep paradigm shift in NLP neural architectures. 
+Transformers rely on self-attention: a mechanism that transforms a \textit{set of vectors} into what is known as \textit{contextualized vectors}. Each contextualized vector is a weighted average of the vectors from the original set. This mechanism induces a relation between every token from the input. Formally, the set of tokens and their inner relations describes a fully connected directed graph. We illustrate the input structure corresponding to the different architectures in \reffig{structure}.
 
-Transformers update each token hidden simultaneously through a fixed number of layers. Yet the role of these layers and how they process information is not fully understood. I formulate the hypothesis that the distinct layers do not encode specific surface, syntactic nor semantic functions but rather that such information emerges through the iterative application of layers. To better study the transformation of token representations across layers, I proposed a variant of \textsc{Albert} \parencite{simoulin_2021b}. This model implements the key specificity of weights tying across layers, but also dynamically adapts the number of layers applied to each token. I analyze token transformation across the network depth. In particular, I study how iterations are distributed given the token dependency types. I showed that tokens do not require the same amount of iterations and that difficult or crucial tokens for the task are subject to more iterations.
+% We argue that the underlying structure for transformers is a graph. Since their is an alignment between model and data structure.
+
+
+\section{Analyzing transformers shallow structure}
 
 Transformers are admittedly over-parametrized \parencite{chen_20, hou_20, voita_19}. Yet the role of this over-parametrization is not well understood. In particular, transformers consist of a fixed number of stacked layers, which are suspected to be highly redundant \parencite{liu_20} and to cause over-fitting \parencite{fan_20, zhou_20b}. In this paper we provide a study on the role of the multiple layers traditionally used. 
 
 The mechanism of transformer layers is often compared to intuitive NLP pipelines \parencite{tenney_19}. Starting with the lower layers encoding surface information, middle layers encoding syntax and higher layers encoding semantics \parencite{jawahar_19, peters_18}. Transformers progressively refine the features, which become more fine-grained at each iteration \parencite{xin_20}.  However, \textsc{Albert}  \parencite{lan_20} highlights that it is possible to tie weights across layers and repeat the application of the same function. Consequently, we hypothesize that it is the number of layer applications that gradually abstracts the surface information into semantic knowledge.
+% We do not fully understand the role of layers and how they process information.
+
+% We make the hypothesis that, the distinct layers do not encode specific surface, syntactic nor semantic functions but such information emerges through the iterative application of layers. 
 % that the layer itself may not carry specific linguistic functions. 
 
 To better study the transformation of token representations across layers, we propose a variant of \textsc{Albert} . Our model implements the key specificity of weights tying across layers but also dynamically adapts the number of layers applied to each token. Since all layers share the same weight, we refer to the application of the layer to the hidden states as an \textit{iteration}. 
 % We interpret the repetitive application of the same layer to the input as an iterative process. 
-
-After reviewing the related work (\refsec{transformers:dynamic-depth}), we detail the model and the training methodology in \refsec{transformers:architecture}. In particular, we encourage our model to be parsimonious and limit the total number of iterations performed on each token. In \refsec{transformers:experiments}, we analyze iterations of the model during pre-training, fine-tuning and inference. 
 
 \section{Dynamic transformer depth}
 \labsec{transformers:dynamic-depth}
@@ -198,7 +203,9 @@ Exiting too late may even have negative impacts due to the network "over-thinkin
 
 Ongoing research also refines the application of layers at the token level. \textcite{wang_20} build sentence embeddings by combining token representations from distinct layers. \textcite{elbayad_20} and \textcite{dehghani_19} successfully use dynamic layers depth at the token level for full transformers (encoder-decoder). However, to the best of our knowledge, our attempt is the first to apply such mechanism to encoder only transformers and to provide an analysis of the process. 
 
-\section{Model architecture}
+\section{Method}
+
+\subsection{Model architecture}
 \labsec{transformers:architecture}
 
 In this Section, we detail the model architecture, illustrated in \reffig{transformers:model}, and pre-training procedure.
