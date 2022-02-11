@@ -4,15 +4,15 @@
 
 `cd` into the root of the repository, and run
 ```
-pdflatex -output-directory examples/documentation main.tex
-biber -output-directory examples/documentation main
-pdflatex -output-directory examples/documentation main.tex
-pdflatex -output-directory examples/documentation main.tex
-pdflatex -output-directory examples/documentation main.tex
+pdflatex -output-directory pdf main.tex
+biber -output-directory pdf main
+pdflatex -output-directory pdf main.tex
+pdflatex -output-directory pdf main.tex
+pdflatex -output-directory pdf main.tex
 ```
 
 To compile the glossary and nomenclature as well, `cd` into the 
-`examples/documentation` directory and run
+`pdf` directory and run
 ```
 makeindex main.nlo -s nomencl.ist -o main.nls
 makeglossaries main
