@@ -55,8 +55,11 @@ In this chapter, we aim to better characterize the latent structure in transform
 % Recent transformer architectures have gained increased popularity within the community. Contrary to tree-based models, they do not need carefully hand-annotated data to be trained. On the other hand, as many results suggest, these new models acquire some sort of tree structure. 
 
 
-\section{Towards defining structure}
-\labsec{transformers:structure}
+% \section{Towards defining structure}
+% \labsec{transformers:structure}
+
+\section{Transformers as graph neural networks}
+\labsec{transformers:graph}
 
 % As observed in \labsec{sec:parses-impact}, these tree might have little in common
 
@@ -64,20 +67,17 @@ In this Section, we aim at better defining and characterizing the notion of stru
 
 \subsection{Structured neural networks} 
 
-Artificial neural networks consist of connected units called neurons. Neurons define a vector space transformation based on linear algebra operators and nonlinear activation functions. Neural networks typically contain a very large number of neurons, which may be arranged into layers. Neurons—and by extension layers—are inter-connected: they receive input from their inner connections and send their output to their outer connections. Each layer has its own inner structure and connection pattern. The collection of layers and their connections forms a directed \textit{computational graph}. Feed forward networks produce a directed acyclic computational graph. But Recurrent networks allow for connection between the same or previous layer, thus introducing cycles in the computational graph.
+Artificial neural networks consist of connected units called neurons. Neurons define a vector space transformation based on linear algebra operators and nonlinear activation functions. Neural networks typically contain a very large number of neurons, which may be arranged into layers. Neurons—and by extension layers—are inter-connected: they receive input from their inner connections and send their output to their outer connections. Each layer has its own inner structure and connection pattern. The collection of layers and their connections forms a directed \textit{computational graph}. 
+% Feed forward networks produce a directed acyclic computational graph. But Recurrent networks allow for connection between the same or previous layer, thus introducing cycles in the computational graph.
 
-The network may have a fixed computational graph. In such case, inputs are all formatted according to a given standard, for instance images with $64 \times 64$ pixels. While the inputs numerically differ, they all follow the same sequence of transformation across layers. Other networks (such as the one introduced in \refch{tree}) process inputs with variable format. In this case, the computational graph varies for each input sample\sidenote{We refer to such architectures as dynamic networks \parencite{han_2021}.}.
+Static neural networks have a fixed computational graph. In such case, inputs are all formatted according to a given standard, for instance images with $64 \times 64$ pixels. While the inputs numerically differ, they all follow the same sequence of transformation across layers. Other networks (such as the \textsc{LSTM} and \textsc{TreeLSTM} introduced in \refch{tree}) process inputs with variable format. In this case, the computational graph varies for each input sample\sidenote{We refer to such architectures as dynamic networks \parencite{han_2021}.}. For recurrent or recursive neural networks, the computational graph follows the topological structure of the input, respectively a sequence or a tree. Transformers operate on fixed length input and apparently fall on the static network category. We argue in the next section that we may interpret transformers as a structured network operating on fully connected directional graph.
+% We refer to intermediate layer outputs as hidden states. 
 
-Neural networks process samples trough the layers, along with the computational graph. We refer to intermediate layer outputs as hidden states. The hidden states consist of latent distributed representations. They are not design such that their coordinates reflect some specific semantic information. Yet, for the architectures introduced in \refsec{training:architectures} (\textsc{LSTM}, \textsc{TreeLSTM}, or transformers) it is possible to associate the hidden states $h_t$ to a specific word $w_t$ from the input sequence.
+% Neural networks process samples trough the layers, along with the computational graph. We refer to intermediate layer outputs as hidden states. The hidden states consist of latent distributed representations. They are not design such that their coordinates reflect some specific semantic information. Yet, for the architectures introduced in \refsec{training:architectures} (\textsc{LSTM}, \textsc{TreeLSTM}, or transformers) it is possible to associate the hidden states $h_t$ to a specific word $w_t$ from the input sequence.
 
-We refer to the graph defined by the collection of layers and their connections as the network structure. If the network structure is a directed acyclic graph, we refer to the model as a feed forward network. If the network structure allow connection between the same or previous layer, we called it a recurrent network. Finally, recursive neural networks allow connection if the form of a given tree topological order. 
+% We refer to the graph defined by the collection of layers and their connections as the network structure. If the network structure is a directed acyclic graph, we refer to the model as a feed forward network. If the network structure allow connection between the same or previous layer, we called it a recurrent network. Finally, recursive neural networks allow connection if the form of a given tree topological order. 
 
-Interestingly, the network structure may be defined regarding the input structure...
-
-\subsection{Structured textual data} 
-
-Many data exhibit an explicit structure. For example molecules are a group of atoms held together by chemical bonds. Chemical graphs are full-fledged representations of them, with vertices corresponding to atoms and edges to chemical bonds. Regarding language, we can decompose a sentence using the linear order of words. In this case, we represent the sentence by an \textit{ordered sequence} of words $W = (w_1, w_2, \cdots, w_N)$. An equivalent formalism will be to represent the sentence as a \textit{set} of words $W = \{w_1, w_2, \cdots, w_N\}$ and a set of relations between them $S =\{(w_i, w_{i+1})\}_{i=1 \cdots N}$. Dependency parsing describe the sentence as a tree for which each node corresponds to a sentence word and each vertex corresponds to a relation between two words. Formally, the sentence can still be described as as a \textit{set} of words $W$ and a set of relations between them $S$. However, in such case, the set of relations will describe a tree. Finally, constituency parsing describes the sentence as a tree. Except, intermediary nodes are used. We can still use the same formalism but we need to include intermediate consituents in the definition: a \textit{set} of words and constituents $W = \{w_1, w_2, \cdots, w_N, c_1, c_2, \cdots, c_M\}$.
-
+% Interestingly, the network structure may be defined regarding the input structure...
 
 % Artificial neural networks are a collection of connected units called neurons. Neurons are connected to each others in various patterns. The network of the neurons and their inner connection forms a directed, weighted graph.
 
@@ -96,9 +96,32 @@ Many data exhibit an explicit structure. For example molecules are a group of at
 
 % We define the structure of the model as the element and the computational order in which their are computed. (pas exactement ça putot définition enf contion des entrée sorties).
 
+\subsection{Graph Structure} 
 
-\section{Transformers as graph neural networks}
-\labsec{transformers:graph}
+% Many data exhibit an explicit structure. 
+We define a graph $\mathscr{G}$ by a tuple of sets $\mathscr{G} = (\mathcal{V}, \mathcal{E})$. With $\mathcal{V}$ the set of vertices and $\mathcal{E}$ the set of edges between the node. A graph is a ubiquitous data structure that can describe many complex systems. For example, molecules are a group of atoms held together by chemical bonds. Chemical graphs are full-fledged representations of them, with vertices corresponding to atoms and edges to chemical bonds.
+
+\begin{table}[!htb]
+  \small
+  \centering {
+  \begin{tabularx}{\textwidth}{YYYc}
+    \toprule
+    \textbf{Architecture} & \textbf{Data structure} & $\mathcal{V}$ & $\mathcal{E}$\\
+    \midrule
+    \textsc{LSTM} & Sequence & $\{w_i\}_{i \in \llbracket 1, N \rrbracket}$ & $\{(w_i, w_{i+1})\}_{i \in \llbracket 1, N \rrbracket}$\\
+    Childsum \textsc{TreeLSTM} & Tree & $\{w_i\}_{i \in \llbracket 1, N \rrbracket}$ & $\{(w_i, w_{j})\}_{i \in \llbracket 1, N \rrbracket, j \in C(i)}$\\
+    Nary \textsc{TreeLSTM} & Tree & $\{w_i\}_{i \in \llbracket 1, N \rrbracket} + \{c_i\}_{i \in \llbracket 1, M \rrbracket}$ &  $\{(w_i, w_{j})\}_{i \in \llbracket 1, N \rrbracket, j \in C(i)}$\\
+    Transformer & Graph & $\{sw_i\}_{i \in \llbracket 1, N \rrbracket}$ & $\{(sw_i, sw_{j})\}_{i, j \in \llbracket 1, N \rrbracket}$ \\
+    \bottomrule
+  \end{tabularx}}
+  \caption{For each sentence encoder architecture, we pair a sentence data structure. We formalize each structure as a specific graph. We describe sequences as unary directed acyclic graph and tree as directed acyclic graph. We associate transformers to fully connected directed graph as argued in \refsec{transformers:structure}. We notations defined in \refsec{training:architectures}: $w$ corresponds to a word and $sw$ to a subwords. $c$ are consitutents. $C(j)$ denote the set of children of node $j$.}
+  \labtab{graph-structure}
+\end{table}
+
+Regarding language, we can decompose a sentence using the linear order of words. In this case, we represent the sentence by an \textit{ordered sequence} of words $W = (w_1, w_2, \cdots, w_N)$. An equivalent formalism will be to represent the sentence as a \textit{set} of words $W = \{w_1, w_2, \cdots, w_N\}$ and a set of relations between them $S =\{(w_i, w_{i+1})\}_{i=1 \cdots N}$. Dependency parsing describe the sentence as a tree for which each node corresponds to a sentence word and each vertex corresponds to a relation between two words. Formally, the sentence can still be described as as a \textit{set} of words $W$ and a set of relations between them $S$. However, in such case, the set of relations will describe a tree. Finally, constituency parsing describes the sentence as a tree. Except, intermediary nodes are used. We can still use the same formalism but we need to include intermediate consituents in the definition: a \textit{set} of words and constituents $W = \{w_1, w_2, \cdots, w_N, c_1, c_2, \cdots, c_M\}$.
+
+\subsection{Transformers data structure}
+\labsec{transformers:structure}
 
 The proximity between graph neural networks and transformers is highlighted in \parencite{hamilton_2020, joshi_2020}
 
@@ -110,35 +133,35 @@ We argue that the underlying structure for transformers is a graph. Since their 
         \centering
         \includegraphics[width=\columnwidth]{images/rnn_uni.png}
         \caption{Unidirectional RNN}
-        \label{subfig:structure-1}
+        \labfig{subfig:structure-1}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}  
         \centering 
         \includegraphics[width=\columnwidth]{images/rnn_bi.png}
         \caption{Bidirectional RNN}
-        \label{subfig:structure-2}
+        \labfig{subfig:structure-2}
     \end{subfigure}
     \vskip\baselineskip
     \begin{subfigure}[b]{0.475\textwidth}   
         \centering 
         \includegraphics[width=\columnwidth]{images/rnn_const.png}
         \caption{N-ary Tree RNN}
-        \label{subfig:structure-3}
+        \labfig{subfig:structure-3}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}
         \centering 
         \includegraphics[width=\columnwidth]{images/rnn_dep.png}
         \caption{Childsum Tree RNN}
-        \label{subfig:structure-4}
+        \labfig{subfig:structure-4}
     \end{subfigure}
     \vskip\baselineskip
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
         \includegraphics[width=\columnwidth]{images/conv.png}
         \caption{Convolutional NN}
-        \label{subfig:structure-5}
+        \labfig{subfig:structure-5}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}  
@@ -147,7 +170,7 @@ We argue that the underlying structure for transformers is a graph. Since their 
         \caption{Transformer NN}
         \label{subfig:structure-6}
     \end{subfigure}
-    \caption{Latent structure for distinct standard NLP architectures. Illustration on the first line of the poem: "The Sleeper" by Edgar Allan Poe (published 1831).} 
+    \caption{Latent structure for distinct standard NLP architectures. Illustration on the first line of the poem: "The Sleeper" by Edgar Allan Poe (published 1831). We obtain the constituency tree for \reffig{subfig:structure-3} using Berkley neural parser \parencite{klein_18}. For \reffig{subfig:structure-4}, we parse the sentence using the dependency parser from Spacy (\url{https://spacy.io/api/dependencyparser}) \parencite{honnibal_15}.} 
     \label{fig:structure}
 \end{figure}
 
