@@ -5,8 +5,8 @@
 
 \newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue}#2}}
 
+\cleanchapterquote{Language is the most interesting manifestation of intelligence. Visual comprehension is something that many animals also have. In some cases, it is even better than that of humans. Chimpanzees also understand feelings and social contexts. But no other living being has such a complex language as we do. And language links all other manifestations of intelligence, because I can talk about what I see, feel and think and how I act.}{Richard Socher}{Head of research department at Salesforce}
 
-\cleanchapterquote{Language is a process of free creation; its laws and principles are fixed, but the manner in which the principles of generation are used is free and infinitely varied. Even the interpretation and use of words involves a process of free creation.}{Noam Chomsky}{\bcomment{remove status}{} Professor Emeritus at Massachusetts Institute of Technology}
 
 This chapter investigates the relevance of incorporating explicit tree structural bias\bcomment{es}{} in the context of sentence semantic inference. We propose a model that jointly parses sentences into discrete trees and composes a semantic vector along with these trees. Our model is based on well-known components and could therefore accommodate a variety of parsing architectures such as graph parsers or attention matrices from \textsc{Bert}. We train the full model with distant downstream supervision on textual entailment and semantic similarity tasks. 
 
@@ -584,7 +584,7 @@ PTB-All & $\checkmark$ & 87.0 \scriptsize{(87.5)} & 85.0 {\scriptsize (85.5)}\\
 \bottomrule
 \end{tabularx}
 \caption{Impact of the parser initialization on downstream task performances:  We pre-train the parser module with a given sample size from the PTB. We either freeze (\textbf{$\times$}) or update (\textbf{$\checkmark$}) the parser during the fine-tuning. We report the average score test set from 5 runs for SICK-R and 2 runs for SNLI (the score from the development set are in parentheses). We report Pearson correlation by convention as $r \times 100$.}
- \label{table:parser}
+\label{table:parser}
 \end{table}
 
 In Table \ref{table:parser}, we compare the impact of the different initializations for both tasks. For each setup, we report the Pearson correlation on the test set of the SICK-R task and the accuracy on the test set from the SNLI task.
