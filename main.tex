@@ -88,8 +88,10 @@
 % Load the packages for tables
 \usepackage{booktabs, tabularx}
 \usepackage{subcaption}
+\usepackage{numprint}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
+\usepackage{sistyle}
 
 % Reset sidenote counter at chapters
 %\counterwithin*{sidenote}{chapter}
@@ -224,6 +226,7 @@
 %	MAIN BODY
 %----------------------------------------------------------------------------------------
 
+%TODO mettre la liste des publications et open-source (contributions)
 \mainmatter % Denotes the start of the main document content, resets page numbering and uses arabic numbers
 \setchapterstyle{kao} % Choose the default chapter heading style
 
@@ -233,7 +236,7 @@
 \addpart{Background}
 \pagelayout{margin} % Restore margins
 
-% \input{chapters/meaning.tex}
+\input{chapters/meaning.tex}
 \input{chapters/embeddings.tex}
 % \input{chapters/evaluating}
 
@@ -241,17 +244,18 @@
 \addpart{Toward integrating linguistic biases into neural networks}
 \pagelayout{margin} % Restore margins
 
-% \input{chapters/tree}
-% \input{chapters/transformers}
-% \input{chapters/arithmetics.tex}
+\input{chapters/tree}
+\input{chapters/transformers}
+\input{chapters/arithmetics.tex}
 
 \pagelayout{wide} % No margins
 \addpart{Training neural models at scale}
 \pagelayout{margin} % Restore margins
 
-% \input{chapters/contrastive.tex}
-% \input{chapters/generative.tex}
-% \input{chapters/conclusion.tex}
+\input{chapters/contrastive.tex}
+\input{chapters/generative.tex}
+\input{chapters/structured.tex}
+\input{chapters/conclusion.tex}
 
 % \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
 

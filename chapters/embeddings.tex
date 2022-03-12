@@ -3,7 +3,10 @@
 \chapter{Embedding sentences}
 \labch{training}
 
-\cleanchapterquote{Give orange me give eat orange me eat orange give me eat orange give me you.}{Nim Chimpsky}{Male chimpanzee}
+\cleanchapterquote{In ancient times, before the advent of mass-market publishing, manuals were written on scrolls. The people believed that \textbf{kotodama}—the soul or spirit of language—resided in every word; that in uttering a thought one gives life to it; that words hold a spiritual power. This belief gave the written and spoken language a near-mystical status and encouraged a reverence for the written word beyond that in the West.}{Jake Adelstein}{Tokyo Vice, 2009}
+
+% Dans les temps anciens, avant l'avénement de la publication de masse, les manuels étaient écrits sur des rouleaux. Les gens pensaient que le kotodama — l'âme, l'esprit de la langue — se trouvait dans chaque mot. Qu'en prononçant une parole, quelqu'un lui donnait vie. Que les mots détenaient un pouvoir spirituel. Cette croyance conférait à la langue écrite et parlée un statut quasi-mystique et encourageait cette vénération pour l'écriture qui est allée encore plus loin qu'en Occident.
+% In ancient times, before the advent of mass-market publishing, manuals were written on scrolls. The people believed that kotodama—the soul or spirit of language—resided in every word; that in uttering a thought one gives life to it; that words hold a spiritual power. This belief gave the written and spoken language a near-mystical status and encouraged a reverence for the written word beyond that in the West.
 
 This chapter propose a literature review on today state-of-the art methods to train and evaluate sentence embedding models. We first expose traditional word embeddings methods (\refsec{survey:embeddings}). We then enumerate in \refsec{survey:encoding}, methods to compose word into sentence representation. We review the main training and evaluation setups in \refsec{training} and \refsec{evaluation}.
 
@@ -25,7 +28,7 @@ Artificial neural networks consist of connected units called neurons. Neurons de
 
 %TODO Il faut ajouter les références ! Vérifier les formules, ou sont les tanh ?
 
-Structure of models, the role of structure. How do the requirement for syntax and word individual sense translate into neural models.
+\bcomment{Structure of models, the role of structure. How do the requirement for syntax and word individual sense translate into neural models.}{???}
 
 % The collection of layers and their connections forms a directed \textit{computational graph}.
 
@@ -54,6 +57,7 @@ Basic recurrent neural networks suffer from practical limitations. In particular
 % \end{figure*}
 
 \paragraph{Gated recurrent units (GRU)} include a reset and update gate. Intuitively, the reset gate $r$ determines which information from previous step to reset (\refeq{gru-def-reset}). In \refeq{gru-def-last}, the update gate $z$, determines the amount of previous information that pass along the next step.
+\bcomment{je n'ai jamais vu la notation qui te permet de compresser la ligne 3.1 (idem pour LSTM ci-dessous}{}
 
 \begin{align}
 r_t, z_t &=\sigma \Big( W^{(r, z)} x_t + U^{(r, z)} h_{t-1} + b^{(r, z)} \Big), \labeq{gru-def-first}\\
@@ -70,10 +74,12 @@ c_t &= i_t \odot u_t + f_{t} \odot c_{t-1}, \\
 h_t &= o_t \odot \tanh(c_t) \labeq{lstm-def-last}
 \end{align}
 
-\subsection{Tree-structure neural networks}
+\subsection{Tree-structured neural networks}
 \labsec{architectures:tree}
 
 Tree-structured neural networks generalize sequential networks to tree-structured topologies. They also consist in a cell that composes a state from an input vector $x_j$ and the hidden states of the input children, $h_k, \forall k \in C(j)$ with $C(j)$ the children of node $j$. As such, a sequential RNN is a special case of a Tree-RNN, where every node has exactly one child. We illustrate the composition process along an arbitrary tree structure in \reffig{tree-lstm}.
+
+From a practical point of view, implementing tree-structured models can be hard. I open-sourced the code I developed for recursive models under a library called PyTree\sidenote{\url{https://github.com/AntoineSimoulin/pytree}}. The library was distinguished and listed among the winners of the PyTorch Hackathon 2021\sidenote{\url{https://pytorch2021.devpost.com/}}.
 
 \begin{figure}[!ht]
 	\includegraphics[width=7cm]{images/tree-lstm.png}
@@ -81,9 +87,9 @@ Tree-structured neural networks generalize sequential networks to tree-structure
 	\labfig{tree-lstm}
 \end{figure}
 
-Intuitively, tree-structured network might be a better fit for language, which is supposed to follow a recursive structure. We focus on two specific frameworks describing language structure: dependency and constituency parsing. In constituent analysis, the syntactic structure of a sentence is represented as a nested multi-word constituents. The dependency tree represents the relationship between individual words. For constituents analysis, it is possible to binarize the tree, such that every node has exactly two children. It is also possible to differentiate the left and right children. Given these distinction, we define two tree-structured cell operations adapted for each of these frameworks.
+Intuitively, tree-structured network might be a better fit for language, which is supposed to follow a recursive structure \bcomment{}{you may cite or provide an example from: https://nlp.stanford.edu/~socherr/EMNLP2013\_RNTN.pdf }. We focus on two specific frameworks describing language structure: dependency and constituency parsing. In constituent analysis, the syntactic structure of a sentence is represented as a nested multi-word constituents. The dependency tree represents the relationship between individual words. For constituents analysis, it is possible to binarize the tree, such that every node has exactly two children. It is also possible to differentiate the left and right children. Given these distinction, we define two tree-structured cell operations adapted for each of these frameworks.
 
-\paragraph{Childsum Tree LSTM} \textcite{tai_15} compute sentence embeddings using a recursive node function derived from standard LSTM formulations but adapted for tree inputs. Each node is assigned an embedding given its dependent with a recursive function. The hidden state is computed as the sum of all children hidden states (\refeq{treelstm-def}). This model is adapted for dependency tree structured in which, words are connected through dependency edges. A word might have an arbitrary number of dependents.
+\paragraph{Childsum Tree LSTM} \textcite{tai_15} compute sentence embeddings using a recursive node function derived from standard LSTM formulations but adapted for tree inputs. Each node is assigned an embedding given its dependent with a recursive function. The hidden state is computed as the sum of all children hidden states (\refeq{treelstm-def}). This model is adapted for dependency tree structures in which, words are connected through dependency edges. A word might have an arbitrary number of dependents.
 
 \begin{align}
 \tilde{h}_j &= \sum_{k \in C(j)} h_k, \labeq{treelstm-def} \\
@@ -92,6 +98,20 @@ u_j &=\tanh \Big( W^{(u)} x_j + U^{(u)} \tilde{h}_j + b^{(u)} \Big), \\
 f_{jk} &= \sigma\left( W^{(f)} x_j + U^{(f)} h_k + b^{(f)} \right), \labeq{treelstm-def-f}\\
 c_j &= i_j \odot u_j + \sum_{k\in C(j)} f_{jk} \odot c_{k}, \\
 h_j &= o_j \odot \tanh(c_j) \labeq{treelstm-def-last}
+\end{align}
+
+With $C(j)$, the set of children of node $j$. In \textcite{simoulin_2021a}, we propose an Attentive Child-Sum Tree LSTM and we compute $\tilde{h}_j$ as the weighted sum of children vectors as in \textcite{zhou_16}. We replace computation of $\tilde{h}_j$ in \refeq{treelstm-def} with \refeq{treelstm-att} that allows the model to filter semantically less relevant children.
+
+\begin{equation}
+    \tilde{h}_j = \sum_{k \in C(j)} \alpha_{kj} h_k \labeq{treelstm-att} 
+\end{equation}
+
+The parameters $\alpha_{kj}$ are attention weights computed using a \emph{soft attention layer}. Given a node $j$, we consider $h_1, h_2, \dots, h_{n}$ the corresponding children hidden states. the soft attention layer produces a weight $\alpha_k$ for each child's hidden state. We did not use any external query to compute the attention but instead use a projection from the current node embedding. The attention equations are detailed below:
+\begin{align}
+    q_j = W^{(q)}x_j& +b^{(q)} ;\quad p_k = W^{(p)}h_k +b^{(p)} \\
+    % a_{kj} &= q_j^{\intercal}p_k \cdot (\norm{p_k}_2 \norm{q_j}_2)^{-1},  \label{eq:attention-w} \\
+    a_{kj} &= \frac{q_j \cdot p_k^{\intercal}}{\norm{q_j}_2\cdot\norm{p_k}_2} \label{eq:attention-w} \\
+    \alpha_{kj} &= \text{softmax}_k(a_{1j} \cdots a_{nj})
 \end{align}
 
 \paragraph{N-ary Tree LSTM} is also defined in \textcite{tai_15}. It is a tree structured-model designed for constituency parsed inputs, which describes the sentence as a nested multi-word structure. In this framework, words are grouped recursively in constituents. In the resulting tree, only leaf nodes correspond to words, while internal nodes encode recursively word sequences. It is possible to binarize the trees to ensure that every node has exactly two dependents. Again the representation is computed bottom-up and the embedding of the tree root node is used as sentence embedding. The equations make the distinction between right and left nodes.
@@ -123,6 +143,7 @@ Transformers are composed of a series of layers. Each layer acts as a many-to-ma
     h^0_t &= W_eu_t + W_p, \labeq{transformers-emb}\\
     h^{(k+1)}_u &= \text{FFN}^{(k)}\left(\text{MHA}^{(k)}\left( \{h_v^{(k)}), \forall v \in \mathcal{N}(u) \cup \{u\}\}\right) + h_v^{(k)}\right) \quad \forall n \in [1, L] \labeq{transformers-layer}
 \end{align}
+\bcomment{}{you have not defined the neighborhood {\cal N}. It is a bit dry by contrast with what comes before. You do not define attention nor MHA. You miss the layer norms and residual connections too. }
 
 Transformer implementations may easily be parallelized since layers compose token contextualized representations simultaneously.
 
@@ -143,11 +164,11 @@ All of the encoders discussed in \refsec{survey:encoding} produce sentence repre
 
 In this regard, we follow a two-step procedure, illustrated in \reffig{training-sentence-embeddings}. First, we train the encoder on a \textit{proxy task}. We only perform this step once. We then use the encoder's sentence representations as input for a \textit{downstream task}. We do not update the encoder weights for downstream tasks. As a result, any downstream task will use the same representation of a given sentence\sidenote{This procedure presents similarities with the \textit{pre-training}/\textit{fine-tuning} modus operandi. In contrast to fine-tuning, we do not update encoder weights when we train the full architecture on the downstream task.}.
 
-Certainly, the nature of the proxy task is crucial to the procedure. Ideally, the task should produce sentence embeddings containing a variety of generic and rich features that can be used to resolve any downstream task. In this section, we make a literature review of the common task used as a proxy objective to train sentence embeddings.
+\bcomment{}{Maybe swap the two paragraphs. The way you introduce prox y tasks sounds mysterious as it stands}\Certainly, the nature of the proxy task is crucial to the procedure. Ideally, the task should produce sentence embeddings containing a variety of generic and rich features that can be used to resolve any downstream task. In this section, we make a literature review of the common task used as a proxy objective to train sentence embeddings.
 
 \begin{figure*}[!ht]
 	\includegraphics[width=15cm]{images/supervised-self-supervised.png}
-    \caption{Training sentence embeddings in supervised and transfer learning setting. Expliquer pour la figure, ce qu'on entraine, ce qui set freeze. Pourquoi FFN ... C'est quoi L et L hat.} 
+    \caption{\bcomment{this figure is unclear}{}Training sentence embeddings in supervised and transfer learning setting. Expliquer pour la figure, ce qu'on entraine, ce qui set freeze. Pourquoi FFN ... C'est quoi L et L hat.} 
     \labfig{training-sentence-embeddings}
 \end{figure*}
 
@@ -201,7 +222,7 @@ A man inspects the uniform of a figure in some East Asian country. & The man is 
 \end{table}
 
 
-\textcite{conneau_17} propose a siamese framework to train model on NLI data. First a sentence encoder encode separately encodes the premise $h_L$ and the hypothesis $h_R$. The encoder weights are shared for the encoding of both parts but the two sentences are not encoded jointly (as it is the case when using cross-features or attention architectures). Then, a dedicated architecture is used to predict the similarity distribution from the pair of sentences. The similarity module takes as input a pair of sentence vectors $h_{L} $ and $h_{R}$ and computes their component\-wise product $h_{L} \odot h_{R}$ and their absolute difference $|h_{L} - h_{R}|$\sidenote{Their exists multiple variation of the similarity module which differs given the aggregation function of  $h_{L} $ and $h_{R}$, the number of fully-connected layers and their hidden dimensions \parencite{conneau_17, choi_18, reimers_19}.}. Given these features, we compute the probability distribution  $\hat{p}_{\theta}$ using a three layers perceptron network (MLP):
+\textcite{conneau_17} propose a siamese framework to train model on NLI data. \bcomment{First a sentence encoder encode separately encodes the premise $h_L$ and the hypothesis $h_R$.} The encoder weights are shared for the encoding of both parts but the two sentences are not encoded jointly (as it is the case when using cross-features or attention architectures). Then, a dedicated architecture is used to predict the similarity distribution from the pair of sentences. \bcomment{the following mixes state of the art and choices you made in your work}{}The similarity module takes as input a pair of sentence vectors $h_{L} $ and $h_{R}$ and computes their component\-wise product $h_{L} \odot h_{R}$ and their absolute difference $|h_{L} - h_{R}|$\sidenote{Their exists multiple variation of the similarity module which differs given the aggregation function of  $h_{L} $ and $h_{R}$, the number of fully-connected layers and their hidden dimensions \parencite{conneau_17, choi_18, reimers_19}.}. Given these features, we compute the probability distribution  $\hat{p}_{\theta}$ using a three layers perceptron network (MLP):
 
 \begin{align}
 \begin{split}
@@ -232,7 +253,7 @@ A man inspects the uniform of a figure in some East Asian country. & The man is 
 
 % Et paraphrase dans plusieurs langues: Multilingual Universal Sentence Encoder
 
-\paragraph{DisSent} \textcite{nie_19} propose a weaker signal to train sentence embeddings: the discourse relations between sentences. The task is positioned as an intermediary between a fully supervised and self-supervised approach. Given two sentence embeddings, a classifier aims a identifying which discourse marker was used to link the sentences. As for infersent, the setup can accommodate any sentence encoder such can be used to train sequential LSTM or fine-tune larger pre-trained models such as \textsc{Bert}. We present some examples of the training data in \reftab{dissent-task_examples}.
+\paragraph{DisSent} \textcite{nie_19} propose a weaker signal to train sentence embeddings: the discourse relations between sentences. The task is positioned as an intermediary between a fully supervised and self-supervised approach. Given two sentence embeddings, a classifier aims a identifying which discourse marker was used to link the sentences. As for infersent, the setup can accommodate any sentence encoder \bcomment{such can be used to train sequential LSTM }{} or fine-tune larger pre-trained models such as \textsc{Bert}. We present some examples of the training data in \reftab{dissent-task_examples}.
 
 \begin{table}[!htb]
 \centering
@@ -296,11 +317,11 @@ It is also possible to use other sentence pairs as signal to train sentence embe
 Previous methods rely on annotated data or semi-automatically constructed corpora. However, such resources may be hard to find in other languages than English or in specific domains. In this section, we review methods that rely only on the structure of raw text and that may be trained in a self-supervised manner. 
 %TODO Il faut aussi homogénéiser les notations
 
-\paragraph{ParagraphVector (\textsl{doc2vec})} \textcite{le_14} proposed two log-linear models of sentence representation. The DBOW model is trained to predict the words $w$ from a given sentence $s$ by taking as input the sentence embedding $h$. Each sentence (or document) is assigned a unique embedding vector while the word embeddings $v_w$ are shared across the corpus. The DM model, concatenate the sentence embedding $h$ with the embedding of $k$ consecutive words $w_i \cdots w_{i+k}$ in $s$ to predict the next word $w_{i+k+1}$.
+\paragraph{ParagraphVector (\textsl{doc2vec})} \textcite{le_14} proposed two log-linear models of sentence representation. The DBOW model is trained to predict the words $w$ from a given sentence $s$ by taking as input the sentence embedding $h$. Each sentence (or document) is assigned a unique embedding vector while the word embeddings $v_w$ are shared across the corpus. The DM model, concatenate the sentence embedding $h$ with the embedding of $k$ consecutive words $w_i \cdots w_{i+k}$ in $s$ to predict the next word $w_{i+k+1}$. \bcomment{unclear}{}
 
 \paragraph{Skip-thought (ST)} \textcite{kiros_15} aims at translating the skip-gram function to the sentence level. Instead of predicting a word's context, it predicts whole sentences. Skip-thought works as a sequence-to-sequence framework. Given a tuple of consecutive sequences $(s_{i-1}, s_i, s_{i+1})$ as input, it encodes the context sentence using a sentence encoder $SE$ in a fixed length vector $h_i = SE(s_i)$. Given the sentence vector, a sentence decoder $DE_p$ aims to generate the previous sentence $DE_p(h_i) = s_{i-1}$ and the next sentence $DE_n(h_i) = s_{i+1}$.
 
-Both the encoder and decoder are trained to minimize the sum of the log-probabilities for the forward and backward sentences conditioned on the encoder representation:
+Both the encoder and decoder are trained to \bcomment{minimize}{maximize ?} the sum of the log-probabilities for the forward and backward sentences conditioned on the encoder representation:
 
 \begin{equation*}
     \mathcal{L} = \sum_t \text{log} P(w_{i+1}^t | w_{i+1}^{<t}, \textbf{h}_i) + \sum_t \text{log} P(w_{i-1}^t | w_{i-1}^{<t}, \textbf{h}_i)
@@ -308,7 +329,7 @@ Both the encoder and decoder are trained to minimize the sum of the log-probabil
 
 The model is trained on the BookCorpus dataset. The original implementation uses Recurrent Neural Network, with Gated Recurrent Units \parencite{cho_14} for the encoder and decoder. Skip-thought method have become popular as the method is fully self-supervised and do not require any labelled data. Moreover, the original paper trained models at scaled and released them in open-source\sidenote{\url{https://github.com/ryankiros/skip-thoughts}. \textcite{ba_16} also proposed an upgrade of the model by adding layer normalization.}. 
 
-The methods yet suffer from practical limitations. First, the decoding part is trained to reconstruct the surface form of the sentence while we are only interested in the semantic aspects. Second, the decoding part—although the decoders are not used during inference—is computationally costly. The approach must sequentially decode the words of target sentences. Moreover, predicting each output word prediction on a heavy softmax operation over the entire vocabulary. Overall, it takes two weeks to train the original model. 
+The methods yet suffer from practical limitations. First, the decoding part is trained to reconstruct the surface form of the sentence while we are only interested in the semantic aspects\bcomment{}{???}. Second, the decoding part—although the decoders are not used during inference—is computationally costly. The approach must sequentially decode the words of target sentences. Moreover, predicting each output word prediction on a heavy softmax operation over the entire vocabulary. Overall, it takes two weeks to train the original model. 
 
 \paragraph{Sequential Denoising Autoencoder (SDAE)} \textcite{hill_16} propose a model based on denoising autoencoders (DAEs) for text. The model uses an encoder-decoder framework to reconstruct a corrupted version of the current sentence. As with Skip-thought, the model has an unsupervised objective, but does not require that the training corpus maintains the narrative order of the sequences. The input sentence $s$ is corrupted using a noise function $N(s|p_o, p_x)$ which acts as follows: for each word $w \in s$, $N$ deletes $w$ with (independent) probability $p_o$. Then, for each non-overlapping bigram $w_iw_{i+1} \in s$ , $N$ swaps $w_i$ and $w_{i+1}$ with probability $p_x$. The encoder-decoder architecture is based on LSTMs and is also trained on the BookCorpus dataset to optimize the following loss function:
 
@@ -316,7 +337,7 @@ The methods yet suffer from practical limitations. First, the decoding part is t
     \mathcal{L} = \sum_t \text{log} P(w_{i+1}^t | w_{i+1}^{<t}, \textbf{h}_i)
 \end{equation*}
 
-\paragraph{FastSent} The method, also introduced in \textcite{hill_16}, is a additive (log-linear) version of Skip-thought, which aims to lower its computational expense. The model is trained to predict the words appearing in context (and optionally, the anchor) sentences given a BoW representation of the anchor.
+\paragraph{FastSent} The method, also introduced in \textcite{hill_16}, is a additive (log-linear) version of Skip-thought, which aims to lower its computational expense. The model is trained to predict the words appearing in context (and optionally, the anchor) sentences given a BoW representation of the anchor. \bcomment{what is an anchor ?}{}
 
 FastSent learns a source $u_w$ and target $v_w$ embedding for each word in the model vocabulary. Given a tuple of consecutive sequences $(s_{i-1}, s_i, s_{i+1})$ as input, it encodes the anchor sentence as the sum of its word embeddings $h_i = \sum_{w \in s_i}u_w$. Given the representation of the anchor sentence, it aims at predicting the word of the context sentences. 
 
@@ -334,7 +355,7 @@ With $P(w | h_i) = \frac{e^{h_i u_w}}{\sum_{v \in V}e^{h_i u_v}}$. A variant inc
 
 The method takes inspiration from the distributional hypothesis successfully applied for word, but this time, to identify context sentences. Given a sentence $s$, a corresponding context sentence $s^+$ and a set of $K$ negative samples $s^-_1 \cdots s^-_K$, the training objective is to maximize the probability of discriminate the correct sentence among negative samples: $p(s^+ | s, s^-_1 \cdots s^-_K)$. The algorithm architecture used to estimate $p$ is close to \textsl{word2vec}. Two sentences encoders $f$ and $g$ are defined and the conditional probability is estimated as follow:
 
-Peut être remplacer les + et - par des i et i+ 1...
+%TODO Peut être remplacer les + et - par des i et i+ 1...
 
 \begin{equation*}
     p(s^+ | s, s^-_1 \cdots s^-_K) = \frac{e^{f(s)^Tg(s^+)}}{e^{f(s)^Tg(s^+)}+\sum_{i=1}^Ne^{f(s)^Tg(s^-_i)}}    
@@ -372,7 +393,7 @@ Evaluation of sentence embedding is not a straightforward process. As for the tr
 % Ok, ça marche bien
 % Mais dire que Bert résout pas tous les problèmes : mauvaise représentation des phrases
 
-The SentEval benchmark \parencite{conneau_18}\sidenote{Senteval is posterior to most of the references. However, these studies do evaluate on tasks later included in the benchmark.} is specifically designed to assess the quality of the embeddings. Each task is formatted as a classification task that take a sentence embedding as input features. The downstream model usually consists in a simple multi layers perceptron or logistic regression. It is kept as minimal as possible to avoid the case where uninformative embeddings are compensated by an excellent classifier\sidenote{It is important to make the distinction between the training of the sentence embedding method (detailed in \refsec{training:self-supervised} and the training of the downstream classifier which use the sentence embedding as input but doesn't not further trained them.}. An other important reason for using simple downstream classifiers is to assess for straightforward extractability of information from embeddings. Our goal is to identify whether the information is captured in the embedding vectors rather than assessing whether we can reconstruct the information from the embeddings. The downstream evaluation methods is completely agnostic with respect to the sentence embedding method\sidenote{Contrary to GLUE and SuperGLUE benchmarks \parencite{wang_19_glue, wang_19_superglue}, the sentence embedding model is not fine-tuned during the evaluation. We specifically evaluate the information whithin sentence embeddings and not the model used to produce them.}. For each task, the development set is used for choosing the regularization parameter and results are reported on the test set. The tasks include sentiment and subjectivity analysis (\textbf{MR, CR, SUBJ, MPQA}), question type classification (\textbf{TREC}), paraphrase identification (\textbf{MRPC}) and semantic relatedness (\textbf{SICK-R}). We report in \reftab{senteval} the downstream results using the training methods enumerated in \refsec{training}.
+The SentEval benchmark \parencite{conneau_18}\sidenote{Senteval is posterior to most of the references. However, these studies do evaluate on tasks later included in the benchmark.} is specifically designed to assess the quality of the embeddings. Each task is formatted as a classification task that take a sentence embedding as input features. The downstream model usually consists in a simple multi layers perceptron or logistic regression. It is kept as minimal as possible to avoid the case where uninformative embeddings are compensated by an excellent classifier\sidenote{It is important to make the distinction between the training of the sentence embedding method (detailed in \refsec{training:self-supervised} and the training of the downstream classifier which use the sentence embedding as input but doesn't not further trained them.}. An other important reason for using simple downstream classifiers is to assess for straightforward extractability of information from embeddings. Our goal is to identify whether the information is captured in the embedding vectors rather than assessing whether we can reconstruct the information from the embeddings. The downstream evaluation methods is completely agnostic with respect to the sentence embedding method\sidenote{Contrary to GLUE and SuperGLUE benchmarks \parencite{wang_19_glue, wang_19_superglue}, the sentence embedding model is not fine-tuned during the evaluation. We specifically evaluate the information whithin sentence embeddings and not the model used to produce them.}. For each task, the development set is used for choosing the regularization parameter and results are reported on the test set. The tasks include sentiment and subjectivity analysis (\textbf{MR, CR, SUBJ, MPQA}), question type classification (\textbf{TREC}), paraphrase identification (\textbf{MRPC}) and semantic relatedness (\textbf{SICK-R}). We report in \reftab{senteval} the downstream results using the training methods enumerated in \refsec{training}. \bcomment{maybe provide a descritpion of the metrics. eg why rho and r for SICK-R ?}{}
 
 \begin{table*}[!htb]
 \footnotesize
