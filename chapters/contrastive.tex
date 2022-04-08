@@ -6,12 +6,11 @@
 
 \cleanchapterquote{Give orange me give eat orange me eat orange give me eat orange give me you.}{Nim Chimpsky}{Male chimpanzee, 1979}
 
-The previous sections discussed the importance of neural model structure in composing sentence representations. Along with the architecture of the sentence encoder, other parameters may strongly influence the quality of the embeddings. In particular, the last few years have seen a race to increase the number of parameters, hidden size, or size of pre-training data. As already observed in \refch{arithmetics} or \refsec{survey:downstream}, scaling models is an established method for improving downstream results\sidenote{The effect of scaling is considered so obvious that it was used as the primary reason to reject RoBERTa  paper \parencite{liu_2019} from ICLR 2020. As expressed by the Program Chairs: "most of the findings are obvious (careful tuning helps, more data helps)". \url{https://openreview.net/forum?id=SyxS0T4tvS}}.
 
-The following sections aims to train and evaluate sentence embedding models at scale. \refch{1B} presents an attempt to train state-of-the-art sentence embedding models on a very large corpus. \refch{generative} propose to train the first large generative pre-trained model in French. Finally, \refch{structure-scale} proposes to train structured models at scale.
+% \section{Training language models at scale}
+% \labsec{scale}
 
-\section{Training language models at scale}
-\labsec{scale}
+\bcomment{ce chapitre manque d'une problématique de départ}{}
 
 % we review the challenges and benefits of large models. \refsec{1B}
 "Just add more layers" seems to be the new mantra for efficient deep learning. As opposed to deriving complex architectures from linguistic insights, it might be easier to focus on efficient and parallelizable networks, which are easy to scale. As illustrated in \reffig{large-models}, the number of parameters for large language models follows what we may compare with the Moore's Law.
@@ -22,7 +21,7 @@ The following sections aims to train and evaluate sentence embedding models at s
 	\labfig{large-models}
 \end{figure}
 
-Language models also seem to support the adage, "the bigger, the better". On the GLUE benchmark for example, the base version of \textsc{Bert} with 100M parameters achieves an average score of 79.6 while the large version with 340M parameters achieves 82.1. Besides the number of parameters, the architecture, the training procedure, as well as the training data remain unchanged. The training at scale seems also to leverage some particular behaviors, mediated by some threshold effects. For example \textcite{brown_20} compare generative pre-trained models with distinct sizes on few-shot learning settings. While the smallest model with 1.3B parameters do not show any abilities on the task, the largest model with 175B parameters show surprisingly good generalization performances with a very limited number of training examples.
+Language models also seem to support the adage, "\bcomment{the bigger, the better}{bigger is better}". On the GLUE benchmark for example, the base version of \textsc{Bert} with 100M parameters achieves an average score of 79.6 while the large version with 340M parameters achieves 82.1. Besides the number of parameters, the architecture, the training procedure, as well as the training data remain unchanged. The training at scale seems also to leverage some particular behaviors, mediated by some threshold effects. For example \textcite{brown_20} compare generative pre-trained models with distinct sizes on few-shot learning settings. While the smallest model with 1.3B parameters do not show any abilities on the task, the largest model with 175B parameters show surprisingly good generalization performances with a very limited number of training examples.
 
 Even though the effect of scaling is no longer a surprise, training large models continues to be a challenging exercise. Training large models poses many challenges for optimization \parencite{you_20}, infrastructure \parencite{shoeybi_19, narayanan_21} or data collection \parencite{OrtizSuarezSagotRomary2019}. 
 
@@ -30,7 +29,8 @@ Even though the effect of scaling is no longer a surprise, training large models
 % \labsec{1B}
 
 % In this section, we review the challenges and benefits of large models.
-This section relates the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training Pairs}\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}}. This project took place during the \textit{Community week using JAX/Flax for NLP \& CV}\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}}, organized by Hugging Face. Our project was among the winners of the competition and received an honorable mention. As part of this project, I contributed actively to the construction of the dataset, the training and documentation of the sentence embedding models. The following section is adapted from a post I published in Hugging Face blog\sidenote{\url{https://huggingface.co/blog/1b-sentence-embeddings}}.
+This section relates the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training Pairs}\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}}. This project took place during the \textit{Community week using JAX/Flax for NLP \& CV}\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}}, organized by Hugging Face. Our project was among the winners of the competition and received an honorable mention. As part of this project, I contributed actively to the construction of the dataset, the training and documentation of the sentence embedding models. \bcomment{The following section is adapted from a post I published in Hugging Face blog\sidenote{\url{https://huggingface.co/blog/1b-sentence-embeddings}}.
+}{reformuler, c'est une thèse, pas un blog}
 
 \section{Training framework}
 
@@ -211,3 +211,6 @@ Mini-LM (6 layers, batch size 128) & \num{1000} & 68.05 \\ % -L6-H384-uncased-ba
 \caption{\labtab{1B-results}Evaluation on sentence embedding benchmark.}
 \end{table}
 
+
+
+\bcomment{reformuler intégralement ce chapitre et mettre en évidence ce qu'on y apprend}{}

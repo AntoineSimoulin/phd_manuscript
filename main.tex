@@ -92,12 +92,28 @@
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
 \usepackage{sistyle}
+% \input{meta.tex}
+\usepackage{xspace}
+
+\newcommand{\const}{\textsc{Const}\xspace}
+\newcommand{\dep}{\textsc{Dep}\xspace}
+\newcommand{\seq}{\textsc{Seq}\xspace}
+\newcommand{\bert}{\textsc{Bert}\xspace}
+\newcommand{\bow}{\textsc{Bow}\xspace}
+\newcommand{\cls}{\textsc{Bert-cls}\xspace}
+
+% \DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
 
 % Reset sidenote counter at chapters
 %\counterwithin*{sidenote}{chapter}
 
 %----------------------------------------------------------------------------------------
+\usepackage[dvipsnames]{xcolor}
+
 \newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue}#2}}
+
+\newcommand{\acomment}[2]{{\bfseries\color{Green} #1} {\bfseries\color{blue}#2}}
 
 \begin{document}
 
@@ -244,9 +260,10 @@
 \addpart{Toward integrating linguistic biases into neural networks}
 \pagelayout{margin} % Restore margins
 
+\input{chapters/structured}
 \input{chapters/tree}
 \input{chapters/transformers}
-\input{chapters/arithmetics.tex}
+\input{chapters/composition}
 
 \pagelayout{wide} % No margins
 \addpart{Training neural models at scale}
@@ -254,7 +271,6 @@
 
 \input{chapters/contrastive.tex}
 \input{chapters/generative.tex}
-\input{chapters/structured.tex}
 \input{chapters/conclusion.tex}
 
 % \appendix % From here onwards, chapters are numbered with letters, as is the appendix convention
