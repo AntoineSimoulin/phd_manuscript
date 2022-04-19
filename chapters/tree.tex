@@ -5,9 +5,7 @@
 
 \newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue}#2}}
 
-\cleanchapterquote{Language is the most interesting manifestation of intelligence. Visual comprehension is something that many animals also have. In some cases, it is even better than that of humans. Chimpanzees also understand feelings and social contexts. But no other living being has such a complex language as we do. And language links all other manifestations of intelligence, because I can talk about what I see, feel and think and how I act.}{Richard Socher}{Interview for \textit{die Zeit}, 2019}
-% Artificial Intelligence Doesn't Make After Work Plans
-% https://www.zeit.de/digital/2019-05/computational-linguistics-artificial-intelligence-speech-processing-richard-socher?utm_referrer=https%3A%2F%2Ft.co%2F
+\cleanchapterquote{Give orange me give eat orange me eat orange give me eat orange give me you.}{Nim Chimpsky}{Male chimpanzee. 1979}
 
 This chapter investigates the relevance of incorporating explicit tree structural bias\bcomment{es}{} in the context of sentence semantic inference. We propose a model that jointly parses sentences into discrete trees and composes a semantic vector along with these trees. Our model is based on well-known components and could therefore accommodate a variety of parsing architectures such as graph parsers or attention matrices from \textsc{Bert}. We train the full model with distant downstream supervision on textual entailment and semantic similarity tasks. 
 
@@ -303,10 +301,10 @@ J(\theta) = -\frac{1}{N}\sum_{k=1}^{N}p^{(k)} log \hat{p}_{\theta}^{(k)} + \lamb
 \paragraph{hyper-parameters} \bcomment{We set the hyper-parameters given literature on the domain}{reformulate}, in particular regarding choices made in \textcite{choi_18}. For all experiments detailed in Section \ref{sec:ste}, the batch size is fixed to 128, weight decay to $0$, and gradient clipping set to $5.0$. The learning rate is set to $1e^{-3}$ for the \textsc{TreeLSTM} and the parser. The hidden size of the similarity architecture is set to 1024. The \textsc{TreeLSTM} hidden size is set to 600. We use the Adam optimizer. We apply a 0.2 dropout within the similarity architecture. We perform training for a maximum of 20 epochs and stop when no improvement was observed on the development set for 3 consecutive epochs.
 Regarding the vocabulary, we limit the size to 100,000 words \bcomment{why a different setup than earlier ?}{} and initialize the embeddings layer with 300-dimensional GloVe embeddings. The embeddings are not updated during training. % \cite{pennington_14}
 
-\begin{table}[!htb]
+\begin{table*}[!htb]
   \centering
   \small
-  \begin{tabularx}{\textwidth}{@{}Y | c@{} }
+  \begin{tabularx}{16cm}{@{}Y | c@{} }
     \toprule
     \textbf{Encoder} & \textbf{Test Acc.} \\
     \midrule
@@ -314,7 +312,7 @@ Regarding the vocabulary, we limit the size to 100,000 words \bcomment{why a dif
     % {\sc LSTM} \cite{bowman_16} & 77.6 \\
     % \midrule
     \textsc{Spinn} \textbackslash w Reinforce \parencite{yogatama_17} & 80.5  \\
-    CYK and \textsc{TreeLSTM} \cite{maillard_19} & 81.6  \\
+    CYK and \textsc{TreeLSTM} \parencite{maillard_19} & 81.6  \\
     \textsc{Spinn} \parencite{bowman_16} & 83.2 \\
     % \midrule
     % Syntactic TreeLSTM \cite{chen_17} & 93.5 & 88.6 \\
@@ -335,7 +333,7 @@ Regarding the vocabulary, we limit the size to 100,000 words \bcomment{why a dif
   \caption{Evaluation of the model on the SNLI-R task: We pre-train our parsing module on the PTB and continue to update the full model on the SNLI task. We compare with \textsc{Bert} and latent tree learning models. We report the accuracy on the test set (average and standard deviation from 2 runs).}
   % Comparison with other models on the \textbf{SNLI} task. Results are grouped as follow: \textbf{(1)} Sequential structure \textbf{(2)} Model learning tree structures \textbf{(3)} Framework introducing a direct interaction between the premise and hypothesis using attention mechanism \textbf{(4)} Our model with a pre-training on the PTB. We report the average and the standard deviation from 2 runs.}
   \label{table:snli}
-\end{table}
+\end{table*}
 
 We report the results in Table \ref{table:snli}. Our results are close to \textcite{choi_18}, which also compute semantic representations along to discrete tree structures but relies on a distinct syntactic formalism. \bcomment{conjecture what explains the differences ?}{}
 
@@ -597,7 +595,7 @@ We also observe that models using the full or partial annotated data outperform 
 % For technical reasons, we had to limit the batch size to 16 when fine-tuning \textsc{Bert} parsing module. Therefore, the benefit from fine-tuning the parser when using \textsc{Bert} is difficult to interpret. However, 
 We can observe model relying on linguistic-driven structures seems to achieve better performances. Nonetheless, the difference is thin, and we present here an average score across trees obtained from all attention heads. Therefore some attention heads might present structures as efficient as linguistic patterns.
 
-\section{Conclusion}
+\section{Conclusion and future work}
 
 Results are half in jest, half in earnest. We evaluate our model on textual entailment and semantic similarity tasks. Regarding the textual similarity task, we show that our setup is competitive with \textsc{Bert} base, although the latest is trained on datasets many orders of magnitude larger. We explore to which extend the trees produced by our model compare with linguistic structures and how this initialization impacts downstream performances. We empirically observe that downstream supervision troubles producing stable parses and preserving linguistically relevant structures.  % We corroborate that the sole use of downstream supervision is insufficient to produce parses that are easy to interpret. 
 To encourage convergence towards readable linguistic structures, we examine a number of initialization setups. Depending on the optimization setup, the parse tree may present instability. We also observe that our structures often converge toward trivial branching patterns, which have few in common with gold linguistic parses. However, with respect to the downstream performances, linguistic insights appear as a relevant initialization.

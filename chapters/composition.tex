@@ -5,8 +5,16 @@
 \chapter{Analyzing the relation between compositional properties and neural structures}
 \labch{arithmetics}
 
-% \cleanchapterquote{ Cette langue serait merveilleuse \textup{[\,\dots]} car alors raisonner et calculer sera la même chose.}{Gottfried Wilhelm Leibniz}{}
-\cleanchapterquote{Cette langue serait merveilleuse \textup{[\,\dots]} car alors raisonner et calculer sera la même chose.}{Gottfried Wilhelm Leibniz}{Opuscules et fragments, 1890}
+% \cleanchapterquote{Cette langue serait merveilleuse \textup{[\,\dots]} car alors raisonner et calculer sera la même chose.}{Gottfried Wilhelm Leibniz}{Opuscules et fragments, 1890}
+\cleanchapterquote{\textup{[\,\dots]}
+%But the problem, you see, when you ask why something happens, 
+how does a person answer why something happens? For example, Aunt Minnie is in the hospital. Why? Because she went out, slipped on the ice, and broke her hip. That satisfies people. It satisfies, but it wouldn’t satisfy someone who came from another planet and knew nothing about why when you break your hip do you go to the hospital. \textup{[\,\dots]}
+% How do you get to the hospital when the hip is broken? Well, because her husband, seeing that her hip was broken, called the hospital up and sent somebody to get her. All that is understood by people. And 
+when you explain a why, you have to be in some framework that you allow something to be true. Otherwise, you’re perpetually asking why. 
+\textup{[\,\dots]}
+%Why did the husband call up the hospital? Because the husband is interested in his wife’s welfare. Not always, some husbands aren’t interested in their wives’ welfare when they’re drunk, and they’re angry.
+}{Richard Feynman}{TV program \textit{Fun to Imagine}, 1983}
+% https://www.sciencealert.com/watch-richard-feynman-on-why-he-can-t-tell-you-how-magnets-work
 
 Compositionality is thought to be a key feature of human language. Symbolic generative theories of language indeed imply the possibility to produce an infinite number of grammatical phrases and sentences using only finite means \acomment{\parencite{chomsky_57, montague_70, hauser_02}}{ref corrigée pour Hauser 2002}. Humans derive phrase meaning by composing syntactic and semantic components using compositional rules \parencite{partee_84, cann_93, dowty_07}. % frege_1892
 
@@ -545,13 +553,13 @@ For both transformations, all models fail to predict the correct label when not 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Conclusion and future work}
+% \subsection{Conclusion and future work}
 
-We conducted experiment to evaluate the ability of models to perform compositional knowledge in a natural language inference task. More specifically we quantified, for each model, its robustness toward specific linguistic structures. The heterogeneity of results suggests that models do capture distinct types of information. Moreover, pre-trained \bert models seem to encode additional information not captured by others. Indeed, models using \bert embeddings almost systematically achieve a better score. 
+% We conducted experiment to evaluate the ability of models to perform compositional knowledge in a natural language inference task. More specifically we quantified, for each model, its robustness toward specific linguistic structures. The heterogeneity of results suggests that models do capture distinct types of information. Moreover, pre-trained \bert models seem to encode additional information not captured by others. Indeed, models using \bert embeddings almost systematically achieve a better score. 
 
-However, cases remain for which structured models can improve the performance of stand-alone contextualized embeddings. In such cases, syntactic information may not be fully encoded in \bert. We identified a specific transformation which consist in replacing word with semantic opposite. For such transformation, \bert contextualized embeddings leads to surprisingly low performances.
+% However, cases remain for which structured models can improve the performance of stand-alone contextualized embeddings. In such cases, syntactic information may not be fully encoded in \bert. We identified a specific transformation which consist in replacing word with semantic opposite. For such transformation, \bert contextualized embeddings leads to surprisingly low performances.
 
-Finally, we identified cases for which all models fail, in particular for the word scrambling transformation. We proposed an experimental setup to focus more precisely on the later and observe that some subcases could, to some extend, be addressed by balancing the training set distribution. However, for such complex linguistic structures, we observe a room for improvement to capture the compositional structure and common sense knowledge within NLP models.
+% Finally, we identified cases for which all models fail, in particular for the word scrambling transformation. We proposed an experimental setup to focus more precisely on the later and observe that some subcases could, to some extend, be addressed by balancing the training set distribution. However, for such complex linguistic structures, we observe a room for improvement to capture the compositional structure and common sense knowledge within NLP models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -893,10 +901,22 @@ With our dataset, only a minimal number of out-of-domain examples exposed during
 
 % The set of composition operations is indeed completely different. However, while such properties might have distinct manifestation, they might be declined for both universes.
 
-\subsection{Conclusion}
-\label{sec:conclusion}
+% \subsection{Conclusion}
+% \label{sec:conclusion}
 
-% We introduced CobA, a dataset of arithmetic expressions. The dataset is specifically designed to evaluate model compositional properties. We partition the dataset into multiple in-domain and generalization sets. Since arithmetic is defined by explicit and formal rules, we can precisely control the properties of the generated expressions. For each partition, we therefore carefully control the distribution of the two sets by introducing specific statistical differences. We use these partitions to evaluation specific compositional aspects that also apply to the study of human language. We hope our work may help better characterize compositional abilities to design more efficient encoders: either by adapting architectures or training methods.
+% % We introduced CobA, a dataset of arithmetic expressions. The dataset is specifically designed to evaluate model compositional properties. We partition the dataset into multiple in-domain and generalization sets. Since arithmetic is defined by explicit and formal rules, we can precisely control the properties of the generated expressions. For each partition, we therefore carefully control the distribution of the two sets by introducing specific statistical differences. We use these partitions to evaluation specific compositional aspects that also apply to the study of human language. We hope our work may help better characterize compositional abilities to design more efficient encoders: either by adapting architectures or training methods.
+% We \bcomment{introduce}{describe} CobA, a dataset \bcomment{to study compositionality}{} of arithmetic expressions. The dataset is specifically designed at evaluating model compositional properties. We partition the dataset into multiple in-domain and generalization sets. As arithmetic follows explicit and formal rules, we can precisely control the properties of the generated expressions and, consequently, the statistical properties of the sets. For each partition, we introduce controlled differences between the distribution of the two sets. We then study the ability of models to evaluate out-of-domain expressions from the generalization set, by learning compositional rules from the in-domain set. We build partitions to evaluate compositional properties (localism, substitutivity, productivity, and systematicity) that also apply to the study of human language. We hope our work may help better characterize compositional abilities to design more efficient encoders: either by adapting architectures or training methods.
+
+% We use the dataset to compare encoders with distinct structures: transformers, recurrent or tree-structured models. In general, models are robust toward the introduction of paraphrases (substitutivity) and can perform recursive evaluation of sub-components (localism). Yet, transformers struggle to generalize to longer sequences (productivity) or to combine known parts to form new sequences (systematicity). We perform an in-depth analysis and make observations in line with intuition. Models struggle with complex expressions, involving more symbols, more complex structure, or more operators types. We slightly enhance the compositionality degree by adapting the number of parameters or the exposition to generalization expressions. Yet the encoder architecture is the key parameter in our study. 
+
+\section{Conclusion and future work}
+
+We conducted experiment to evaluate the ability of models to perform compositional knowledge in a natural language inference task. More specifically we quantified, for each model, its robustness toward specific linguistic structures. The heterogeneity of results suggests that models do capture distinct types of information. Moreover, pre-trained \bert models seem to encode additional information not captured by others. Indeed, models using \bert embeddings almost systematically achieve a better score. 
+
+However, cases remain for which structured models can improve the performance of stand-alone contextualized embeddings. In such cases, syntactic information may not be fully encoded in \bert. We identified a specific transformation which consist in replacing word with semantic opposite. For such transformation, \bert contextualized embeddings leads to surprisingly low performances.
+
+Finally, we identified cases for which all models fail, in particular for the word scrambling transformation. We proposed an experimental setup to focus more precisely on the later and observe that some subcases could, to some extend, be addressed by balancing the training set distribution. However, for such complex linguistic structures, we observe a room for improvement to capture the compositional structure and common sense knowledge within NLP models.
+
 We \bcomment{introduce}{describe} CobA, a dataset \bcomment{to study compositionality}{} of arithmetic expressions. The dataset is specifically designed at evaluating model compositional properties. We partition the dataset into multiple in-domain and generalization sets. As arithmetic follows explicit and formal rules, we can precisely control the properties of the generated expressions and, consequently, the statistical properties of the sets. For each partition, we introduce controlled differences between the distribution of the two sets. We then study the ability of models to evaluate out-of-domain expressions from the generalization set, by learning compositional rules from the in-domain set. We build partitions to evaluate compositional properties (localism, substitutivity, productivity, and systematicity) that also apply to the study of human language. We hope our work may help better characterize compositional abilities to design more efficient encoders: either by adapting architectures or training methods.
 
 We use the dataset to compare encoders with distinct structures: transformers, recurrent or tree-structured models. In general, models are robust toward the introduction of paraphrases (substitutivity) and can perform recursive evaluation of sub-components (localism). Yet, transformers struggle to generalize to longer sequences (productivity) or to combine known parts to form new sequences (systematicity). We perform an in-depth analysis and make observations in line with intuition. Models struggle with complex expressions, involving more symbols, more complex structure, or more operators types. We slightly enhance the compositionality degree by adapting the number of parameters or the exposition to generalization expressions. Yet the encoder architecture is the key parameter in our study. 

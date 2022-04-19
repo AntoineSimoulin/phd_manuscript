@@ -2,19 +2,121 @@
 \chapter{Introduction}
 \labch{intro}
 
-\cleanchapterquote{Language is a process of free creation; its laws and principles are fixed, but the manner in which the principles of generation are used is free and infinitely varied. Even the interpretation and use of words involves a process of free creation.}{Noam Chomsky}{Language and Freedom, 1973}
+\cleanchapterquote{\bcomment{Language is a process of free creation; its laws and principles are fixed, but the manner in which the principles of generation are used is free and infinitely varied. Even the interpretation and use of words involves a process of free creation.}{this quote is suspect}{Noam Chomsky}{Language and Freedom, 1973}}
 
-Language is perhaps the most distinguishing characteristic between humans and other animals. Any individual of the homo sapiens species can speak or write and be understood by other members of the species who know that language. As artificial intelligence rises, it remains to be seen if computer programs can "handle" such unique ability.
-
-% Thoughts meaning and language
-Whether it is possible to express thoughts, ideas, or meaning through other means than language remains an open question. Some philosophers argue that  it is possible to disentangle thoughts from language.
-Locke considers two main functions of language: register our thoughts and share them with others. From his point of view, thoughts may exist independently from words.
-Bergson observes that we sometimes have trouble expressing our thoughts with words. In that regard, meaning pre-exists from words, which are only a medium to translate it. From Bergson's point of view, this translation is necessarily inaccurate as words only successfully translate utilitarian, functional, or pragmatic notions but fail to translate intuition, ethereal or ineffable notions.
-Others defend that meaning can only emerge through words. For Platon or Merleau-Ponty, thoughts are only an internal discussion.
+% QUOI
 
 
-% introduction part 3
-\bcomment{The previous sections discussed the importance of neural model structure in composing sentence representations. Along with the architecture of the sentence encoder, other parameters may strongly influence the quality of the embeddings. In particular, the last few years have seen a race to increase the number of parameters, hidden size, or size of pre-training data. As already observed in \refch{arithmetics} or \refsec{survey:downstream}, scaling models is an established method for improving downstream results\sidenote{The effect of scaling is considered so obvious that it was used as the primary reason to reject RoBERTa  paper \parencite{liu_2019} from ICLR 2020. As expressed by the Program Chairs: "most of the findings are obvious (careful tuning helps, more data helps)". \url{https://openreview.net/forum?id=SyxS0T4tvS}}.}{manque de problématique; ne pas mettre cette note en évidence}
+\bcomment{Suggestion (sth along these lines)}{Language has structure. Sentences have discrete structures, such as trees. These are fundamental hypothesis of linguistic theory since its early days. Recently, in computational linguistics emerged a new family of methods that model language with vectors. First emerged word embeddings \cite{mikolov_13b}, then deep learning truly changed the field and it becomes natural to model sentences or even longer texts with vector representations. In this context, this dissertation is about\ldots}
 
-\bcomment{
-The following sections aims to train and evaluate sentence embedding models at scale. \refch{1B} presents an attempt to train state-of-the-art sentence embedding models on a very large corpus. \refch{generative} propose to train the first large generative pre-trained model in French. Finally, \refch{structure-scale} proposes to train structured models at scale.}{Nope, à mettre dans l'intro ou ailleurs; intro de la partie peut etre; mettre un plan du chapitre à la place}
+This dissertation is about creating sentence embeddings through the composition of \bcomment{text}{lexical}  units. Text representation is at the core of natural language processing (NLP), which develops automatic methods for inferring related attributes from those representations. Attributes can take many forms: a given class in a classification problem, the answer to a question, a list of documents with similar semantic content, or a summary of the input text. In recent years, the representation methods for text have developed significantly. Linguistic frameworks derive syntactic and semantic properties based on expert rules. \bcomment{The distributional hypothesis}{distributional hyp = words and their context only} recognizes implicit patterns within vast corpora to derive composition functions.
+
+This dissertation focuses on sentences and the methods to encode them. Specifically, \textit{(i)} how layouts identified by distributional methods from vast corpora relate to linguistic structures and, respectively, \textit{(ii)} how we can efficiently infuse linguistic biases in neural architectures to drive the composition function learned by self-supervised sentence embedding methods.
+
+This section introduces the study by first discussing the applications of sentence embedding methods, the background, and context, followed by the research problem, the research aims, objectives and questions, the significance, and finally, the limitations.
+
+% POURQUOI
+
+\section{Background to the study}
+
+Embedding a sentence consist of assigning it to a static, fixed-length, real-\bcomment{value}{valued} vector, which captures its meaning. It is important to emphasize the distinction between sentence embedding and any sentence vector representation, for example, intermediate representations from neural networks. \bcomment{Most}{} Modern NLP methods work end-to-end: the intermediate representations and the inference of attributes from those representations are part of a unified process. In such a case, it is impossible to separate the representations from the final model outputs. The representations, therefore, depend on the attribute we seek to predict and will most likely only capture the information relevant for this prediction. In the context of sentence embedding, the representation of the input text and the inference of related attributes are two explicitly disconnected steps. Therefore, sentence embedding should capture an exhaustive perspective of the text input meaning as we may use them to predict a large variety of attributes. Sentence embedding methods should be highly generic, and their conception should be independent of their later use.
+
+As a result of this transformation, we can compare sentence semantic characteristics directly in the sentence embedding space using standard mathematical operators. For example, it is straightforward to define a notion of mathematical distance over the vector space and to characterize sentences with close meanings as sentences for which embedding vectors are close given this distance. It is also possible to use sentence embedding as features for more complex models, inferring relations such as entailment between sentence pairs. Sentence embeddings are, therefore, key for a number of applications such as search engines, information retrieval, text mining, and documents clustering.
+
+% COMMENT
+
+\bcomment{what properties should sentence embeddings have}{sentences with similar meanings should have similar embeddings ? }{this is not stated explictly in the thesis}
+
+\section{Research problem}
+
+Embedding sentences is an active subject of research, including the development of self-supervised training objectives, training datasets, evaluation benchmarks, or the release of models as open-source contributions.
+
+Building standalone sentence embeddings is specifically hard, as an infinite number of valid sentences exist. Compositional semantics state that the meaning of a phrase is determined by combining the meanings of its sub-phrases. Models, therefore, need to compose text units, given a syntactic structure, into global semantic embeddings. However, many contributions rely on standard encoders architectures and do not question the composition mechanisms transforming text units into a global sentence representation.
+
+Thus, sentence embedding methods present pitfalls that are common to many domains in NLP: lack of robustness toward out-of-domain generalization, shallow pattern matching rather than compositional knowledge, the requirement for large training datasets, or over-parametrization. 
+
+\section{Research aims, objectives, and questions}
+
+This study aims at improving sentence encoder compositional abilities. We seek to leverage both the integration of linguistic biases into neural network architectures as well as the scaling of these models and their training setup.
+We define the following research objectives:
+
+\begin{enumerate}
+    \item To develop efficient methods to integrate linguistic biases into neural networks;
+    \item To evaluate the effectiveness of these strategies and approaches;
+    \item To compare and contrast these strategies and approaches in terms of their strengths and weaknesses.
+\end{enumerate}
+
+\bcomment{too many bullets around}{make paragraphs} The dissertation will address the following specific research questions:
+\begin{enumerate}
+    \item Can we efficiently introduce linguistic biases within neural network architectures? 
+    \item Does self-supervised training induce structure into neural architecture?
+    \item Can we induce specific compositional abilities through neural architectures?
+    \item Can we balance the lack of linguistic insights with larger models and larger training datasets?
+\end{enumerate}
+
+\section{Significance}
+
+\bcomment{You might also remind the reader that you are funded by a company and that these real world achievements are also motivated by the desire of acheiving industrial contributions}{}
+
+We expect this study to contribute to the body of knowledge on sentence embeddings and neural model architectures to encode text. The publications and the ongoing experiments will contribute to the academic effort in building more robust statistical models by incorporating language biases and approaches for scaling model training. Besides empirical research, a large portion of this work is released as open-source contributions, ready to use for real-world applications. Resources include pre-trained language models for English and French, training and evaluation datasets, as well as associated scripts to reproduce the results. Finally, we released a code for recursive models under a library called PyTree\sidenote{\url{https://github.com/AntoineSimoulin/pytree}}. The library was distinguished and listed among the winners of the PyTorch Hackathon 2021. We hope this empirical work and the resources will also provide real-world value for organizations in a field in which knowledge and methods are undergoing rapid and continuous evolution.
+
+\section{Limitations}
+
+Our study is limited to sentences \bcomment{and may, in some cases,}{it is unknown to us if it} extend to paragraphs. However, the major part of our work will not apply to longer chunks of text. Although we seek to propose methods applicable to various languages, the study focuses mainly on English and French, and some experiments may be difficult to reproduce in low-resource languages. Indeed, we make use of specific training and evaluation resources.
+
+Our study proposes efficient methods to introduce linguistic biases into neural models and better characterize model compositional behavior. Such approaches appear promising to avoid unwanted behavior for real-world applications. However, our study also underlines the road ahead to fully realize the promises of current language models.
+
+\section{Contributions and Outline}
+
+\subsection{Jointly learning model structure and compositional operations}
+
+\bcomment{I}{First I} focus on tree-structured neural networks, which naturally encode the structure of language. For each sentence, the network computes text units following a syntactic tree, starting from the leaf nodes up to the root. However, such models suffer from practical constraints that limit their application. In particular, tree-based models not only require raw text as input but also the sentence structure in the form of a parse tree. Such structure may be tedious to obtain as it requires manual annotations and external parsers. To overcome such limitations, we formulated a novel tree-based model that learns its composition function together with its structure. The model includes two modules, a biaffine graph parser, and a Tree-LSTM. The parsing and the composition functions are explicitly connected and, therefore, learned jointly. The method differs from previous work as the representation is not computed from the whole forest of potential trees. Moreover, training the full model directly does not require supervision from \bcomment{a}{an explicit} parsing objective. The model outperforms tree-based models relying on external parsers on downstream tasks. In some configurations, it is even competitive with BERT-base model.
+
+\subsection{Studying shallow structure in transformer models}
+
+Recent transformer architectures have gained increased popularity within the community. Contrary to tree-based models, they do not need carefully hand-annotated data to be trained. On the other hand, as many results suggest, these new models acquire some sort of \bcomment{tree}{graph?} structure. Transformers update each token hidden simultaneously through a fixed number of layers. Yet the role of these layers and how they process information is not fully understood. We formulate the hypothesis that the distinct layers do not encode specific surface, syntactic nor semantic functions but rather that such information emerges through the iterative application of layers. To better study the transformation of token representations across layers, we proposed a variant of ALBERT \parencite{simoulin_2021b}. This model implements the key specificity of weights tying across layers but also dynamically adapts the number of layers applied to each token. We analyze token transformation across the network depth. In particular, we study how iterations are distributed given the token dependency types. We showed that tokens do not require the same amount of iterations and that difficult or crucial tokens for the task are subject to more iterations.
+
+\subsection{Characterizing compositional properties of neural architectures}
+
+While transformers show outstanding performances on many NLP benchmarks, they also have some linguistic limitations. In particular, regarding their ability to generalize outside their training range and to learn elementary composition rules. The benchmark COGS \parencite{kim_20} for example, highlights deep learning models struggle to generalize to longer sequences or sentences with deeper level of recursion than seen during training. Following my work on integrating the structure into neural architecture, we aim at better characterizing how the model structure may affect its degree of compositionality. This work is currently in an experimentation phase. We are building an evaluation setup with arithmetic expressions containing specific properties. We train various models on specific subsets and observe how models generalize outside their domain. In particular, we compare models relying on different degrees of structure constraints, such as sequential, recursive, or unstructured models.
+
+\subsection{Training sentence embedding models using a discriminative objective}
+
+Inspired by linguistic insights, we assume structure is crucial to building consistent representations. We indeed expect sentence meaning to be a function of both syntax and semantic aspects. In that regard, we proposed a self-supervised method that builds sentence embeddings from the combination of diverse explicit syntactic structures of a sentence [4]. The novelty consists in jointly learning structured models in a contrastive multi-view framework that induces an explicit interaction between models during the training phase. We pre-trained various models using a contrastive objective with a 40 million sentences corpus. We then evaluate our model on sentence embedding benchmarks and obtain state-of-the-art results. In particular on tasks that are expected, by hypothesis, to be more sensitive to sentence structure. Motivated to share state-of-the-art models, we relate the development, training, and release of a large sentence embeddings models. We used a similar contrastive objective and trained models on a 1 billion sentences corpora. We developed specific evaluation benchmarks for sentence embeddings and obtained state-of-the-art results.
+
+\subsection{Training the first large incremental language model for French}
+
+As observed in \textcite{linzen_2020}, deep neural networks have shocking grammatical competencies. For example, GPT-2 generates correct text with plural and long-distance agreement despite any prior linguistic knowledge. Such agreements are determined by abstract structures and not just the linear order of words. Surprisingly, models can learn such specific linguistic patterns (subject-verb, noun-adverb, verb-verb) with no prior information about linguistic theory. Within my laboratory, we led the project to train the first large language model in French \parencite{simoulin_2021c}. We obtained a dedicated computation grant for the public French HPC computer Jean Zay. The model, equivalent to GPT-2 in English, contains more than 1 billion parameters. We built a dedicated training corpus and parallelized the training between multiple nodes and compute units. We released the model in Open-Source for research and business application purposes. 
+
+\subsection{Outline}
+
+We organize the dissertation into three parts. 
+
+Part I provides the necessary background in meaning representation, sentence embeddings, and neural model encoders. \refch{meaning} introduces meaning representations. \refch{training} reviews the architecture of standard encoders to compose words into sentence embeddings, the training objective, and evaluation methods.
+
+Part II aims at improving the compositional properties of language models and their ability to generalize outside their training domain. We aim to integrate the recursive property of language within neural models and design architectures based on linguistic theory. \refch{structure-scale} proposes a self-supervised method that builds sentence embeddings from the combination of diverse explicit syntactic structures of a sentence. However, the tree-structured encoders require heavily structured data to compute the semantic representations. In \refch{tree}, we propose to overcome this limitation by proposing an architecture inducing trees from raw text and computing semantic representations along with the inferred structure. \refch{transformers} makes the parallel with transformers and sequential or tree-structured models. We interpret transformers as structured neural networks and layers as operations on \bcomment{trivial}{why trivial? remove}, fully connected graphs. We finally compare all models in \refch{arithmetics} by proposing an in-depth evaluation of their compositional properties.
+
+Part III focuses on training and sharing models at scale. Indeed, the preparation of massive corpora, the training, and the use of large architectures are key for the performance of such models. \refch{1B} presents an attempt to train state-of-the-art sentence embedding models on a very large corpus. \refch{generative} propose to train the first large generative pre-trained model in French.
+
+\subsection{Publications}
+
+This dissertation contains some contributions that we previously published and presented at conferences.
+
+\begin{itemize}
+    \item \refch{structure-scale} is an extended version of an article published in EACL Student Research Workshop 2021 \parencite{simoulin_2021a}. We  open-sourced the code developed for recursive models under a library called PyTree\sidenote{\url{https://github.com/AntoineSimoulin/pytree}}. The library was distinguished and listed among the winners of the PyTorch Hackathon 2021;
+    \item \refch{tree} presents work currently under submission;
+    \item \refch{transformers} is an extended version of an article published in ACL Research Student Workshop 2021 \parencite{simoulin_2021b};
+    \item \refch{arithmetics} presents original unpublished work as well as work currently under submission;
+    \item \refch{1B} relates the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training; Pairs}\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}}. This project took place during the \textit{Community week using JAX/Flax for NLP \& CV}\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}}. organized by Hugging Face. Our project was among the competition winners and received an honorable mention;
+    \item \refch{generative} is an extended version of an article published in TALN 2021 \parencite{simoulin_2021c}.
+\end{itemize}
+
+The code used for all experiments carried out for this dissertation, the pre-trained models, the evaluation and training datasets has been made publicly available as free software through the following repositories:
+
+\begin{itemize}
+    \item \url{https://github.com/AntoineSimoulin/pytree}
+    \item \url{https://github.com/AntoineSimoulin/gpt-fr}
+    \item \url{https://huggingface.co/datasets/asi/wikitext_fr}
+    \item \url{https://huggingface.co/asi/gpt-fr-cased-base}
+    \item \url{https://huggingface.co/asi/gpt-fr-cased-small}
+\end{itemize}

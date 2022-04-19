@@ -25,8 +25,8 @@
     %citestyle=numeric-comp,
     bibstyle=musuos, %authortitle,
     %bibstyle=numeric,
-    sorting=none,
-    %sorting=nyt,
+    %sorting=none,
+    sorting=nyt, % https://tex.stackexchange.com/questions/198275/sorting-by-author-last-name
     %sortcites=true,
     %autocite=footnote,
     backend=biber, % Compile the bibliography with biber
@@ -38,6 +38,11 @@
     ibidtracker=context,
     autopunct=true,
     autocite=plain,
+    doi=false,
+    isbn=false,
+    url=false,
+    eprint=false,
+    dashed=false, % https://tex.stackexchange.com/questions/49140/get-full-name-twice-in-bibliography
 }{biblatex}
 
 % Pass the unknown options to biblatex, overwriting the previous settings. Avoid passing the kao-specific options.
@@ -55,16 +60,16 @@
 \RequirePackage{biblatex}
 
 % Remove some unwanted entries from the bibliography
-\AtEveryBibitem{
-	\clearfield{issn}
-	\clearfield{isbn}
-	\clearfield{archivePrefix}
-	\clearfield{arxivId}
-	\clearfield{pmid}
-	\clearfield{eprint}
-	\ifentrytype{online}{}{\ifentrytype{misc}{}{\clearfield{url}}}
-	\ifentrytype{book}{\clearfield{doi}}{}
-}
+% \AtEveryBibitem{
+% 	\clearfield{issn}
+% 	\clearfield{isbn}
+% 	\clearfield{archivePrefix}
+% 	\clearfield{arxivId}
+% 	\clearfield{pmid}
+% 	\clearfield{eprint}
+% 	\ifentrytype{online}{}{\ifentrytype{misc}{}{\clearfield{url}}}
+% 	\ifentrytype{book}{\clearfield{doi}}{}
+% }
 
 % Convert months to integers
 \DeclareSourcemap{

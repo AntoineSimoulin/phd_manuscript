@@ -699,7 +699,7 @@ Although all tasks achieve significant and comparable accuracies, they all requi
 
 Looking at the token level, as during the pre-training (\refsec{transformers:analysis-pretraining}), the iterations are unevenly distributed across tokens. The model seems to iterate more on tokens that are crucial for the task. For SubjNum, the subj tokens achieve the maximum number of iterations, while for the ObjNum task, the obj and root token iterates more. Similarly, all tasks present a high number of iteration on the main verb (root) that is crucial for each prediction.
 
-\section{Conclusion}
+\section{Conclusion and future work}
 % We propose a transformer pre-trained model that adapts the number of layer iterations performed on each token. We assume that language have a recursive structure where tokens, such as verbs, induce more dependence with other tokens than determinant or adverbs for example. We hypothesize that computing contextualized representation for a given token requires first computing the representation for its dependants. Therefore, we expect low dependency tokens to quickly converge in the early layer, while highly dependent, complex, or ambiguous tokens would converge in later layers. Exiting the process early for low dependency or explicit tokens may spare some computations and avoid interference with the global convergence process.
 
 % To this end, 

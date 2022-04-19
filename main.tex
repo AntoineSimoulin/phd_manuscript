@@ -26,7 +26,7 @@
 
 \documentclass[
 	a4paper, % Page size
-	fontsize=10pt, % Base font size
+	fontsize=12pt, % Base font size
 	twoside=true, % Use different layouts for even and odd pages (in particular, if twoside=true, the margin column will be always on the outside)
 	%open=any, % If twoside=true, uncomment this to force new chapters to start on any page, not only on right (odd) pages
 	%chapterentrydots=true, % Uncomment to output dots from the chapter name to the page number in the table of contents
@@ -57,18 +57,47 @@
 % Inspired from:
 % https://tex.stackexchange.com/questions/23832/biblatex-make-title-hyperlink-to-doi-url-if-available
 \ExecuteBibliographyOptions{doi=false}
-\newbibmacro{string+doi}[1]{
-    \iffieldundef{url}
-        {\iffieldundef{doi}
-            {#1}
-            {\href{http://dx.doi.org/\thefield{doi}}{#1}}
-        }
-        {\href{\thefield{url}}{#1}}
+% \newbibmacro{string+doiurl}[1]{%
+%   \iffieldundef{url}{%
+%     \iffieldundef{doi}{%
+%       #1%
+%     }{\href{http://dx.doi.org/\thefield{doi}}{#1}}%
+%   }{\href{\thefield{url}}{#1}}%
+% }
+
+\newbibmacro{string+doiurlisbn}[1]{%
+  \iffieldundef{doi}{%
+    \iffieldundef{url}{%
+      \iffieldundef{isbn}{%
+        \iffieldundef{issn}{%
+          #1%
+        }{%
+          \href{http://books.google.com/books?vid=ISSN\thefield{issn}}{#1}%
+        }%
+      }{%
+        \href{http://books.google.com/books?vid=ISBN\thefield{isbn}}{#1}%
+      }%
+    }{%
+      \href{\thefield{url}}{#1}%
+    }%
+  }{%
+    \href{http://dx.doi.org/\thefield{doi}}{#1}%
+  }%
 }
-\DeclareFieldFormat[article]{title}{\usebibmacro{string+doi}{#1}}
-\DeclareFieldFormat[inproceedings]{title}{\usebibmacro{string+doi}{#1}}
-\DeclareFieldFormat[incollection]{title}{\usebibmacro{string+doi}{#1}}
-\DeclareFieldFormat{title}{\usebibmacro{string+doi}{#1}}
+
+% \newbibmacro{string+doiurl}[1]{%
+%   \iffieldundef{url}{%
+%     \iffieldundef{doi}{%
+%       #1%
+%     }{%
+%       \href{http://dx.doi.org/\thefield{doi}}{#1}}%
+%     }%
+%   {\href{\thefield{url}}{#1}}%
+% }
+\DeclareFieldFormat[article]{title}{\usebibmacro{string+doiurlisbn}{#1}}
+\DeclareFieldFormat[inproceedings]{title}{\usebibmacro{string+doiurlisbn}{#1}}
+\DeclareFieldFormat[incollection]{title}{\usebibmacro{string+doiurlisbn}{#1}}
+\DeclareFieldFormat{title}{\usebibmacro{string+doiurlisbn}{#1}}
 
 % Load mathematical packages for theorems and related environments
 \usepackage[framed=true]{kaotheorems}
@@ -99,9 +128,10 @@
 \newcommand{\dep}{\textsc{Dep}\xspace}
 \newcommand{\seq}{\textsc{Seq}\xspace}
 \newcommand{\bert}{\textsc{Bert}\xspace}
+\newcommand{\gpt}{\textsc{GPT}\xspace}
+%\newcommand{\ie}{\textit{i.e.}\xspace}
 \newcommand{\bow}{\textsc{Bow}\xspace}
 \newcommand{\cls}{\textsc{Bert-cls}\xspace}
-
 % \DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
 
@@ -111,9 +141,10 @@
 %----------------------------------------------------------------------------------------
 \usepackage[dvipsnames]{xcolor}
 
-\newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue}#2}}
+\newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue} #2}}
 
-\newcommand{\acomment}[2]{{\bfseries\color{Green} #1} {\bfseries\color{blue}#2}}
+% \newcommand{\acomment}[2]{{\color{Green} #1} {\bfseries\color{blue} #2}}
+\newcommand{\acomment}[1]{{\color{Green} #1}}
 
 \begin{document}
 
@@ -121,37 +152,39 @@
 %	BOOK INFORMATION
 %----------------------------------------------------------------------------------------
 
-\titlehead{The \texttt{kaobook} class}
-\subject{Use this document as a template}
+% \titlehead{The \texttt{kaobook} class}
+% \subject{Use this document as a template}
 
-\title[Example and documentation of the {\normalfont\texttt{kaobook}} class]{Example and documentation \\ of the {\normalfont\texttt{kaobook}} class}
-\subtitle{Customise this page according to your needs}
+%\title[Example and documentation of the {\normalfont\texttt{kaobook}} class]{Example and documentation \\ of the {\normalfont\texttt{kaobook}} class}
+\title[A study on sentences embeddings and their relation with sentence structure]{A study on sentences embeddings and their relation with sentence structure}
+% \subtitle{Customise this page according to your needs}
 
-\author[Federico Marotta]{Federico Marotta\thanks{A \LaTeX\ lover}}
+% \author[Antoine Simoulin]{Federico Marotta\thanks{A \LaTeX\ lover}}
 
-\date{\today}
+% \date{\today}
 
-\publishers{An Awesome Publisher}
+% \publishers{An Awesome Publisher}
 
 %----------------------------------------------------------------------------------------
 
 \frontmatter % Denotes the start of the pre-document content, uses roman numerals
 
+% \input{titlepages}		% INCLUDE: all titlepages
 %----------------------------------------------------------------------------------------
 %	OPENING PAGE
 %----------------------------------------------------------------------------------------
 
-%\makeatletter
-%\extratitle{
-%	% In the title page, the title is vspaced by 9.5\baselineskip
-%	\vspace*{9\baselineskip}
-%	\vspace*{\parskip}
-%	\begin{center}
-%		% In the title page, \huge is set after the komafont for title
-%		\usekomafont{title}\huge\@title
-%	\end{center}
-%}
-%\makeatother
+% \makeatletter
+% \extratitle{
+% 	% In the title page, the title is vspaced by 9.5\baselineskip
+% 	\vspace*{9\baselineskip}
+% 	\vspace*{\parskip}
+% 	\begin{center}
+% 		% In the title page, \huge is set after the komafont for title
+% 		\usekomafont{title}\huge\@title
+% 	\end{center}
+% }
+% \makeatother
 
 %----------------------------------------------------------------------------------------
 %	COPYRIGHT PAGE
@@ -202,7 +235,7 @@
 
 % Note that \maketitle outputs the pages before here
 
-% \maketitle
+\maketitle
 
 %----------------------------------------------------------------------------------------
 %	PREFACE
@@ -291,7 +324,7 @@
 %----------------------------------------------------------------------------------------
 
 % The bibliography needs to be compiled with biber using your LaTeX editor, or on the command line with 'biber main' from the template directory
-\defbibnote{bibnote}{References in citation order.\par\bigskip} % Prepend this text to the bibliography
+\defbibnote{bibnote}{We ordered references alphabetically, by the first author's last name.\par\bigskip} % Prepend this text to the bibliography
 \printbibliography[heading=bibintoc, title=Bibliography, prenote=bibnote] % Add the bibliography heading to the ToC, set the title of the bibliography and output the bibliography note
 % \bibliography{main}
 

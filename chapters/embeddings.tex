@@ -3,7 +3,7 @@
 \chapter{Embedding sentences}
 \labch{training}
 
-\cleanchapterquote{In ancient times, before the advent of mass-market publishing, manuals were written on scrolls. The people believed that \textbf{kotodama}—the soul or spirit of language—resided in every word; that in uttering a thought one gives life to it; that words hold a spiritual power. This belief gave the written and spoken language a near-mystical status and encouraged a reverence for the written word beyond that in the West.}{Jake Adelstein}{Tokyo Vice, 2009}
+\cleanchapterquote{In ancient times, before the advent of mass-market publishing, manuals were written on scrolls. The people believed that kotodama—the soul or spirit of language—resided in every word; that in uttering a thought one gives life to it; that words hold a spiritual power. This belief gave the written and spoken language a near-mystical status and encouraged a reverence for the written word beyond that in the West.}{Jake Adelstein}{Tokyo Vice, 2009}
 
 % Dans les temps anciens, avant l'avénement de la publication de masse, les manuels étaient écrits sur des rouleaux. Les gens pensaient que le kotodama — l'âme, l'esprit de la langue — se trouvait dans chaque mot. Qu'en prononçant une parole, quelqu'un lui donnait vie. Que les mots détenaient un pouvoir spirituel. Cette croyance conférait à la langue écrite et parlée un statut quasi-mystique et encourageait cette vénération pour l'écriture qui est allée encore plus loin qu'en Occident.
 % In ancient times, before the advent of mass-market publishing, manuals were written on scrolls. The people believed that kotodama—the soul or spirit of language—resided in every word; that in uttering a thought one gives life to it; that words hold a spiritual power. This belief gave the written and spoken language a near-mystical status and encouraged a reverence for the written word beyond that in the West.
@@ -203,10 +203,10 @@ The majority of these proxy tasks involve predicting a relationship between two 
 
 \paragraph{Infersent} In keeping with the definition of meaning discussed in the last chapter, a model that captures the meaning of a sentence could infer the entailment relation between sentence pairs. Thus, training a model to predict the entailment relationship between two sentences seems reasonable to build efficient sentence embeddings. In this setup, the proxy task is therefore a natural language inference task (NLI). NLI consists in a supervised classification task. The model takes a input a sentence pair: a premise and an hypothesis. It should then predict whether the first entail, contradict or is neutral to the second. Large datasets exist for English like Stanford Natural Language Inference (SNLI)\sidenote{The dataset includes 570k pairs of sentences, distributed in a 550k/10k/10k train/dev/test split} \parencite{bowman_15} and MultiNLI\sidenote{The MultiNLI includes 433k sentence pairs. We refer to the concatenation of the SNLI and MultiNLI as AllNLI.} \parencite{williams_18b} or other languages including French with the XNLI corpus \parencite{conneau_18b}. We present some examples from the SNLI task in \reftab{snli-examples}.
 
-\begin{table}[!htb]
+\begin{table*}[!htb]
 \centering
 \small
-\begin{tabularx}{\textwidth}{@{}YYY@{} }
+\begin{tabularx}{16cm}{@{}YYY@{} }
   \toprule
 Premise & Hypothesis & label \\
 \midrule
@@ -216,11 +216,11 @@ A man inspects the uniform of a figure in some East Asian country. & The man is 
 \rule{0pt}{3ex}A black race car starts up in front of a crowd of people. & A man is driving down a lonely road. & contradiction\\
 \rule{0pt}{3ex}A soccer game with multiple males playing. & Some men are playing a sport. & entailment\\
 \rule{0pt}{3ex}A smiling costumed woman is holding an umbrella. & A happy woman in a fairy costume holds an umbrella. & neutral\\
-    \bottomrule
+\bottomrule
 % From 1.0rc3
-  \end{tabularx}
-  \caption{\labtab{snli-examples}Examples presented in the original paper and extracted from the development section of the corpus.}
-\end{table}
+\end{tabularx}
+\caption{\labtab{snli-examples}Examples presented in the original paper and extracted from the development section of the corpus.}
+\end{table*}
 
 
 \textcite{conneau_17} propose a siamese framework to train model on NLI data. \bcomment{First a sentence encoder encode separately encodes the premise $h_L$ and the hypothesis $h_R$.} The encoder weights are shared for the encoding of both parts but the two sentences are not encoded jointly (as it is the case when using cross-features or attention architectures). Then, a dedicated architecture is used to predict the similarity distribution from the pair of sentences. \bcomment{the following mixes state of the art and choices you made in your work}{}The similarity module takes as input a pair of sentence vectors $h_{L} $ and $h_{R}$ and computes their component\-wise product $h_{L} \odot h_{R}$ and their absolute difference $|h_{L} - h_{R}|$\sidenote{Their exists multiple variation of the similarity module which differs given the aggregation function of  $h_{L} $ and $h_{R}$, the number of fully-connected layers and their hidden dimensions \parencite{conneau_17, choi_18, reimers_19}.}. Given these features, we compute the probability distribution  $\hat{p}_{\theta}$ using a three layers perceptron network (MLP):
@@ -256,10 +256,10 @@ A man inspects the uniform of a figure in some East Asian country. & The man is 
 
 \paragraph{DisSent} \textcite{nie_19} propose a weaker signal to train sentence embeddings: the discourse relations between sentences. The task is positioned as an intermediary between a fully supervised and self-supervised approach. Given two sentence embeddings, a classifier aims a identifying which discourse marker was used to link the sentences. As for infersent, the setup can accommodate any sentence encoder \bcomment{such can be used to train sequential LSTM }{} or fine-tune larger pre-trained models such as \textsc{Bert}. We present some examples of the training data in \reftab{dissent-task_examples}.
 
-\begin{table}[!htb]
+\begin{table*}[!htb]
 \centering
 \small
-\begin{tabularx}{\textwidth}{@{}YYY@{}}
+\begin{tabularx}{16cm}{@{}YYY@{}}
 \toprule
 S1  & S2  & marker\\
 \midrule
@@ -292,7 +292,7 @@ though \\
 \end{tabularx}
 \caption{Example pairs presented in the original paper.}
 \labtab{dissent-task_examples}
-\end{table}
+\end{table*}
 
 The training dataset is build upon the BookCorpus dataset \parencite{zhu_15}\sidenote{This model requires a training corpus of contiguous text. The BookCorpus dataset is a collection of 11,038 free books written by yet unpublished authors. It contains books in 16 different genres. It contains 74,004,228 sentences and 984,846,357 words.}. The training pairs are collected using a semi-automated procedure. The authors used the Stanford CoreNLP dependency parser \parencite{schuster_16} to identify discourse markers between two sentences $S_1$ and $S_2$. They collected a curated a dataset of 4,706,292 pairs of sentences for 15 discourse markers. The training procedure is close from infersent. Given a sentence pair, a sentence encoder model produces sentences embeddings ($s_1$, $s_2$). A similarity modules then compute pair-wise vector operations and outputs probability distribution over discourse relations.
 
