@@ -301,10 +301,10 @@ J(\theta) = -\frac{1}{N}\sum_{k=1}^{N}p^{(k)} log \hat{p}_{\theta}^{(k)} + \lamb
 \paragraph{hyper-parameters} \bcomment{We set the hyper-parameters given literature on the domain}{reformulate}, in particular regarding choices made in \textcite{choi_18}. For all experiments detailed in Section \ref{sec:ste}, the batch size is fixed to 128, weight decay to $0$, and gradient clipping set to $5.0$. The learning rate is set to $1e^{-3}$ for the \textsc{TreeLSTM} and the parser. The hidden size of the similarity architecture is set to 1024. The \textsc{TreeLSTM} hidden size is set to 600. We use the Adam optimizer. We apply a 0.2 dropout within the similarity architecture. We perform training for a maximum of 20 epochs and stop when no improvement was observed on the development set for 3 consecutive epochs.
 Regarding the vocabulary, we limit the size to 100,000 words \bcomment{why a different setup than earlier ?}{} and initialize the embeddings layer with 300-dimensional GloVe embeddings. The embeddings are not updated during training. % \cite{pennington_14}
 
-\begin{table*}[!htb]
-  \centering
-  \small
-  \begin{tabularx}{16cm}{@{}Y | c@{} }
+\begin{table}[!htb]
+  \centering {
+  \footnotesize
+  \begin{tabularx}{\textwidth}{@{}X | c@{} }
     \toprule
     \textbf{Encoder} & \textbf{Test Acc.} \\
     \midrule
@@ -329,11 +329,11 @@ Regarding the vocabulary, we limit the size to 100,000 words \bcomment{why a dif
     % Unified \treelstm{} \textbackslash w tracking \textsc{LSTM} (\textbf{ours}) & 83.0 {\scriptsize (0.8)} \\
     % Unified \treelstm{}-100 & 83.6 {\scriptsize (0.0)} \\
     \bottomrule
-  \end{tabularx}
+  \end{tabularx}}
   \caption{Evaluation of the model on the SNLI-R task: We pre-train our parsing module on the PTB and continue to update the full model on the SNLI task. We compare with \textsc{Bert} and latent tree learning models. We report the accuracy on the test set (average and standard deviation from 2 runs).}
   % Comparison with other models on the \textbf{SNLI} task. Results are grouped as follow: \textbf{(1)} Sequential structure \textbf{(2)} Model learning tree structures \textbf{(3)} Framework introducing a direct interaction between the premise and hypothesis using attention mechanism \textbf{(4)} Our model with a pre-training on the PTB. We report the average and the standard deviation from 2 runs.}
   \label{table:snli}
-\end{table*}
+\end{table}
 
 We report the results in Table \ref{table:snli}. Our results are close to \textcite{choi_18}, which also compute semantic representations along to discrete tree structures but relies on a distinct syntactic formalism. \bcomment{conjecture what explains the differences ?}{}
 

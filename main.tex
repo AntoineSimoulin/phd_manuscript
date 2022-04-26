@@ -118,6 +118,12 @@
 \usepackage{booktabs, tabularx}
 \usepackage{subcaption}
 \usepackage{numprint}
+% French
+% \npthousandsep{\,}
+% English
+\npthousandsep{,}
+\npthousandthpartsep{}
+\npdecimalsign{.}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
 \usepackage{sistyle}
@@ -128,12 +134,22 @@
 \newcommand{\dep}{\textsc{Dep}\xspace}
 \newcommand{\seq}{\textsc{Seq}\xspace}
 \newcommand{\bert}{\textsc{Bert}\xspace}
+\newcommand{\albert}{\textsc{Albert}\xspace}
 \newcommand{\gpt}{\textsc{GPT}\xspace}
 %\newcommand{\ie}{\textit{i.e.}\xspace}
 \newcommand{\bow}{\textsc{Bow}\xspace}
 \newcommand{\cls}{\textsc{Bert-cls}\xspace}
 % \DeclarePairedDelimiter\norm{\lVert}{\rVert}
 
+\setcounter{secnumdepth}{3} % seting level of numbering (default for "report" is 3). With ''-1'' you have non number also for chapters
+% \setcounter{tocdepth}{5}
+% \setcounter{tocdepth}{-1} -- only parts
+% \setcounter{tocdepth}{0} -- only parts and chapters
+% \setcounter{tocdepth}{1} -- part,chapters,sections
+% \setcounter{tocdepth}{2} -- part,chapters,sections, subsections
+% \setcounter{tocdepth}{3} -- part,chapters,sections, subsections,subsubsections
+% \setcounter{tocdepth}{4} -- part,chapters,sections, subsections,subsubsections and paragraphs
+% \setcounter{tocdepth}{5} -- part,chapters,sections, subsections, subsubsections, paragraphs and subparagraphs.
 
 % Reset sidenote counter at chapters
 %\counterwithin*{sidenote}{chapter}

@@ -237,7 +237,8 @@
 % Set KOMA fonts for book-specific elements
 \addtokomafont{part}{\normalfont\scshape\bfseries}
 \addtokomafont{partentry}{\normalfont\scshape\bfseries}
-\addtokomafont{chapter}{\normalfont\bfseries}
+\addtokomafont{chapter}{\fontsize{22}{22}\normalfont\bfseries}
+% \addtokomafont{chapter}{\normalfont\bfseries}
 \addtokomafont{chapterentry}{\normalfont\bfseries}
 
 % Set KOMA fonts for elements common to all classes

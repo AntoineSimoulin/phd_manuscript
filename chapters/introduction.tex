@@ -18,6 +18,7 @@ This section introduces the study by first discussing the applications of senten
 % POURQUOI
 
 \section{Background to the study}
+\labsec{introduction:backgroud}
 
 Embedding a sentence consist of assigning it to a static, fixed-length, real-\bcomment{value}{valued} vector, which captures its meaning. It is important to emphasize the distinction between sentence embedding and any sentence vector representation, for example, intermediate representations from neural networks. \bcomment{Most}{} Modern NLP methods work end-to-end: the intermediate representations and the inference of attributes from those representations are part of a unified process. In such a case, it is impossible to separate the representations from the final model outputs. The representations, therefore, depend on the attribute we seek to predict and will most likely only capture the information relevant for this prediction. In the context of sentence embedding, the representation of the input text and the inference of related attributes are two explicitly disconnected steps. Therefore, sentence embedding should capture an exhaustive perspective of the text input meaning as we may use them to predict a large variety of attributes. Sentence embedding methods should be highly generic, and their conception should be independent of their later use.
 
@@ -70,7 +71,7 @@ Our study proposes efficient methods to introduce linguistic biases into neural 
 
 \subsection{Jointly learning model structure and compositional operations}
 
-\bcomment{I}{First I} focus on tree-structured neural networks, which naturally encode the structure of language. For each sentence, the network computes text units following a syntactic tree, starting from the leaf nodes up to the root. However, such models suffer from practical constraints that limit their application. In particular, tree-based models not only require raw text as input but also the sentence structure in the form of a parse tree. Such structure may be tedious to obtain as it requires manual annotations and external parsers. To overcome such limitations, we formulated a novel tree-based model that learns its composition function together with its structure. The model includes two modules, a biaffine graph parser, and a Tree-LSTM. The parsing and the composition functions are explicitly connected and, therefore, learned jointly. The method differs from previous work as the representation is not computed from the whole forest of potential trees. Moreover, training the full model directly does not require supervision from \bcomment{a}{an explicit} parsing objective. The model outperforms tree-based models relying on external parsers on downstream tasks. In some configurations, it is even competitive with BERT-base model.
+\bcomment{I}{First We} focus on tree-structured neural networks, which naturally encode the structure of language. For each sentence, the network computes text units following a syntactic tree, starting from the leaf nodes up to the root. However, such models suffer from practical constraints that limit their application. In particular, tree-based models not only require raw text as input but also the sentence structure in the form of a parse tree. Such structure may be tedious to obtain as it requires manual annotations and external parsers. To overcome such limitations, we formulated a novel tree-based model that learns its composition function together with its structure. The model includes two modules, a biaffine graph parser, and a Tree-LSTM. The parsing and the composition functions are explicitly connected and, therefore, learned jointly. The method differs from previous work as the representation is not computed from the whole forest of potential trees. Moreover, training the full model directly does not require supervision from \bcomment{a}{an explicit} parsing objective. The model outperforms tree-based models relying on external parsers on downstream tasks. In some configurations, it is even competitive with BERT-base model.
 
 \subsection{Studying shallow structure in transformer models}
 
@@ -107,9 +108,12 @@ This dissertation contains some contributions that we previously published and p
     \item \refch{tree} presents work currently under submission;
     \item \refch{transformers} is an extended version of an article published in ACL Research Student Workshop 2021 \parencite{simoulin_2021b};
     \item \refch{arithmetics} presents original unpublished work as well as work currently under submission;
-    \item \refch{1B} relates the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training; Pairs}\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}}. This project took place during the \textit{Community week using JAX/Flax for NLP \& CV}\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}}. organized by Hugging Face. Our project was among the competition winners and received an honorable mention;
+    \item \refch{1B} relates the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training; Pairs}. This project took place during the \textit{Community week using JAX/Flax for NLP \& CV}. organized by Hugging Face. Our project was among the competition winners and received an honorable mention;
     \item \refch{generative} is an extended version of an article published in TALN 2021 \parencite{simoulin_2021c}.
 \end{itemize}
+
+%\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}}
+%\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}}
 
 The code used for all experiments carried out for this dissertation, the pre-trained models, the evaluation and training datasets has been made publicly available as free software through the following repositories:
 
