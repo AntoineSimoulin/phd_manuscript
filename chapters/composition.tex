@@ -16,15 +16,15 @@ when you explain a why, you have to be in some framework that you allow somethin
 }{Richard Feynman}{TV program \textit{Fun to Imagine}, 1983}
 % https://www.sciencealert.com/watch-richard-feynman-on-why-he-can-t-tell-you-how-magnets-work
 
-Compositionality is thought to be a key feature of human language. Symbolic generative theories of language indeed imply the possibility of producing an infinite number of grammatical phrases and sentences using only finite means \acomment{\parencite{chomsky_57, montague_70, hauser_02}}. Humans derive phrase meaning by composing syntactic and semantic components using compositional rules \parencite{partee_84, cann_93, dowty_07}. % frege_1892
+Compositionality is thought to be a key feature of human language. Symbolic generative theories of language indeed imply the possibility of producing an infinite number of grammatical phrases and sentences using only finite means \parencite{chomsky_57, montague_70, hauser_02}. Humans derive phrase meaning by composing syntactic and semantic components using compositional rules \parencite{partee_84, cann_93, dowty_07}. % frege_1892
 
 On the other hand, language models are trained using self-supervised objectives with no direct linguistically oriented supervision. Nonetheless, recent large pre-trained transformer models have shown striking abilities to process human language and over-perform humans on many benchmarks \parencite{devlin_19, brown_20}. They also exhibit strong consistency on agreements (subject-verb, noun-adverb, verb-verb) which are determined by abstract structures and not just linear order of words \parencite{linzen_16, gulordava_18, marvin_18, newman_21}. Yet, many studies point out that their compositional abilities are surprisingly limited and that they struggle to generalize to specific out-of-domain examples \parencite{lake_18, kim_20, hupkes_20}. 
 
-The ability of language models to process language without inducing exhaustive symbolic composition rules is not yet fully understood. \textcite{baroni_19} suggests neural networks may process language using partially or different rules than humans. They emphasize human language is not fully characterized by algebraic rules. Language models might rely on less systematic phenomena such as semi-lexicalized constraints in syntax or irregular inflections. \acomment{\textcite{lake_17}} explore the possibility that language models overcome their lack of compositional abilities with an exposition to huge amounts of data.
+The ability of language models to process language without inducing exhaustive symbolic composition rules is not yet fully understood. \textcite{baroni_19} suggest neural networks may process language using partially or different rules than humans. They emphasize human language is not fully characterized by algebraic rules. Language models might rely on less systematic phenomena such as semi-lexicalized constraints in syntax or irregular inflections. \textcite{lake_17} explore the possibility that language models overcome their lack of compositional abilities with an exposition to huge amounts of data.
 
 In the previous chapters, we integrated syntactic biases into neural networks. We evaluated the use of syntactic information on meta benchmarks such as SentEval \parencite{conneau_18} or GLUE \parencite{wang_19}. However, as observed in \textcite{baroni_18}, such tasks imply various linguistic phenomenons. Although scores assess the model's ability to tackle the task, it is still unclear whether models rely on a shallow lexical pattern matching or an effective encoding of the syntactic structure and lexical information. Second, the use of large datasets for training \parencite{bowman_15, williams_18} adds difficulty in disentangling the contribution of the data from the model structure.
 
-In this chapter, we aim at better characterizing how the model structure may affect their degree of compositionality. We first review the current methods and resources to evaluate compositionality (\refsec{composition:evaluate}). Such methods may present some limitations. In particular, they may use text-to-text setup, which makes it difficult to disentangle the effect of the encoding and decoding parts. Other methods are also sometimes focused on a limited range of linguistic phenomena. We propose two contributions in which we compare distinct structured models, including tree-shaped models and \bert. In \refsec{composition:nli}, \acomment{we analyze how model structure impacts the degree of syntactic information captured by models. Using a natural language inference task, we compare the performances on sets of examples with specific linguistic properties.} In \refsec{composition:arithmetic}, we intend to accurately quantify to which extent model structure is preeminent to draw compositional knowledge. We built an evaluation setup with arithmetic expressions containing specific properties. We observe how models generalize outside their domain.
+In this chapter, we aim at better characterizing how the model structure may affect their degree of compositionality. We first review the current methods and resources to evaluate compositionality (\refsec{composition:evaluate}). Such methods may present some limitations. In particular, they may use text-to-text setup, which makes it difficult to disentangle the effect of the encoding and decoding parts. Other methods are also sometimes focused on a limited range of linguistic phenomena. We propose two contributions in which we compare distinct structured models, including tree-shaped models and \bert. In \refsec{composition:nli}, we analyze how model structure impacts the degree of syntactic information captured by models. Using a natural language inference task, we compare the performance on sets of examples with specific linguistic properties. In \refsec{composition:arithmetic}, we intend to accurately quantify to which extent model structure is preeminent to draw compositional knowledge. We build an evaluation setup with arithmetic expressions containing specific properties. We observe how models generalize outside their domain.
 
 % Part 2
 % While transformers show outstanding performances on many NLP benchmarks, they also have some linguistic limitations. In particular, regarding their ability to generalize outside their training range and to learn elementary composition rules. The benchmark COGS \parencite{kim_20} for example highlights deep learning models struggle to generalize to longer sequences or sentences with deeper level of recursion than seen during training. 
@@ -48,9 +48,9 @@ Another line of research proposes to examine models on a natural language infere
 % Nonetheless, the paper perspective is more focus on solving such biases by modifying the training set distribution rather than model architectures. Moreover, the studied models and linguistic phenomena are rather distinct than ours.
 \textcite{nie_19} aim at distinguishing the use of structure versus lexical information. Models are trained given an adversarial training setup in which object, subject, or adjectives attachment are swapped in the sentence.
 
-Other setups exist: \textbf{PAWS} is a large dataset containing sentences that have high lexical over-lap without being paraphrases is proposed in \textcite{zhang_19}. The dataset is specifically designed to distinguish models which rely on lexical heuristic to solve sematic tasks. However, they do not present a breakdown given the linguistic properties of the sentence pairs and work on binary paraphrase classification. \textcite{andreas_19} propose a formalism to measure compositionality using similarity metrics through a communication game.
+Other setups exist: \textbf{PAWS} is a large dataset containing sentences that have high lexical over-lap without being paraphrases \parencite{zhang_19}. The dataset is specifically designed to distinguish models which rely on lexical heuristic to solve sematic tasks. However, they do not present a breakdown given the linguistic properties of the sentence pairs and work on binary paraphrase classification. \textcite{andreas_19} propose a formalism to measure compositionality using similarity metrics through a communication game.
 
-Beyond evaluating the compositional capability of models, many works aim to improve them. Some methods propose to integrate structural biases within the architecture: in particular Tree-LSTM \parencite{tai_15} or \acomment{latter} in transformers with structured attention \parencite{russin_19}. Some methods also propose to adapt the pre-training or fine-tuning procedure \parencite{furrer_20}. Finally, other methods propose to complete models with modules dedicated to compositional operations \parencite{liu_20, onta_21}.
+Beyond evaluating the compositional capability of models, many works aim to improve them. Some methods propose to integrate structural biases within the architecture: in particular Tree-LSTM \parencite{tai_15} or in transformers with structured attention \parencite{russin_19}. Some methods also propose to adapt the pre-training or fine-tuning procedure \parencite{furrer_20}. Finally, other methods propose to complete models with modules dedicated to compositional operations \parencite{liu_20, onta_21}.
 
 % Tree shaped models introduced in \textcite{tai_15} suggest the sentence structure could be captured directly within the model architecture. A hierarchical structure mirrored with the dependency tree could, therefore, better emphasize semantically important elements such as verbs. The system is evaluated on his ability to identify paraphrases and perform sentiment analysis. We propose to detail the model performances given the syntactic phenomenon in place.
 
@@ -63,10 +63,10 @@ Beyond evaluating the compositional capability of models, many works aim to impr
 
 % Toward analyzing the weaknesses of structured models for natural language inference
 
-\acomment{
-This chapter describes two experiments exploring whether models rely on explicit structure and compositional operations to capture sentence meaning. This section starts with analyzing the degree of syntactic information captured by structured models. We focus on a Natural Language Inference task (NLI), which aims to determine whether a given sentence entails a second. We embed both sentences from a pair using various structured models and link the embeddings using a similarity module that classifies the sentence pairs. We analyze how the sentences' specific syntactic and lexical properties impact the final performances.}
 
-We hypothesize that the complexity of the task requires a compositional aptitude to derive the general sentence meaning. However, recent work reveals that models can be easily tricked by specifically designed adversarial examples. Such examples present lexical or syntactic variations that are easily \acomment{understandable} for humans but result in deep confusion for statistical-based models. 
+This chapter describes two experiments exploring whether models rely on explicit structure and compositional operations to capture sentence meaning. This section starts with analyzing the degree of syntactic information captured by structured models. We focus on a Natural Language Inference task (NLI), which aims to determine whether a given sentence entails a second. We embed both sentences from a pair using various structured models and link the embeddings using a similarity module that classifies the sentence pairs. We analyze how the sentences' specific syntactic and lexical properties impact the final performances.
+
+We hypothesize that the complexity of the task requires a compositional aptitude to derive the general sentence meaning. However, recent work reveals that models can be easily tricked by specifically designed adversarial examples. Such examples present lexical or syntactic variations that are easily understandable for humans but result in deep confusion for statistical-based models. 
 % We propose to focus on the natural language inference task, which from our hypothesis, requires an ability to perform compositional knowledge on sentences. 
 To analyze the degree of syntactic information captured by structured models, we propose to evaluate a set of models on NLI examples presenting specific syntactic or lexical properties. Such an analysis grid allows us to distinguish the performance given models and linguistic phenomena. We use it to analyze how various structured models perform specific compositional operations.
 
@@ -77,7 +77,7 @@ Examples are selected given the SICK dataset \parencite{marelli_14} which consis
 % which recursively computes node representations given their children 
 
 % \bcomment{attention orthographe et formulation}{}
-Our experiments reveal that some models are indeed better adapted to capture some linguistic aspects. Moreover, we witness that some specific sentence structures or lexicon might result in severe confusion when performing inference. In particular, the replacement of words with semantic opposites or the scrambling of words between the premise and hypothesis. For the \accoment{latter}, we perform additional analysis to better capture the inclination of models to generalize in such complex linguistic structures. We show that, while some cases might be addressed by carefully choosing the model structure, for others, it seems the relation of entailment can only be learned by augmenting the training set with corresponding examples.
+Our experiments reveal that some models are indeed better adapted to capture some linguistic aspects. Moreover, we witness that some specific sentence structures or lexicon might result in severe confusion when performing inference. In particular, the replacement of words with semantic opposites or the scrambling of words between the premise and hypothesis. For the latter, we perform additional analysis to better capture the inclination of models to generalize in such complex linguistic structures. We show that, while some cases might be addressed by carefully choosing the model structure, for others, it seems the relation of entailment can only be learned by augmenting the training set with corresponding examples.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Method}
@@ -92,12 +92,13 @@ Our experiments reveal that some models are indeed better adapted to capture som
 % \end{figure*}
 % \FloatBarrier
 
-We consider structures exposed in \refsec{survey:encoding}: Bag Of Word (\bow), sequential LSTM (\seq), hierarchical models such as Tree LSTM for dependency and constituency structure (\dep and \const) and \bert (\cls).
+We map sentences $s$ to embeddings $h_s$ using the models exposed in \refsec{survey:encoding}: Bag Of Word (\bow), sequential LSTM (\seq),  hierarchical models such as Tree LSTM for dependency and constituency structure (\dep and \const) and \bert (\cls).
+
+% \bcomment{why dependency trees here ? it is not clear how do these trees are used, the picture is insufficient}{}
+Regarding the Tree LSTM  models, we obtain the dependency structures using the deep biaffine parser from \textcite{dozat_17} and the constituency structures using the constituency neural parser from \textcite{klein_18}. Regarding \bert, we use the original \bert-base and the \cls token as the sentence embedding. 
 
 For each model, we consider two types of embeddings vectors. We use either traditional GloVe embeddings \parencite{pennington_14} or, as illustrated in \reffig{model}, contextualized vector from \bert model \parencite{devlin_19}. When using \bert as embedding, vectors are normalized with the L2 norm for \bow model to facilitate the joint convergence of the model and \bert layers. When using GloVe embeddings, we used 300-dimensional word vectors trained on the common crawl dataset (840B tokens) with a vocabulary of 2.2M case-sensitive words.
 % All models are detailed bellow:
-
-To obtain dependency trees, sentences are parsed using the deep biaffine parser from \textcite{dozat_17}. The constituency tree is obtained using the constituency neural parser from \textcite{klein_18}. Regarding \bert, we use the original \bert-base and the \cls token as the sentence embedding. In this setup, the sentence pair is directly fed to \bert. The prediction is based on the \cls token, \acomment{latter} processed by a linear layer and a softmax activation function.
 
 \begin{figure}[!htb]
 \begin{center}
@@ -110,7 +111,7 @@ To obtain dependency trees, sentences are parsed using the deep biaffine parser 
 \subsubsection{Similarity architecture and training objective}
 \label{sec:training-setup}
 %4500/500/4927 
-We choose a similar supervised framework as in \textcite{tai_15} and use the given train/dev/test split. \acomment{We illustrate the full model in \reffig{similarity}}. Parameters are set given results on the dev set, and results are presented on the test set. In the experiments section, results are presented given the transformation applied to each couple of sentences. 
+We choose a similar supervised framework as in \textcite{tai_15} and use the given train/dev/test split. We illustrate the full model in \reffig{similarity}. Parameters are set given results on the dev set, and results are presented on the test set. In the experiments section, results are presented given the transformation applied to each couple of sentences. 
 
 % For the SICK-E task, the target distribution is defined as 3-dimensional one-hot vector:
 
@@ -134,7 +135,9 @@ We choose a similar supervised framework as in \textcite{tai_15} and use the giv
 % \end{array} \right.
 % \end{equation*}
 
-A dedicated architecture predicts the similarity distribution of a pair of sentences. The similarity module takes as input a pair of sentence vectors ($h_{L}, h_{L})$ and computes their component\-wise product $h_{L} \odot h_{R}$ and their absolute difference $|h_{L} - h_{R}|$. These features are then fed to a two layers perceptron network (MLP) to compute the probability distribution  $\hat{p}_{\theta}$:
+Regarding \bert, we do not use the similarity architecture, bu rather directly fed the sentence pair to \bert. The prediction is based on the \cls token, later processed by a linear layer and a softmax activation function.
+
+For other encoders, a dedicated architecture predicts the similarity distribution of a pair of sentences. The similarity module takes as input a pair of sentence vectors ($h_{L}, h_{L})$ and computes their component\-wise product $h_{L} \odot h_{R}$ and their absolute difference $|h_{L} - h_{R}|$. These features are then fed to a two layers perceptron network (MLP) to compute the probability distribution  $\hat{p}_{\theta}$:
 \begin{align}
 \begin{split}
 &h_{\times}=h_L\odot h_R, ~~~~~h_{+} = |h_L - h_R |, \\
@@ -159,14 +162,14 @@ The ground truth $p$ is a three-dimensional one-hot vector defined given the rel
 \begin{center}
 \includegraphics[width=9cm]{images/similarity.png}
 \end{center}
-\caption{\acomment{We embed sentences using various structured models. The similarity architecture uses the sentence embeddings component-wise product and absolute difference to output a probability distribution for the entailment label.}}
+\caption{We embed sentences using various structured models. The similarity architecture uses the sentence embeddings component-wise product and absolute difference to output a probability distribution for the entailment label.}
 \labfig{similarity}
 \end{figure}
 
 \subsubsection{Hyper parameters setting}
 
 % and differentiate the training parameters between bert layers and other layers
-Parameters are fixed using the dev set. We use a 25 batch size. We use the \bert-base-cased model \parencite{wolf_2019} with an embedding size of 768. For \bert layers, we use 0.10 weight decay and fix the learning rate to 2e-5. For other layers, the learning rate is fixed to 0.025 with a weight decay of 1e-4. Layers are initialized using a glorot distribution \parencite{glorot_10} . Biases are initially set to 0 for tree structure models and 1 for \seq model. When applicable, the model hidden-size is fixed to respectively 150 and 300 when using GloVe and \bert emeddings. The hidden-size of the similarity module is set to 50. Models are trained during a maximum of 20 epochs using the Adagrad optimizer \parencite{duchi_11} and AdamW for \bert \parencite{loshchilov_19}. When no improvement is observed on the dev set for 3 consecutive epochs, the training is stopped. Results are reported on the test set. 
+Parameters are fixed using the dev set. We use a 25 batch size. We use the \bert-base-cased model \parencite{wolf_19} with an embedding size of 768. For \bert layers, we use 0.10 weight decay and fix the learning rate to 2e-5. For other layers, the learning rate is fixed to 0.025 with a weight decay of 1e-4. Layers are initialized using a glorot distribution \parencite{glorot_10} . Biases are initially set to 0 for tree structure models and 1 for \seq model. When applicable, the model hidden-size is fixed to respectively 150 and 300 when using GloVe and \bert emeddings. The hidden-size of the similarity module is set to 50. Models are trained during a maximum of 20 epochs using the Adagrad optimizer \parencite{duchi_11} and AdamW for \bert \parencite{loshchilov_19}. When no improvement is observed on the dev set for 3 consecutive epochs, the training is stopped. Results are reported on the test set. 
 % The gradient is clipped to the standard value of 5.
 % We also impose a warm-up profile: The learning rate is set to zero during the first epoch, linearly increase during the epoch 2 and 3 and then is kept to 5e-5. For other layer, the warm-up profile impose a linear increase during the first epoch.
 % Xavier init procedure?
@@ -180,16 +183,6 @@ Parameters are fixed using the dev set. We use a 25 batch size. We use the \bert
 
 \subsubsection{SICK Data} 
 
-% \sidenote{The dataset distribution is unbalanced regarding the applied transformations. In particular, some transformations only concern a small proportion of samples. This is specifically the case of the \textbf{expn} expansion with only 13 samples in the test set. We observed a high standard variation between runs for this category. To present a statistically more valid interpretation, we add some additional examples for \textbf{expn}. We introduce a heuristic to generate example sentences in which we expand nouns into more complex expressions. In particular, we use wordnet \parencite{miller_95} to replace nouns with expended nominal groups. For example, we replace the word "doctors" with the expression "licensed medical practitioners". We add a total of 152 examples distributed in each split for the \textbf{expn} transformation.}
-\accoment{The SICK dataset \parencite{marelli_14} consists of \numprint{9840} sentence pairs which have been manually annotated to assess whether the first entails the second. The original sentences are sampled from the 8K Image Flickr data set \cite{dhodosh_13} and the SemEval 2012 STS MSR Video Description data set \cite{agirre_12}. These two data sets contain sentences describing the same picture or video. The sentence pairs are then transformed through a 3-steps process: normalization to remove unwanted linguistic phenomena; expansion to obtain sentences with specific characteristics; pairing expanded sentences with normalized sentences.}
-The dataset is already split into train/dev/test containing respectively \numprint{4506}/\numprint{505}/\numprint{4979} samples. Sentence pairs have been manually transformed to include specific syntactic or lexical properties detailed in Table \ref{table:sick}. The dataset is freely available for research purposes\sidenote{\url{https://zenodo.org/record/2787612#.Xjh2qxfjJ24}}. Moreover, some additional indexes detail the applied transformation was applied to one of the sentences from each pair. We use this information to perform a detailed breakdown of the performance of various models given the transformation. We divide the transformations into three categories, given the degree of induced alteration on the sentence surface form.
-
-\begin{itemize}
-    \item \textbf{Lexical transformations} The first set of transformations induces local changes. Only individual words are modified. Given the modification, the sentence meaning can be preserved or altered. We expect every model to be robust to such changes. 
-    \item \textbf{Syntactic clauses expansion} In this set of alterations, we add, remove or modify sub-trees of the sentence structure. Such transformation has a low impact on the syntactic tree structure but can deeply transform the surface form of the sentence. We expect strongly structured models to be more robust to such transformations.
-    \item \textbf{Global transformations} Finally, we consider a set of modifications that impact both the surface and syntactic form.
-\end{itemize}
-
 \begin{table*}[!htb]
 \footnotesize
 \centering
@@ -197,7 +190,7 @@ The dataset is already split into train/dev/test containing respectively \numpri
 \toprule
 \multicolumn{2}{c}{\textbf{Transformations}} &  \multicolumn{2}{c}{\textbf{Examples}}\\\midrule
 \multicolumn{4}{c}{\textit{Lexical transformations}}\\\midrule
-\textbf{null} & No transformation & - & - \\
+\textbf{null} & No transformation & Three boys are jumping in the leaves & Children in red shirts are playing in the leaves \\
 \textbf{so} & Replace words with semantic opposites & A \textbf{man} is rowing a boat & A \textbf{woman} is rowing a boat\\
 \textbf{lex} & Replace words with synonyms & A young \textbf{boy} is jumping into water & A young \textbf{kid} is jumping into water\\
 \textbf{det} &  Replace quantifiers & \textbf{The} surfer is riding a big wave & \textbf{A} surfer is riding a big wave\\\midrule
@@ -213,11 +206,21 @@ The dataset is already split into train/dev/test containing respectively \numpri
 \textbf{ws} & Scramble words & The \textbf{turtle} is following the \textbf{fish} & The \textbf{fish} is following the \textbf{turtle}\\
 \bottomrule
 \end{tabularx}
-\caption{Sick expansion rules: Detailed transformations applied to generate the SICK dataset. Transformations are categorized given their impact on the sentence surface form. \acomment{The null transformation refers to sentence pairs for which no expansion transformation was performed.}}
+\caption{Sick expansion rules: Detailed transformations applied to generate the SICK dataset. Transformations are categorized given their impact on the sentence surface form. The null transformation refers to sentence pairs for which no expansion transformation was performed: we only pair two normalized sentences describing the same picture in the original dataset. For every other transformations, the final sentence pair is generated out of a single original sentence transformed with normalization and expansion operations.}
  \label{table:sick}
 \end{table*}
 
-We also considered the possibility of exploiting the HANS dataset \parencite{mccoy_19}, which gathers \numprint{30000} sentence pairs automatically generated with specific linguistic properties. \acomment{Similarly to the SICK dataset, HANS aims at identifying models relying on shallow heuristics to perform natural language inference and includes a larger set of transformations. However, it does not aim to characterize model compositional abilities, as it generates sentences based on a set of templates that share a similar compositional scheme. From our point of view, it is less adapted for a fine grained analysis of compositional knowledge.}
+% \sidenote{The dataset distribution is unbalanced regarding the applied transformations. In particular, some transformations only concern a small proportion of samples. This is specifically the case of the \textbf{expn} expansion with only 13 samples in the test set. We observed a high standard variation between runs for this category. To present a statistically more valid interpretation, we add some additional examples for \textbf{expn}. We introduce a heuristic to generate example sentences in which we expand nouns into more complex expressions. In particular, we use wordnet \parencite{miller_95} to replace nouns with expended nominal groups. For example, we replace the word "doctors" with the expression "licensed medical practitioners". We add a total of 152 examples distributed in each split for the \textbf{expn} transformation.}
+The SICK dataset \parencite{marelli_14} consists of \numprint{9840} sentence pairs which have been manually annotated to assess whether the first entails the second. The original sentences are sampled from the 8K Image Flickr dataset \cite{dhodosh_13} and the SemEval 2012 STS MSR Video Description dataset \cite{agirre_12}. These two datasets contain sentences describing the same picture or video. The sentence pairs are then transformed through a 3-steps process: normalization to remove unwanted linguistic phenomena; expansion to obtain sentences with specific characteristics; pairing expanded sentences with normalized sentences (and pairing both normalized sentences from the pair).
+The dataset is already split into train/dev/test containing respectively \numprint{4506}/\numprint{505}/\numprint{4979} samples. Sentence pairs have been manually transformed to include specific syntactic or lexical properties detailed in Table \ref{table:sick}. The dataset is freely available for research purposes\sidenote{\url{https://zenodo.org/record/2787612\#.Xjh2qxfjJ24}}. Moreover, some additional indexes detail the transformation that was applied to one of the sentences from each pair. We use this information to perform a detailed breakdown of the performance of various models given the transformation. We divide the transformations into three categories, given the degree of induced alteration on the sentence surface form.
+
+\begin{itemize}
+    \item \textbf{Lexical transformations} The first set of transformations induces local changes. Only individual words are modified. Given the modification, the sentence meaning can be preserved or altered. We expect every model to be robust to such changes. 
+    \item \textbf{Syntactic clauses expansion} In this set of alterations, we add, remove or modify sub-trees of the sentence structure. Such transformation has a low impact on the syntactic tree structure but can deeply transform the surface form of the sentence. We expect strongly structured models to be more robust to such transformations.
+    \item \textbf{Global transformations} Finally, we consider a set of modifications that impact both the surface and syntactic form.
+\end{itemize}
+
+We also considered the possibility of exploiting the HANS dataset \parencite{mccoy_19}, which gathers \numprint{30000} sentence pairs automatically generated with specific linguistic properties. Similarly to the SICK dataset, HANS aims at identifying models relying on shallow heuristics to perform natural language inference and includes a larger set of transformations. However, it does not aim to characterize model compositional abilities, as it generates sentences based on a set of templates that share a similar compositional scheme. From our point of view, it is less adapted for a fine grained analysis of compositional knowledge.
 % The proposed categories are developed below. 
 % The sentences are sampled from two datasets, the 8K ImageFlickr data set \parencite{dhodosh_15} and the SemEval 2012 STS MSR- Video Description data set \parencite{agirre_12}. standardization and syntactic or lexical specific transformations.
 
@@ -263,7 +266,7 @@ We also considered the possibility of exploiting the HANS dataset \parencite{mcc
 
 % \bcomment{un peu curieux ce style}{}
 
-In the following sections, we compare how \acomment{structured} models behave when facing such sets of transformations. Results for lexical transformations are reported in Table \ref{table:results-local}. We observe a distinction between \textbf{so} and \textbf{lex} transformations which replace individual words with respectively antonyms or synonyms. For \textbf{so} transformations, models show difficulty in propagating lexical transformation into the final sentence embedding and predict the meaning of the sentence was altered. For \textbf{so} transformations, we also observe that the use of contextualized embeddings seems to even lower the results of structured models compared to the use of static GloVe embeddings.
+In the following sections, we compare how structured models behave when facing such sets of transformations. Results for lexical transformations are reported in Table \ref{table:results-local}. We observe a distinction between \textbf{so} and \textbf{lex} transformations which replace individual words with respectively antonyms or synonyms. For \textbf{so} transformations, models show difficulty in propagating lexical transformation into the final sentence embedding and adjusting the meaning of the sentence. For \textbf{so} transformations, we also observe that the use of contextualized embeddings seems to even lower the results of structured models compared to the use of static GloVe embeddings.
 % While both transformations are rather technically similar, the impact on the power of prediction of models is different. 
 % When using GloVe embeddings, all models have better performances when predicting meaning preserving transformation, except for the dependency structure.  Finally for the \textbf{det} transformation, only the baseline Bag Of Words model is impacted and all models shows a strong robustness to quantifier transformations.
 
@@ -310,7 +313,7 @@ In the following sections, we compare how \acomment{structured} models behave wh
 % Bag Of Words & 82,63 & 52,01 & 55,04 & 81,82\\
 % \bottomrule
 \end{tabularx}
-\caption{Accuracy on the test set for SICK-E task for pair samples with lexical transformations. We report a mean over 5 runs (standard deviations in parentheses). The best results for a given embedding are in \textbf{bold}. The best results overall are \underline{underlined}.}
+\caption{Accuracy on the test set for SICK-E task for pair samples with lexical transformations. We report a mean over 5 runs (standard deviations in parentheses). The best results for a given embedding are in \textbf{bold}. The best results overall are \underline{underlined}. The null transformation consider pair obtained out of two different original sentences. The two sentences can differ given multiple, uncontrolled lexical or syntactic phenomena. Therefore, the performances are usually lower for this category.}
  \label{table:results-local}
  %  
 %  \end{minipage}
@@ -320,7 +323,7 @@ In the following sections, we compare how \acomment{structured} models behave wh
 % \bcomment{que représentent les colonnes null et det, j'ai du mal à interpréter les chiffres}{}
 \paragraph{Models may be sensible to lexical variations}
 
-Some pairs seem difficult to predict for \cls and \bow models. For example, the following sentence pair is almost systematically wrongly classified on all 5 runs: "A little \textbf{boy} and a woman wearing a yellow shirt are getting splashed by a city fountain" $\rightarrow$ "A little \textbf{girl} and a woman wearing a yellow shirt are getting splashed by a city fountain". For \bow, we can extrapolate that the fact that the subject includes two people induces some confusion in the output representation. It is less clear for \cls.
+Some pairs seem difficult to predict for \cls and \bow models. For example, the following sentence pair is almost systematically wrongly classified on all five runs: "A little \textbf{boy} and a woman wearing a yellow shirt are getting splashed by a city fountain" $\rightarrow$ "A little \textbf{girl} and a woman wearing a yellow shirt are getting splashed by a city fountain". For \bow, we can extrapolate that the fact that the subject includes two people induces some confusion in the output representation. It is less clear for \cls.
 
 % Some interesting mistakes include the behavior of models when performing \textbf{so} transformations. 
 The \dep model seems particularly sensitive to transformations operated on the sentence's main verb. For example, the following sentence pair is better classified by \dep and \seq models:
@@ -338,7 +341,7 @@ The \dep model seems particularly sensitive to transformations operated on the s
 % For syntactic clauses expansion, all transformations preserve the sentence final meaning.
 % Constituency structure seems well suited for the expansion of agentive nouns (\textbf{expn}). 
 % For this set of transformation, we expect structured models such as Tree LSTM to be more robust to such transformations. However, when looking into details, the impact of the model's underlying structure depends on the transformation. 
-This set gathers transformations involving syntactic expansion. All models show a strong robustness to \acomment{adding modifiers (\textbf{aa} expansion)}. When only using GloVe embeddings, \acomment{expanding agentive nouns (\textbf{expa}), turn adjectives into relative clauses (\textbf{expn}) and turning compounds into relative clauses (\textbf{expc}) expansions} seem to be better captured by tree-structured model. However, using \bert embeddings reduces the gap between models, which suggests some syntactic information is captured in contextualized embeddings for such transformations. It is particularly explicit for the \bow model as the performance using GloVe or \bert word embedding deeply differs for all transformations. 
+This set gathers transformations involving syntactic expansion. All models show a strong robustness to adding modifiers (\textbf{aa} expansion). When only using GloVe embeddings, expanding agentive nouns (\textbf{expa}), turn adjectives into relative clauses (\textbf{expn}) and turning compounds into relative clauses (\textbf{expc}) expansions seem to be better captured by tree-structured model. However, using \bert embeddings reduces the gap between models, which suggests some syntactic information is captured in contextualized embeddings for such transformations. It is particularly explicit for the \bow model as the performance using GloVe or \bert word embedding deeply differs for all transformations. 
 
 % \textbf{expa} transformations which turn adjectives into relatives clauses are better handle by \seq when using GloVe embeddings. However, the initialization with contextualized embeddings benefit to the \seq model which outperform the simple \cls model on both \textbf{expn} and \textbf{expa}.
 % On the contrary, we expect such transformation to be challenging for a model which do not assume a complex underlying structure. 
@@ -396,7 +399,7 @@ This set gathers transformations involving syntactic expansion. All models show 
 Some pairs benefit from the use of Bert while structure does not help with the prediction. For example: "Someone is feeding an animal" $\rightarrow$ "Someone is giving food to an animal" is always mapped to the wrong label with \dep and \const models while \cls is completing a perfect prediction. The \bert pre-training process can correctly match the semantic similarity between "feeding' and "giving food to" while compositional operations following a given structure do not.
 
 % \FloatBarrier
-% \subsubsection{Global transformations} 
+\subsubsection{Global transformations} 
 
 % Except for the \textbf{inv}, all global transformation alter the meaning of the sentence. 
 % For the most impacting transformation: word scrambling (\textbf{ws}), \cls model is performing poorly, which results are below the baseline. 
@@ -463,6 +466,8 @@ An example from the words scrambling \textbf{(ws)} transformation illustrates th
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\FloatBarrier
 \subsection{Focus on the word scrambling transformation}
 
 % bert model show strong weaknesses when replacing words with semantic opposite.
@@ -470,7 +475,7 @@ As observed in Section \ref{sec:linguistic-breakdown}, all models poorly perform
 
 \subsubsection{SWAP dataset}
 
-The dataset introduced in \textcite{nie_19} is a NLI dataset composed of automatically generated sentence pairs whose logical relations cannot be extracted from lexical information alone. We refer to the \acomment{latter} as the SWAP dataset. The dataset is decomposed following two types of adversarial data for which the semantics of the sentence is changed by keeping the same lexicon and only modifying its compositional structure. The two transformations are \acomment{close} to the one conducted for the \acomment{words scrambling \textbf{(ws)}} on the SICK task, in particular the switching \acomment{of} the arguments and mixing modifiers operation.
+The dataset introduced in \textcite{nie_19b} is a NLI dataset composed of automatically generated sentence pairs whose logical relations cannot be extracted from lexical information alone. We refer to the latter as the SWAP dataset. The dataset is decomposed following two types of adversarial data for which the semantics of the sentence is changed by keeping the same lexicon and only modifying its compositional structure. The two transformations are close to the one conducted for the words scrambling \textbf{(ws)} on the SICK task, in particular the switching of the arguments and mixing modifiers operations.
 
 \paragraph{SOSWAP} The transformation inverses the subject and object in the sentence. For example, the following sentence is modified as follows: "A child is pulling  a woman on a sled in the snow." $\rightarrow$ "A woman is pulling a child on a sled in the snow.". The obtained sentence pair is labeled as \textit{contradictory}. The dataset contains \numprint{971} examples generated given this transformation.
 
@@ -484,7 +489,7 @@ The dataset introduced in \textcite{nie_19} is a NLI dataset composed of automat
 \labfig{concat}
 \end{figure}
 
-As the dataset size is limited, we concatenate the SICK and SWAP datasets. We experiment with two distinct concatenation strategies illustrated in \reffig{concat}. We either use a stratified train/dev/test split and distribute the examples among the corresponding split from the SICK dataset. In this configuration, the model is presented with specific examples of the transformation during training. In the second configuration, all examples are included in the SICK test set. During training, the model is not presented with any of the considered examples. Here, we aim to evaluate the ability of the various models to generalize to unseen typologies of examples. Regarding the training setup, we keep the method detailed in Section \ref{sec:training-setup} as well as the hyper-parameters setting.
+As the dataset size is limited, we concatenate the SICK and SWAP datasets. We experiment with two distinct concatenation strategies illustrated in \reffig{concat}. We use a stratified train/dev/test split and distribute the examples among the corresponding split from the SICK dataset. In this configuration, the model is presented with specific examples of the transformation during training. In the second configuration, all examples are included in the SICK test set. During training, the model is not presented with any of the considered examples. Here, we aim to evaluate the ability of the various models to generalize to unseen typologies of examples. Regarding the training setup, we keep the method detailed in Section \ref{sec:training-setup} as well as the hyper-parameters setting.
 
 \subsubsection{Results analysis}
 
@@ -496,7 +501,7 @@ As the dataset size is limited, we concatenate the SICK and SWAP datasets. We ex
 \toprule
 \multirow{2}{*}{} & \multicolumn{3}{c}{\textbf{SWAP}} & \multicolumn{3}{c}{\textbf{SWAP (only SICK training examples)}}\\
  & ALL & SOSWAP & ADAMOD & ALL & SOSWAP & ADAMOD\\\midrule
-Test Size & \numprint{6356} & \numprint{485} & \numprint{892} & \numprint{7733} & \numprint{971} & \numprint{1783} &\midrule
+Test Size & \numprint{6356} & \numprint{485} & \numprint{892} & \numprint{7733} & \numprint{971} & \numprint{1783} \\\midrule
 \bow & 72.5 \scriptsize{(1.1)} & 40.7 \scriptsize{(4.1)} & 82.6 \scriptsize{(3.2)} & 53.2 \scriptsize{(4.1)} & \textbf{\underline{16.0}} \scriptsize{(10.4)} & \textbf{\underline{16.5}} \scriptsize{(10.7)}\\
 \const & \textbf{85.5} \scriptsize{(0.3)} & \textbf{90.5} \scriptsize{(2.3)} & \textbf{\underline{97.2}} \scriptsize{(1.2)} & 54.3 \scriptsize{(1.1)} & 0.2 \scriptsize{(0.2)} & 6.0 \scriptsize{(3.4)}\\
 \seq & 83.7 \scriptsize{(0.9)} & 89.9 \scriptsize{(3.3)} & 95.0 \scriptsize{(1.2)} & 53.5 \scriptsize{(0.3)} & 0.2 \scriptsize{(0.3)} & 0.8 \scriptsize{(0.2)}\\
@@ -518,12 +523,12 @@ Test Size & \numprint{6356} & \numprint{485} & \numprint{892} & \numprint{7733} 
 \label{table:focus-swap}
 \end{table*}
 
-We present the accuracy scores on the test set in Table \ref{table:focus-swap}. In the two concatenation strategies, we present the accuracy of the entire test set and filtered on the SOSWAP and ADAMOD test pairs. 
+We present the accuracy scores on the test set in Table \ref{table:focus-swap}. In the two concatenation strategies, we present the accuracy of the entire test set and filter on the SOSWAP and ADAMOD test pairs. 
 
 The transformations in the SWAP dataset are much more limited than in the SICK dataset which includes additional transformations such as verb transitive/intransitive alternations or exploiting homonymy and polysemy. 
-Nevertheless, when no example is included in the training set, the accuracy scores seem in line with the one for the \acomment{words scrambling \textbf{(ws)}} transformation for the SICK dataset in Table \ref{table:transformation-global}. 
+Nevertheless, when no example is included in the training set, the accuracy scores seem in line with the one for the words scrambling \textbf{(ws)} transformation for the SICK dataset in Table \ref{table:transformation-global}. 
 
-For both transformations, all models fail to predict the correct label when not exposed to the transformation during the training. Only the \bow model stands out but with a substantial standard variation. However, the \dep model seems not entirely tricked by the ADAMOD transformation. Even more remarkable, \bert is completely fooled as well. From these specific swapping examples, we assume that despite explicit structure assimilation in the model, they may not be able to generalize to a specific topology of unseen examples. This may also contribute to the lower results for the \acomment{words scrambling \textbf{(ws)}} on the SICK task.
+For both transformations, all models fail to predict the correct label when not exposed to the transformation during the training. Only the \bow model stands out but with a substantial standard variation. However, the \dep model seems not entirely tricked by the ADAMOD transformation. Even more remarkable, \bert is completely fooled as well. From these specific swapping examples, we assume that despite explicit structure assimilation in the model, they may not be able to generalize to a specific topology of unseen examples. This may also contribute to the lower results for the words scrambling \textbf{(ws)} on the SICK task.
 
 % \FloatBarrier
 % \subsection{PAWS dataset}
@@ -576,14 +581,14 @@ For both transformations, all models fail to predict the correct label when not 
 
 % Evaluating model compositional properties is notoriously hard. First—as for every other language evaluation benchmark—creating the data is a critical step. Labeling raw data is time-consuming and it is difficult to control precisely the property of the examples. On the other hand, generating artificial data may lead to poor lexical or structural diversity. Additionally, studies show that models might use lexical biases or shallow heuristics in the data to achieve the task \cite{linzen_18}. Popular benchmarks require to generate the answer, which makes it difficult to disentangle the effect of the encoding and decoding parts. Indeed,  some errors might be related to the decoding part. This makes it difficult to precisely assess model compositional properties. 
 
-\acomment{So far, we have utilized data generated via a semi-automated procedure, which enables precise control of the property of the examples. On the other hand, generating artificial data may lead to poor lexical or structural diversity. Studies show that models might use lexical biases or shallow heuristics in the data to achieve the task \cite{linzen_18}. Consequently, shallow lexical and structural pattern matching operations may be difficult to distinguish from effective compositional operations.
+So far, we used data generated via a semi-automated procedure, which enables precise control of the property of the examples. On the other hand, generating artificial data may lead to poor lexical or structural diversity. Studies show that models might use lexical biases or shallow heuristics in the data to achieve the task \parencite{linzen_18}. Consequently, shallow lexical and structural pattern matching operations may be difficult to distinguish from effective compositional operations.
 
 Here, we aim to examine the compositional properties of neural architectures without being affected by lexical phenomena. Therefore, we propose a setup for which neural models compose representations for sentences that do not include words: arithmetic expressions. Arithmetic defines a self-contained universe which can be described using a limited set of symbols and composition rules. This makes it easy to build specific examples with isolated properties. By extension, we may evaluate neural model compositional abilities. Indeed, numerically evaluating formal expressions theoretically requires capturing the formal rules of arithmetic. We use the work from \textcite{hupkes_20} and consider aspects of compositionality that may also be declined for language: localism, substitutivity, productivity, and systematicity.
 
 Neural networks may be properly trained to solve mathematical expressions. A line of work outlines that pre-trained language models or static word embeddings capture scales and notions of numeracy \parencite{wallace_19, naik_19, sundararaman_20, zhang_20, thawani_21}. Beyond representing numbers, further work also analyzes the ability of models to perform basic mathematics reasoning \parencite{saxton_19, dua_19, geva_20} or solve mathematical expressions \parencite{lample_20}.
 
 Many of these related works mix raw text and numeracy and focus on the ability of language models to handle numeric representations. However, our problem is different. Therefore, we introduce \textbf{CobA}, a \textbf{Co}mpositionality \textbf{b}enchmark using \textbf{A}rithmetic. The dataset consists of simple arithmetic expressions combining natural integers with addition and multiplication operators. For example, $(5 + 4) \times 2$. We generate partitions of the dataset with specific in-domain and generalization sets, designed to evaluate the model's ability for each compositional aspect: localism, substitutivity, productivity, and systematicity. 
-}
+
 
 % The key contribution in our work is to build a dataset of arithmetic expressions to evaluate neural model compositional abilities. Indeed, numerically evaluating formal expressions theoretically requires capturing the formal rules of arithmetic. CobA focuses on aspects of compositionality that may also be declined for language \parencite{hupkes_20}. But contrary to previous work, we do not mix raw text and numeracy. We derive many arithmetic expressions, using limited formal explicit rules and symbols. In this section, we detail the generation of the dataset.
 
@@ -651,7 +656,7 @@ As in \textcite{lample_20}, we use prefix notation (also known as normal Polish 
     % \addlinespace
     \bottomrule
     \end{tabularx}
-    \caption{Dataset key statistics given each partition. We report the figures for the in-domain / generalization set for each statistic. We express the "Expressions with odds and evens", "Swapped-expressions in-domain" and "sub-expressions in-domain" as the proportion of expressions verifying the property for each set. The statistics that are determinants for the aspect studied in a given partition appear in \textbf{bold}.}
+    \caption{Key statistics given each partition of the dataset. We report the figures for the in-domain / generalization set for each statistic. We express the "Expressions with odds and evens", "Swapped-expressions in-domain" and "sub-expressions in-domain" as the proportion of expressions verifying the property for each set. The statistics that are determinants for the aspect studied in a given partition appear in \textbf{bold}.}
     \label{table:paritions}
 \end{table*}
 
@@ -686,7 +691,7 @@ We build partitions given the work from \textcite{hupkes_20}, which distinguishe
 
 \paragraph{Random} is a regular training procedure. We split the dataset randomly without any specific control during the selection of the expressions. While in-domain and generalization examples are all distinct, they share the same distributions and have similar underlying characteristics.
 
-\paragraph{Systematicity} evaluates the recombination of known parts to form new sequences. We build the partition using the distinction between odd and even natural integers. The training set contains expressions with only either odd or even numbers. For examples $2 \times 4 + 8$. or $3 + 5 + 7$. The test set contains expressions with both even and odd numbers such as $3 + 2 \times 5 + 4$.
+\paragraph{Systematicity} evaluates the recombination of known parts to form new sequences. We build the partition using the distinction between odd and even natural integers. The training set contains expressions with either only odd or even numbers. For examples $2 \times 4 + 8$. or $3 + 5 + 7$. The test set contains expressions with both even and odd numbers such as $3 + 2 \times 5 + 4$.
 
 \paragraph{Productivity} evaluates the extrapolation to longer sequences. We train the model on expression with up to 3 operators. We then evaluate the model on longer expressions with up to 9 operators.
 
@@ -732,7 +737,7 @@ We design all encoders comparable, with roughly the same number of parameters (1
 We train all models using the AdamW optimizer \parencite{loshchilov_19} with a $1e^{-3}$ learning rate, 1 epoch warm-up with polynomial decay and a batch size of 100. For each partition, we separate the in-domain set between a train and dev set using a random 90/10\% split. We measure the RMSE between the expression predicted and the true value on the dev set. We stop the training when no improvement is made for 5 consecutive epochs or after 100 maximum epochs\sidenote{For some runs, we observed that the initialization of the model weights prevented any decrease of the loss. In such cases, we immediately stopped the run and relaunched it with a new random seed.}. We train all models on an Nvidia 2080 Ti GPU. The training time is around 10 minutes per partition and model. We set parameters given the literature on the subject and do not perform hyper-parameters search.
 
 % \bcomment{It remains to get embeddings for natural numbers...}{}
-Regarding the natural integer embeddings, We use the DICE method \parencite{sundararaman_20}. The method uses a deterministic approach to construct natural integer embeddings. It obtains state-of-the-art results on evaluation benchmarks \parencite{wallace_19}. We do not update natural integer embeddings during training. For operators and specific tokens such as CLS or SEP tokens, we initialize embeddings randomly (with the same scale) and update them during training. 
+Regarding the natural integer embeddings, we use the DICE method \parencite{sundararaman_20}. The method uses a deterministic approach to construct natural integer embeddings. It obtains state-of-the-art results on evaluation benchmarks \parencite{wallace_19}. We do not update natural integer embeddings during training. For operators and specific tokens such as CLS or SEP tokens, we initialize embeddings randomly (with the same scale) and update them during training. 
 % We challenge the use of this initialization method in Section~\ref{subsec:embeddings}
 
 \subsubsection{Evaluation setup}
@@ -810,7 +815,7 @@ Models can generalize to examples with similar distributions. On the random part
 
 In general, encoders relying on LSTM cells outperform transformers. For productivity and systematicity, sequential models strongly outperform models using fixed-length context. Surprisingly, sequential LSTMs constantly outperform tree LSTMs, despite having fewer structural biases.
 
-Regarding transformers, the RMSE highly deteriorates for productivity. We confirm their known limitation in terms of productivity. We also observe transformers stumbling upon systematicity. Finally, we observe the benefit of tying parameters. \textsc{Albert} use the same architecture as \textsc{Bert}, except that weights are tied across layers. \textsc{Albert} achieve results comparable or above \textsc{Bert} despite using far less parameters.
+Regarding transformers, the RMSE highly deteriorates for productivity. We confirm their known limitation in terms of productivity. We also observe transformers stumbling upon systematicity. Finally, we observe the benefit of tying parameters. \textsc{Albert} uses the same architecture as \textsc{Bert}, except that weights are tied across layers. \textsc{Albert} achieves results comparable or above \textsc{Bert} despite using far less parameters.
 
 \subsection{In-depth analysis} 
 \labsec{composition:arithmetic:ablation-study}
@@ -931,12 +936,10 @@ With our dataset, only a minimal number of out-of-domain examples exposed during
 
 % By carefully selecting expressions from the in-domain and generalization sets, we introduce controlled differences between the two sets.
 % We show that models achieve competitive performance on a random partition, for which there is no controlled difference. Yet, for partitions requiring compositional extrapolation, performances drastically decrease for most encoder architectures. 
-\acomment{This chapter examined how the model structure impacts their degree of compositionality. We conducted experiments on two datasets with annotations allowing us to analyze better model performances: a NLI task presenting specific syntactic or lexical properties; CobA, a dataset of arithmetic expressions specifically designed to evaluate compositional properties along with four aspects: localism, substitutivity, productivity, and systematicity. We compared various structured models and outlined their strengths and weaknesses, given the properties of interest for each task. As a result of both experiments, we observed heterogeneity of results across both properties and model structures, suggesting that structure influences the way and type of information models capture.
+This chapter examined how the model structure impacts its degree of compositionality. We conducted experiments on two datasets with annotations allowing us to analyze better model performances: a NLI task presenting specific syntactic or lexical properties; CobA, a dataset of arithmetic expressions specifically designed to evaluate compositional properties along with four aspects: localism, substitutivity, productivity, and systematicity. We compared various structured models and outlined their strengths and weaknesses, given the properties of interest for each task. As a result of both experiments, we observed heterogeneity of results across both properties and model structures, suggesting that structure influences the way and type of information models capture.
 
 On the NLI task, pre-trained \bert models seem to encode information not captured by others. Indeed, models using \bert embeddings almost systematically achieve a better score. However, cases remain for which structured models can improve the performance of stand-alone contextualized embeddings. In such cases, syntactic information may not be fully encoded in \bert. We identified a specific transformation that replaces words with the semantic opposite. For such transformation, \bert contextualized embeddings lead to surprisingly low performances. Finally, we identified cases for which all models fail, particularly for the word scrambling transformation. 
 
 Regarding CobA, models are, in general, robust toward introducing paraphrases (substitutivity) and can perform a recursive evaluation of sub-components (localism). Yet, transformers struggle to generalize to longer sequences (productivity) or combine known parts to form new sequences (systematicity). This difficulty increases with the complexity of the expression and structure, the number of symbols and operator types. 
 
 In both experiments, we observe that results could be slightly improved by balancing the training set distribution and adapting the number of parameters or the exposition to generalization expressions. In both cases, there is still room for improvements in fully capturing compositional abilities and common sense knowledge within NLP models.
-
-}

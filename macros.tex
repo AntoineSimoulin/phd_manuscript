@@ -1,0 +1,31 @@
+% Load the packages for tables
+\usepackage{booktabs, tabularx}
+\usepackage{subcaption}
+\usepackage{numprint}
+% French
+% \npthousandsep{\,}
+% English
+\npthousandsep{,}
+\npthousandthpartsep{}
+\npdecimalsign{.}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\renewcommand\tabularxcolumn[1]{m{#1}}
+% for vertical centering text in X column
+\usepackage{sistyle}
+
+\usepackage{xspace}
+\newcommand{\const}{\textsc{Const}\xspace}
+\newcommand{\dep}{\textsc{Dep}\xspace}
+\newcommand{\seq}{\textsc{Seq}\xspace}
+\newcommand{\bert}{\textsc{Bert}\xspace}
+\newcommand{\albert}{\textsc{Albert}\xspace}
+\newcommand{\gpt}{\textsc{GPT}\xspace}
+\newcommand{\bow}{\textsc{Bow}\xspace}
+\newcommand{\cls}{\textsc{Bert-cls}\xspace}
+% \DeclarePairedDelimiter\norm{\lVert}{\rVert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\usepackage[dvipsnames]{xcolor}
+
+\newcommand{\bcomment}[2]{{\bfseries\color{red} #1} {\bfseries\color{blue} #2}}
+\newcommand{\acomment}[1]{{\color{Green} #1}}
