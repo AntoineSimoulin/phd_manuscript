@@ -33,6 +33,12 @@
 	numbers=noenddot, % Comment to output dots after chapter numbers; the most common values for this option are: enddot, noenddot and auto (see the KOMAScript documentation for an in-depth explanation)
 ]{kaobook}
 
+% Compile quality PDF/A
+% https://www.mathstat.dal.ca/~selinger/pdfa/
+\usepackage[a-1b]{pdfx}   % for PDF/A-1b
+% \usepackage[x-1a]{pdfx}  % for PDF/X-1a
+\usepackage{hyperref}
+
 % Choose the language
 \ifxetexorluatex
 	\usepackage{polyglossia}
@@ -145,39 +151,39 @@
 
 %\title[Example and documentation of the {\normalfont\texttt{kaobook}} class]{Example and documentation \\ of the {\normalfont\texttt{kaobook}} class}
 % \title[A study on sentence embeddings and their relation with sentence structure]{A study on sentence embeddings and their relation with sentence structure}
-% \title[Sentence embeddings and their relation with sentence structures]{Sentence embeddings and their relation with sentence structures}
+\title[Sentence embeddings and their relation with sentence structures]{Sentence embeddings and their relation with sentence structures}
 
-\title[Sentence embeddings and their relation with sentence structures]{
-    \includegraphics[width=6cm]{images/paris-cité.png}
+% \title[Sentence embeddings and their relation with sentence structures]{
+%     \includegraphics[width=6cm]{images/paris-cité.png}
     
-    \huge
-    Université Paris Cité\\
-    \large 
-    Sciences Mathématiques de Paris Centre (ED 386)\\
-    Laboratoire de Linguistique Formelle (LLF)\\[30pt]
+%     \huge
+%     Université Paris Cité\\
+%     \large 
+%     Sciences Mathématiques de Paris Centre (ED 386)\\
+%     Laboratoire de Linguistique Formelle (LLF)\\[30pt]
 
-	\Huge
-    Sentence embeddings and their relation with sentence structures\\[30pt]
+% 	\Huge
+%     Sentence embeddings and their relation with sentence structures\\[30pt]
     
-    \LARGE 
-    \textmd{Par Antoine Simoulin\\[1cm]
-    \Large
-    Thèse de doctorat d’informatique\\[1cm]
-    Dirigée par Benoit Crabbé \\[20pt]
-    \large 
-    Présentée et soutenue publiquement le 7 juillet 2022\\[20pt]}
+%     \LARGE 
+%     \textmd{Par Antoine Simoulin\\[1cm]
+%     \Large
+%     Thèse de doctorat d’informatique\\[1cm]
+%     Dirigée par Benoit Crabbé \\[20pt]
+%     \large 
+%     Présentée et soutenue publiquement le 7 juillet 2022\\[20pt]}
     
-    \raggedright\large 
-    \textmd{Devant un jury composé de : \\[0.2cm]
-    \normalsize
-    Claire Gardent, directrice de recherche, CNRS et Université de Lorraine, rapporteuse\\
-    Éric Gaussier, professeur HDR, Université Grenoble Alpes, rapporteur\\
-    Rachel Bawden, chargée de recherche, INRIA, examinatrice\\
-    Loïc Barrault, maitre de conférence, Le Mans Université, examinateur\\
-    Benoit Crabbé, professeur HDR, Université Paris Cité, examinateur\\
-    Nicolas Brunel, maitre de conférence, ENSIIE et Laboratoire de Mathématiques et Modélisation d'Évry, membre invité du jury\\
-   }
-}
+%     \raggedright\large 
+%     \textmd{Devant un jury composé de : \\[0.2cm]
+%     \normalsize
+%     Claire Gardent, directrice de recherche, CNRS et Université de Lorraine, rapporteuse\\
+%     Éric Gaussier, professeur HDR, Université Grenoble Alpes, rapporteur\\
+%     Rachel Bawden, chargée de recherche, INRIA, examinatrice\\
+%     Loïc Barrault, maitre de conférence, Le Mans Université, examinateur\\
+%     Benoit Crabbé, professeur HDR, Université Paris Cité, examinateur\\
+%     Nicolas Brunel, maitre de conférence, ENSIIE et Laboratoire de Mathématiques et Modélisation d'Évry, membre invité du jury\\
+%   }
+% }
 % \subtitle{Customise this page according to your needs}
 
 % \author[Antoine Simoulin]{Federico Marotta\thanks{A \LaTeX\ lover}}
