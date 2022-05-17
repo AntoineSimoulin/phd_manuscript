@@ -76,7 +76,7 @@
 %                      format suitable for storing in a database field
 %                      with a 'date' data type.
 
-\def\sep{; }
+% \def\sep{; }
 
 \Title        {Sentence embeddings and their relation with sentence structures}
 
@@ -84,9 +84,9 @@
 
 % \Copyright    {Copyright \copyright\ 2014 "Author's Name Goes Here"}
 
-\Keywords     {natural language processing\sep
-               sentence embeddings\sep
-               deep learning\sep
+\Keywords     {natural language processing,
+               sentence embeddings,
+               deep learning,
                structured neural networks}
 
 \Subject      {The thesis studies the role of the structure of neural models to compose lexical units during the construction of sentence embeddings}
