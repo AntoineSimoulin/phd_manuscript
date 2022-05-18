@@ -142,7 +142,7 @@ For other encoders, a dedicated architecture predicts the similarity distributio
 \begin{split}
 &h_{\times}=h_L\odot h_R, ~~~~~h_{+} = |h_L - h_R |, \\
 &h_s = \sigma (W^{(\times)}h_{\times} + W^{(+)}h_{+} + b^{(h)}), \\
-&\hat{p}_{\theta} = \text{softmax}(W^{(p)}h_s + b^{(p)}),\\
+&\hat{p}_{\theta} = \softmax(W^{(p)}h_s + b^{(p)}),\\
 \end{split}
 \end{align}
 

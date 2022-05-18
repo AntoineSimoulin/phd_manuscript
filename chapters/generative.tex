@@ -105,7 +105,7 @@ This difference in design has important implications for both architectures' tra
 With $U$ the context of $u_t, \forall t \in \llbracket 1, T \rrbracket$. Given the contextualized representations of each token from \refeq{generative:layers-eq}, we can compute the conditional probabilities associated with each token given \refeq{generative:token-proba}.
 
 \begin{equation}
-    P\left(u_t \middle| U \right) = \textrm{softmax}(h_t^N W_e^T) \labeq{generative:token-proba} \\
+    P\left(u_t \middle| U \right) = \softmax(h_t^N W_e^T) \labeq{generative:token-proba} \\
     % \mathcal{L}(U) = \sum_i log P\left(u_{i} \middle| u_{i-k} \cdots u_{i-1}  ; \Theta\right)
 \end{equation}
 
@@ -130,7 +130,7 @@ With $k$ the context-size, and $U=\{u_{i-k} \cdots u_{i-1}\}$ the context of the
 % P\left(y \middle| x^1 \cdots x^m \right)
 \begin{align}
     h_N^m &= \textrm{GPT}(x_1 \cdots x_m) \labeq{generative:gpt-std} \\
-    \hat{y} &= \textrm{softmax}(h_N^m W^{(y)}) \labeq{generative:softmax} \\
+    \hat{y} &= \softmax(h_N^m W^{(y)}) \labeq{generative:softmax} \\
     \mathcal{L} &= \sum_{y \in Y} \mathcal{L}(\hat{y}, y) \labeq{generative:loss} 
 \end{align}
 
@@ -145,7 +145,7 @@ On the one hand, when encoding a fixed-length text for downstream tasks, \gpt de
 % P\left(y \middle| x^1 \cdots x^m\right)
 \begin{align}
     h_{m+2}^N &= \textrm{GPT}(x_1 \cdots x_m [SEP]) \labeq{generative:gpt-lm} \\
-    \hat{y} &= \textrm{softmax}(h_{m+2}^N W_e^T) \labeq{generative:token-proba-m+1} \\
+    \hat{y} &= \softmax(h_{m+2}^N W_e^T) \labeq{generative:token-proba-m+1} \\
     \mathcal{L} &= y \log(\hat{y}) \labeq{generative:cross-entropy}
 \end{align}
 
@@ -166,7 +166,7 @@ In this configuration, it is not necessary to modify the model's architecture or
     & \quad x^1_1 \cdots x^1_m [SEP] y^1 \nonumber \\
     & \quad x^2_1 \cdots x^2_m [SEP] y^2 \nonumber \\
     & \quad x_1 \cdots x_m [SEP]) \labeq{generative:few-shot}\\
-    \hat{y} &= \textrm{softmax}(h^N W_e^T) \labeq{generative:few-shot-proba-m+1}
+    \hat{y} &= \softmax(h^N W_e^T) \labeq{generative:few-shot-proba-m+1}
 \end{align}
 
 For example, if we aim at solving a question answering task, we can format the following prompt to answer the question "Que célèbre-t-on le 14 juillet ?": 

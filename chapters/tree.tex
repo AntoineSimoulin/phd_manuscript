@@ -330,7 +330,7 @@ We use a dedicated architecture to predict the similarity distribution from a pa
 \begin{split}
 &h_{\times}=h_L\odot h_R, ~~~~~h_{+} = |h_L - h_R |, \\
 &h_s = \sigma (W^{(\times)}h_{\times} + W^{(+)}h_{+} + b^{(h)}), \\
-&\hat{p}_{\theta} = \text{softmax}(W^{(p)}h_s + b^{(p)}),\\
+&\hat{p}_{\theta} = \softmax(W^{(p)}h_s + b^{(p)}),\\
 \end{split}
 \end{align}
 Where $\sigma$ is the sigmoid function. We use the KL-divergence between the prediction $\hat{p}_{\theta}$ and the ground truth $p$ as training objective:
@@ -415,9 +415,9 @@ We use a similar training procedure as in \textcite{choi_18}. A dedicated archit
 \begin{align}
 \begin{split}
 &h_{\times}=h_L\odot h_R, ~~~~~h_{+} = |h_L - h_R |, \\
-&h_s = \textsc{Relu}(W^{(1)}[h_{\times}, h_{+}, h_L, h_R] + b^{(1)}), \\
-&h_s = \textsc{Relu}(W^{(2)}h_s + b^{(2)}), \\
-&\hat{p}_{\theta} = \text{softmax}(W^{(p)}h_s + b^{(p)}),\\
+&h_s = \relu(W^{(1)}[h_{\times}, h_{+}, h_L, h_R] + b^{(1)}), \\
+&h_s = \relu(W^{(2)}h_s + b^{(2)}), \\
+&\hat{p}_{\theta} = \softmax(W^{(p)}h_s + b^{(p)}),\\
 \end{split}
 \end{align}
 We use the cross entropy loss between the prediction $\hat{p}_{\theta}$ and the ground truth $p$ as training objective:
@@ -547,7 +547,7 @@ In particular, we can use a pre-trained model such as \textsc{Bert} to infer str
     %h^0_j &= W_eu_j + W_p \label{eq:first-layer}\\
     q_j, k_j &= W^{(q, k)} x_j + b^{(q, k)} \label{eq:qkv}\\
     %s_{kj} &= \mathsf{softmax}\left(\frac{k_{k} \cdot q_{j}}{\sqrt{N}}\right) \cdot v_k \label{eq:bert-attention}
-    s_{kj} &= \mathsf{softmax}\left(\frac{k_{k} \cdot q_{j}}{\sqrt{N}}\right) \label{eq:bert-attention}
+    s_{kj} &= \softmax\left(\frac{k_{k} \cdot q_{j}}{\sqrt{N}}\right) \label{eq:bert-attention}
     %h^n_j &= \sum_{k=1}^{N} \alpha_{kj} h^{n-1}_k \label{eq:bert-weighted}
 \end{align}
 % \quad \forall n \in [1, L]

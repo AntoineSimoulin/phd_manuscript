@@ -200,14 +200,14 @@ Q_h & = H W_Q^{(h)}, \quad K_h = H W_K^{(h)}, \quad V_h = H W_V^{(h)}, \\
 % Q^{(h)}(x_i) &= W^T_{h, q}x_i, \\
 % K^{(h)}(x_i) &= W^T_{h, k}x_i, \\
 % V^{(h)}(x_i) &= W^T_{h, v}x_i, \\
-\alpha^{(h)}_{i,j} &= \textrm{softmax}_j \left(\frac{Q_h K_h^{\top}}{\sqrt{k}} \right) \labeq{transformer:alpha}\\
+\alpha^{(h)}_{i,j} &= \softmax_j \left(\frac{Q_h K_h^{\top}}{\sqrt{k}} \right) \labeq{transformer:alpha}\\
 h'_t &= \sum_{h=1}^HW^{(h)}_{C}\sum_{j=1}^T\alpha^{(h)}_{t,j}V_h \labeq{transformer:mha-last}\\
 h_t &= \textrm{LayerNorm}(h_t + h'_t; \gamma_1, \beta_1) \labeq{transformer:ffn-start}\\
-h'_t &= W_2^{\top}\textrm{ReLU}(W_1^{\top}h_t)\\
+h'_t &= W_2^{\top}\relu(W_1^{\top}h_t)\\
 h_t &= \textrm{LayerNorm}(h_t + h'_t; \gamma_2, \beta_2) \labeq{transformer:ffn-last}
 \end{align}
 
-With $W_Q^{(h)}, W_K^{(h)}, W_V^{(h)} \in \mathbb{R}^{d\times k}$, $W^{(h)}_{C} \in \mathbb{R}^{k\times d}$, $W_1 \in \mathbb{R}^{d \times m}$, $W_2 \in \mathbb{R}^{m \times d}$, and $\gamma_1, \beta_1, \gamma_2, \beta_2 \in \mathbb{R}^d$. $H$ denotes the number of attention heads, $d$ the dimension of the model. We set $k = \frac{d}{H}$. The notation $\textrm{softmax}_j$ indicates we take the softmax (defined in \refeq{transformer:alpha}) over the $d$-dimensional
+With $W_Q^{(h)}, W_K^{(h)}, W_V^{(h)} \in \mathbb{R}^{d\times k}$, $W^{(h)}_{C} \in \mathbb{R}^{k\times d}$, $W_1 \in \mathbb{R}^{d \times m}$, $W_2 \in \mathbb{R}^{m \times d}$, and $\gamma_1, \beta_1, \gamma_2, \beta_2 \in \mathbb{R}^d$. $H$ denotes the number of attention heads, $d$ the dimension of the model. We set $k = \frac{d}{H}$. The notation $\softmax_j$ indicates we take the softmax (defined in \refeq{transformer:alpha}) over the $d$-dimensional
 vector indexed by $j$. In \refeq{transformer:mha-first}, $\left[ \quad \right]$ indicates the vector concatenation operation.
 
 % \begin{align}
@@ -318,7 +318,7 @@ A man inspects the uniform of a figure in some East Asian country. & The man is 
 % &h_s = \textrm{ReLU}(W^{(2)}h_s + b^{(2)}), \\
 &h_s = W^{(1)}[h_{\times}, h_{+}, h_L, h_R] + b^{(1)}, \\
 &h_s = W^{(2)}h_s + b^{(2)}, \\
-&\hat{p}_{\theta} = \text{softmax}(W^{(p)}h_s + b^{(p)}),\\
+&\hat{p}_{\theta} = \softmax(W^{(p)}h_s + b^{(p)}),\\
 \end{split}
 \end{align}
 % We use the cross entropy loss between the prediction $\hat{p}_{\theta}$ and the ground truth $p$ as training objective:
@@ -387,8 +387,8 @@ The training dataset is built upon the BookCorpus dataset \parencite{zhu_15}\sid
 \begin{split}
     &s_{\text{avg}} = \frac{1}{2} (s_1 + s_2), ~~~s_{\text{sub}} = s_1 - s_2, ~~~s_{\text{mul}} = s_1 * s_2 \\
     &S = [s_1, s_2, s_{\text{avg}}, s_{\text{sub}}, s_{\text{mul}}]\\
-    &h_s = \textrm{ReLU}(W^{(2)}h_s + b^{(2)}), \\
-    &\hat{p}_{\theta} = \text{softmax}(W^{(p)}h_s + b^{(p)}), \\
+    &h_s = \relu(W^{(2)}h_s + b^{(2)}), \\
+    &\hat{p}_{\theta} = \softmax(W^{(p)}h_s + b^{(p)}), \\
 \end{split}
 \labeq{similarity:2}
 \end{equation}
