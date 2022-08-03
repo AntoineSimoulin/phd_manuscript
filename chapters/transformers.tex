@@ -13,7 +13,7 @@
      Into the universal valley.\\
      \textup{[\,\dots]}}{Edgar Allan Poe}{The Sleeper, 1831}
 
-% In the previous chapter, we developed linguistically inspired tree-based models. We designed a model to reduce the need for carefully hand-annotated data. Yet, we exhibit other practical limitations of these models: structure instabilities across runs, inconsistency with linguistic insights or even convergence towards trivial branching patterns. 
+% In the previous chapter, we developed linguistically inspired tree-based models. We designed a model to reduce the need for carefully hand-annotated data. However, we exhibit other practical limitations of these models: structure instabilities across runs, inconsistency with linguistic insights or even convergence towards trivial branching patterns. 
 
 % performance increment in downstream applications
 The previous chapters focused on tree-structured models. We observed that such architectures have practical limitations, including low computational efficiency due to batching difficulties and the frequent requirement to infer sample structure from annotated data. Because of their practical constraints and limited performance increment, the community puts the focus on 
@@ -21,7 +21,7 @@ The previous chapters focused on tree-structured models. We observed that such a
 alternative methods such as recurrent neural networks \parencite{hochreiter_97, cho_14} or transformers \parencite{vaswani_17} that have gained an increasing popularity in recent years. Unlike tree-based models, these methods do not require costly annotations.
 % require \bcomment{only raw text as input}{not exactly : rather, these language models do not require costly annotations (LSTM etc. can be used with supervision as a building block of complex networks}. 
 
-Transformers introduce a profound paradigm shift with recurrent and recursive architectures. For the latter, the input structure determines the computational path: recurrent networks process words sequentially given their order; recursive networks process words in a bottom-up manner—starting from the leaves up to the root. In contrast, Transformers process all words simultaneously through a fixed number of layers and do not appear to enforce an obvious structure. Yet, as many results suggest, these new models acquire some sort of structure.
+Transformers introduce a profound paradigm shift with recurrent and recursive architectures. For the latter, the input structure determines the computational path: recurrent networks process words sequentially given their order; recursive networks process words in a bottom-up manner—starting from the leaves up to the root. In contrast, Transformers process all words simultaneously through a fixed number of layers and do not appear to enforce an obvious structure. However, as many results suggest, these new models acquire some sort of structure.
 % \bcomment{tree}{text, we do not know it this is a tree} structure.
 In particular, \textcite{linzen_16} probe LSTM architecture for grammar competencies such as subject-verb agreement. While LSTMs do not have inherent representations of hierarchical structure, they can capture a substantial amount of grammatical structure when explicitly supervised. 
 \textcite{jawahar_19} perform a series of experiments to investigate the nature of the representations learned by different layers of \bert. They observe that the nature of information encoded by \bert evolves with the layer depth: beginning with surface features in the earlier layers and progressing to syntactic and semantic aspects at the top. Based on their findings, \bert representations reflect linguistic information in a compositional manner that mimics classical tree-like structures.
@@ -55,7 +55,7 @@ We organize our argumentation as follows: \refsec{transformers:graphs} interpret
 
 % These models do not fully succeed in computing meaningful semantic representation along with explicit structure.
 
-% The previous chapter exhibit the limits of recursive neural models. From a computational perspective, such architectures may not be optimal since they require inputting the text structure as well as the raw surface form. As argued by \textcite{choi_18}, different tasks might require different hierarchical compositions of words. The composition induced by linguistic may therefore not be optimal from a computational or task oriented perspective. We proposed an original framework, for which the structure is learned jointly with the composition function. We thus reduce the need for linguistic annotations and obtain competitive results for semantic textual similarity task. Yet, the inferred structure might present some instabilities across runs, differ from linguistic insights or even converge towards trivial branching patterns.
+% The previous chapter exhibit the limits of recursive neural models. From a computational perspective, such architectures may not be optimal since they require inputting the text structure as well as the raw surface form. As argued by \textcite{choi_18}, different tasks might require different hierarchical compositions of words. The composition induced by linguistic may therefore not be optimal from a computational or task oriented perspective. We proposed an original framework, for which the structure is learned jointly with the composition function. We thus reduce the need for linguistic annotations and obtain competitive results for semantic textual similarity task. However, the inferred structure might present some instabilities across runs, differ from linguistic insights or even converge towards trivial branching patterns.
 
 % Tree-based models need carefully hand-annotated data to be trained. 
 % \sidenote{We deep dive on the structure learned by transfomers model in \refch{transformers}.}.
@@ -259,7 +259,7 @@ Sequential \textsc{RNN} or \textsc{TreeRNN} operate on sparse graph structure. N
 
 It looks like the answer is included in the question. 
 Transformers are indeed admittedly over-parametrized in the litterature \parencite{chen_20, hou_20, voita_19}. 
-Yet, the role of this over-parametrization is not well understood. 
+However, the role of this over-parametrization is not well understood. 
 Transformers layers are suspected to be highly redundant \parencite{liu_20} and to cause over-fitting \parencite{fan_20, zhou_20b}. 
 
 In the light of our GNN analysis transformers should naturally share parameters across layers. As mentioned earlier, the model \textsc{Albert} \parencite{lan_20} already implements this key specificity by tying weights across layers. Similarly, \textsc{Tree-LSTM} or sequential \textsc{LSTM}, which can be interpreted as GNN other specific graphs, also share their parameters across iterations.
@@ -285,7 +285,7 @@ We hypothesize that token hidden states will eventually converge toward a fixed 
 % Transformers operate on fixed length input and apparently \bcomment{fall on the static network category}{nope, the computation graph is different for sentences with different lengths (in theory), same computation is practical}. As \textcite{hamilton_2020, joshi_2020}, we argue in the next section that we may interpret transformers as a structured network operating on fully connected directional graph.
 % We refer to intermediate layer outputs as hidden states. 
 
-% Neural networks process samples trough the layers, along with the computational graph. We refer to intermediate layer outputs as hidden states. The hidden states consist of latent distributed representations. They are not design such that their coordinates reflect some specific semantic information. Yet, for the architectures introduced in \refsec{training:architectures} (\textsc{LSTM}, \textsc{TreeLSTM}, or transformers) it is possible to associate the hidden states $h_t$ to a specific word $w_t$ from the input sequence.
+% Neural networks process samples trough the layers, along with the computational graph. We refer to intermediate layer outputs as hidden states. The hidden states consist of latent distributed representations. They are not design such that their coordinates reflect some specific semantic information. However, for the architectures introduced in \refsec{training:architectures} (\textsc{LSTM}, \textsc{TreeLSTM}, or transformers) it is possible to associate the hidden states $h_t$ to a specific word $w_t$ from the input sequence.
 
 % We refer to the graph defined by the collection of layers and their connections as the network structure. If the network structure is a directed acyclic graph, we refer to the model as a feed forward network. If the network structure allow connection between the same or previous layer, we called it a recurrent network. Finally, recursive neural networks allow connection if the form of a given tree topological order. 
 
@@ -318,7 +318,7 @@ We hypothesize that token hidden states will eventually converge toward a fixed 
 % \item State that the heads and the feedforward connections are part of the extra stuff + the parametrization of each layer + positional embeddings 
 % \item Once it is done. Explain that in the case of language and with transformers the graph considered is fully connected.
 % \item Then and only then, explain that you can compare the message passing behavior of transformers to the message passing behavior of the other models (your plots in Fig 5.1 are insightful bc they show the extra connectivity of transformers.
-% \item You might also stress that transformers do iterative refinements while other models (LSTMSs) do not. Yet, how does the message passing looks like with stacked LSTMs ?
+% \item You might also stress that transformers do iterative refinements while other models (LSTMSs) do not. However, how does the message passing looks like with stacked LSTMs ?
 % \end{enumerate}
 % To summarize, do not mess up with the computation graph, but rather take advantage of the message passing framework of Hamilton
 % }
