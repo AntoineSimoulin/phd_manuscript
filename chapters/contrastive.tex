@@ -15,7 +15,7 @@ Bigger is better ? at first sight it seems that current Natural Language Process
 The previous sections discussed the importance of neural model structure in composing sentence representations. However, NLP trends do not primarily focus on these types of models, instead focusing on transformers, which are easier to scale. As a result, previous years have seen a general increase in the size of the models and a corresponding improvement over downstream performances. These improvements did not directly benefit sentence embeddings, as many transformer encoders perform below state-of-the-art on standard benchmarks. 
 % In this section. we review the challenges and benefits of large models.
 
-This section relates the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training Pairs}.\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}} This project took place during the \textit{Community week using JAX/Flax for NLP \& CV} organized by Hugging Face.\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}} Our project was among the competition winners and received an honorable mention. As part of this project, I contributed actively to the construction of the dataset as well as the training and documentation of the sentence embedding models.
+This section describes the development of state-of-the-art sentence embedding models as part of the project \textit{Train the Best Sentence Embedding Model Ever with 1B Training Pairs}.\footnote{\url{https://discuss.huggingface.co/t/train-the-best-sentence-embedding-model-ever-with-1b-training-pairs/7354}} This project took place during the \textit{Community week using JAX/Flax for NLP \& CV} organized by Hugging Face.\footnote{\url{https://discuss.huggingface.co/t/open-to-the-community-community-week-using-jax-flax-for-nlp-cv/7104}} Our project was among the competition winners and received an honorable mention. As part of this project, I contributed actively to the construction of the dataset as well as the training and documentation of the sentence embedding models.
 
 We organize the section as follows: we first review the related work and the benefit of scaling in the specific case of sentence embeddings (\refsec{scale:introduction}). \refsec{scale:method} then proposes a self-supervised pre-training approach to learn sentence encoders. The approach addresses engineering challenges such as data collection, framework choice, or training hyper-parameters. Finally, we evaluate the benefit of our approach in \refsec{scale:experiments}.
 
@@ -139,7 +139,7 @@ AllNLI (\href{https://nlp.stanford.edu/projects/snli/}{SNLI} and \href{https://c
 \textbf{Total} & & \textbf{\num{1124818467}} \\
 \bottomrule
 \end{tabularx}
-\caption{1 billion sentence pairs dataset. We use already existing datasets accessible in open source or for which the raw data and pre-processing scripts were available. For each sub-dataset, we provide the link to the available resources (existing dataset or pre-processing scripts).}
+\caption{One billion sentence pairs dataset. We use already existing datasets accessible in open source or for which the raw data and pre-processing scripts were available. For each sub-dataset, we provide the link to the available resources (existing dataset or pre-processing scripts).}
 \labtab{tab:1B:dataset}
 \end{table*}
 
@@ -265,7 +265,7 @@ In general, transformer models with a higher number of parameters reach higher s
 \href{https://huggingface.co/flax-sentence-embeddings/all_datasets_v3_roberta-large}{RoBERTa} & 49.4 & 66.8 & 82.5 & 32.8 & \textbf{83.4} & \textbf{55.6} & \textbf{81.4} & 83.5 & \textbf{88.7} & 92.1 & \textbf{52.5} & 52.2 & 75.3 & \textbf{84.5} \\
 \bottomrule
 \end{tabularx}}
-\caption{\labtab{scale:seb} Detailed results on the Sentence Embeddings Benchmark (SEB). All models are further pre-trained using our contrastive objective on our 1 billion sentences corpus. The best results in each section are shown in \textbf{bold}. We report the mean average precision (AP) for binary prediction and retrieval tasks, the V-measure for clustering tasks, and the Spearman rank correlation for semantic textual similarity task (STS). For each task, we report the best score obtained with cosine, euclidean, and Manhatten distance. We report all metrics by convention as $\times 100$. We show the best results in \textbf{bold}.}
+\caption{\labtab{scale:seb} Detailed results on the Sentence Embeddings Benchmark (SEB). All models are further pre-trained using our contrastive objective on our one billion sentences corpus. The best results in each section are shown in \textbf{bold}. We report the mean average precision (AP) for binary prediction and retrieval tasks, the V-measure for clustering tasks, and the Spearman rank correlation for semantic textual similarity task (STS). For each task, we report the best score obtained with cosine, euclidean, and Manhatten distance. We report all metrics by convention as $\times 100$. We show the best results in \textbf{bold}.}
 \end{table*}
 \setlength\tabcolsep{6pt} % default value: 6pt
 
