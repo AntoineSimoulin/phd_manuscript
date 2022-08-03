@@ -97,7 +97,7 @@ We can decompose each iteration in two steps: First, an \textit{aggregation} ste
     h^{(k+1)}_u &= \mathsf{update}^{(k)}\left(h^{(k)}_u, m^{(k)}_{\mathcal{N}(u)}\right), \labeq{update}
 \end{align}
 
-Here, the $\mathsf{aggregate}$\sidenote{The $\mathsf{aggregate}$ function takes a set as input and is therefore permutation invariant by design.} and $\mathsf{update}$ function are differentiable and $m_{\mathcal{N}(u)}$ is the \textit{message} aggregated from $u$ neighborhood. 
+Here, the $\mathsf{aggregate}$ and $\mathsf{update}$ function are differentiable and $m_{\mathcal{N}(u)}$ is the \textit{message} aggregated from $u$ neighborhood. \sidenote{The $\mathsf{aggregate}$ function takes a set as input and is therefore permutation invariant by design.}
 
 \begin{figure*}[!htb]
 \begin{center}
