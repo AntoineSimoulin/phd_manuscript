@@ -146,7 +146,7 @@ For other encoders, a dedicated architecture predicts the similarity distributio
 \end{split}
 \end{align}
 
-The KL-divergence between the predicted distribution $\hat{p}_{\theta}$ and the ground truth $p$ is used as training objective:
+The KL-divergence between the predicted distribution $\hat{p}_{\theta}$ and the ground truth $p$ is used as a training objective:
 \begin{equation}
 J(\theta) = \frac{1}{N}\sum_{k=1}^{N}\text{KL}(p^{(k)} \Big|\Big| \hat{p}_{\theta}^{(k)}) + \frac{\lambda}{2}||\theta||_{2}^{2}
 \end{equation}
