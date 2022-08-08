@@ -90,7 +90,7 @@ A graph is a ubiquitous data structure that can describe many complex systems. F
 
 Graph neural networks take as input a graph $\mathscr{G}$ along with a set of node features $X \in \mathbb{R}^{d \times |\mathcal{V}|}$, with $d$ the network hidden size. We illustrate a graph neural network in \reffig{graph-example}.
 Graph neural networks generate a node embedding $z_u, \forall u \in \mathcal{V}$. They iteratively update node hidden embeddings $h_u^{(k)}$ using a neural message passing process. 
-We can decompose each iteration in two steps: First, an \textit{aggregation} step (\refeq{aggregate}), that aggregate the information from all nodes directly connected to $u$, that we define as the graph neighborhood $\mathcal{N}(u)$. Then an \textit{update} step (\refeq{update}) that update each hidden embedding given its neighborhood aggregated information and its previous state. We illustrate the iterative process in \reffig{gnn}. 
+We can decompose each iteration into two steps: First, an \textit{aggregation} step (\refeq{aggregate}), that aggregate the information from all nodes directly connected to $u$, that we define as the graph neighborhood $\mathcal{N}(u)$. Then an \textit{update} step (\refeq{update}) that update each hidden embedding given its neighborhood aggregated information and its previous state. We illustrate the iterative process in \reffig{gnn}. 
 
 \begin{align}
     m^{(k)}_{\mathcal{N}(u)} &= \mathsf{aggregate}^{(k)}\left(\{h_v^{(k)}, \forall v \in \mathcal{N}(u)\}\right), \labeq{aggregate} \\
@@ -103,7 +103,7 @@ Here, the $\mathsf{aggregate}$ and $\mathsf{update}$ function are differentiable
 \begin{center}
 \includegraphics[width=16cm]{images/graph_update_5.png}
 \end{center}
-\caption{Illustration of one iteration to compute the hidden state of the node $u$ (in dark blue). We decompose the iteration in two steps: the aggregation (\refeq{aggregate}) and update (\refeq{update}) step. We illustrate two iterations, at step $k$ to compute $h_u^{k+1}$ and $k-1$ to compute $h_u^{k}$. We adapted the figure from \textcite{hamilton_2020}.}
+\caption{Illustration of one iteration to compute the hidden state of the node $u$ (in dark blue). We decompose the iteration into two steps: the aggregation (\refeq{aggregate}) and update (\refeq{update}) step. We illustrate two iterations, at step $k$ to compute $h_u^{k+1}$ and $k-1$ to compute $h_u^{k}$. We adapted the figure from \textcite{hamilton_2020}.}
 \labfig{gnn}
 \end{figure*}
 
@@ -120,7 +120,7 @@ The message passing iteration can then be defined using a single equation and we
     z_u = h_u^{(K)}, \forall u \in \mathcal{V}, \labeq{embeddings}\\
 \end{equation}
 
-At each iteration, each node aggregates information from its $k$-hop neighbors. Node embeddings, therefore, encode structural and feature-based information.
+At each iteration, each node aggregates information from its $k$-hop neighbors. Node embeddings therefore encode structural and feature-based information.
 
 \begin{figure*}[!htb]
 \begin{center}
@@ -139,7 +139,7 @@ The self-attention mechanism that transforms a \textit{set of vectors} into what
 Each contextualized vector is a weighted average of the vectors from the original set.
 % They operate on a set of vectors. 
 Since attention composes every vector from the set, we can consider that transformers operate on fully connected graphs.
-We can adapt the \refeq{update-aggregate} for transformers and compute the contextualized representation $h_u$ of given token $u$ in an input text as follow:\sidenote{In fact, we can also formally decompose transformers layers by considering the MHA layer as the $\mathsf{aggregate}$ function and the FFN layer as the $\mathsf{update}$ function. This interpretation may provide a formal background to analyze the role of the FFN.}
+We can adapt the \refeq{update-aggregate} for transformers and compute the contextualized representation $h_u$ of given token $u$ in an input text as follow:\sidenote{In fact, we can also formally decompose transformer layers by considering the MHA layer as the $\mathsf{aggregate}$ function and the FFN layer as the $\mathsf{update}$ function. This interpretation may provide a formal background to analyze the role of the FFN.}
 
 {\small
 \begin{align}
@@ -154,7 +154,7 @@ Where \refeq{update-aggregate-transformers} is the first layer that encodes word
 
 We can interpret transformers as GNNs operating on a fully connected graph. However, in the specific case of NLP, transformers should preserve the information about the sequential order of words. In that regard, transformers borrow common tricks and mechanisms from graph neural networks.
 
-The transformer formalization encodes the linear order of words in the positional embedding layer $W^{(p)}$ from  \refeq{update-aggregate-transformers-emb}. We can interpret the un-contextualized embeddings $h^0_u, \forall u \in \mathcal{V}$  as the set of initial node features $X \in \mathbb{R}^{d \times |\mathcal{V}|}$ defined in \refsec{gnn:definitions}. As a result, the message passing iteration defined in \refeq{update-aggregate-transformers} is permutation invariant, a standard property in traditional graph neural networks.
+The transformer formalization encodes the linear order of words in the positional embedding layer $W^{(p)}$ from  \refeq{update-aggregate-transformers-emb}. We can interpret the non-contextualized embeddings $h^0_u, \forall u \in \mathcal{V}$  as the set of initial node features $X \in \mathbb{R}^{d \times |\mathcal{V}|}$ defined in \refsec{gnn:definitions}. As a result, the message passing iteration defined in \refeq{update-aggregate-transformers} is permutation invariant, a standard property in traditional graph neural networks.
 %  used to generate node contextualized embeddings $z_u, \forall u \in |\mathcal{V}|}$
 
 It is also essential to preserve the word information across the iterations such that $h^{(k)}_u$ indeed captures the contextualized information about the token $u$. This issue of preserving token identities is addressed using the skip connection: before and after the FFN layers, we add the source to the current hidden state. The same mechanism is also commonly used in GNNs to avoid over-smoothing. As detailed in \textcite{hamilton_2020}, this issue happens when node-specific information is lost after several message passing iterations. In such a case, the representation of every node tends to become very similar. Commonly this issue is addressed by including the previous hidden state together with the aggregated state in the computation of the updated state.
@@ -240,7 +240,7 @@ the message passes in a bottom-up manner, starting from the leaf to the root. Si
         \label{subfig:structure-6}
     \end{subfigure}
     \hfill
-    \caption{Latent structure for distinct standard NLP architectures. Illustration on the first line of the poem: "The Sleeper" by Edgar Allan Poe (published 1831). We obtain the constituency tree for \reffig{subfig:structure-3} using Berkley neural parser \parencite{klein_18}. For \reffig{subfig:structure-4}, we parse the sentence using the dependency parser from Spacy (\url{https://spacy.io/api/dependencyparser}) \parencite{honnibal_15}.} 
+    \caption{Latent structure for distinct standard NLP architectures. Illustration on the first line of the poem: "The Sleeper" by Edgar Allan Poe (published 1831). We obtain the constituency tree for \reffig{subfig:structure-3} using the Berkeley neural parser \parencite{klein_18}. For \reffig{subfig:structure-4}, we parse the sentence using the dependency parser from spaCy (\url{https://spacy.io/api/dependencyparser}) \parencite{honnibal_15}.} 
     \labfig{structure}
 \end{figure}
 
@@ -251,22 +251,22 @@ In this case, the $\text{aggregate}$ function is just the identity function sinc
 As for the \textsc{Tree-LSTM}, after a number of iterations equal to the sequence length, the value of all node hidden states will be determined.
 
 We illustrate the input structure corresponding to the different architectures in \reffig{structure}.
-Sequential \textsc{RNN} or \textsc{TreeRNN} operate on sparse graph structure. Node and edge numbers are equivalent in order of magnitude: $|\mathcal{V}| \approx |\mathcal{E}|$. On the contrary, transformer operate on a fully connected graph. The number of edges equals number of nodes squared: $|\mathcal{E}| = |\mathcal{V}|^2$.
+Sequential \textsc{RNN} or \textsc{TreeRNN} operate on sparse graph. Node and edge numbers are equivalent in order of magnitude: $|\mathcal{V}| \approx |\mathcal{E}|$. On the contrary, transformer operate on a fully connected graph. The number of edges equals the number of nodes squared: $|\mathcal{E}| = |\mathcal{V}|^2$.
 
 \subsection{Are transformers over-parametrized?}
 
 % Il faut parler du pruning qui justifie que graph dense pas forcement nécessaire !! Sauf pour ettinger et distill bert
 
 It looks like the answer is included in the question. 
-Transformers are indeed admittedly over-parametrized in the litterature \parencite{chen_20, hou_20, voita_19}. 
+Transformers are indeed admittedly over-parametrized in the literature \parencite{chen_20, hou_20, voita_19}. 
 However, the role of this over-parametrization is not well understood. 
-Transformers layers are suspected to be highly redundant \parencite{liu_20} and to cause over-fitting \parencite{fan_20, zhou_20b}. 
+Transformer layersliterature are suspected to be highly redundant \parencite{liu_20} and to cause over-fitting \parencite{fan_20, zhou_20b}. 
 
-In the light of our GNN analysis transformers should naturally share parameters across layers. As mentioned earlier, the model \textsc{Albert} \parencite{lan_20} already implements this key specificity by tying weights across layers. Similarly, \textsc{Tree-LSTM} or sequential \textsc{LSTM}, which can be interpreted as GNN other specific graphs, also share their parameters across iterations.
+In the light of our GNN analysis transformers should naturally share parameters across layers. As mentioned earlier, the \textsc{Albert} model \parencite{lan_20} already implements this key specificity by tying weights across layers. Similarly, \textsc{Tree-LSTMs} or sequential \textsc{LSTMs}, which can be interpreted as GNN other specific graphs, also share their parameters across iterations.
 
-However, the critical distinction between transformers and trees and sequences recurrent neural networks is the properties of the latent graph structure. Tree and sequences will converge after a finite number of message passing iterations since they do not include any loop within their structure. However, transformers operate on a fully connected graph. Token hidden states cannot be computed in a given hierarchical order since they all depend on each other.
+However, the critical distinction between transformers and trees and sequences recurrent neural networks is the properties of the latent graph structure. Trees and sequences will converge after a finite number of message passing iterations since they do not include any loop within their structure. However, transformers operate on a fully connected graph. tokens’ hidden states cannot be computed in a given hierarchical order since they all depend on each other.
 
-We hypothesize that token hidden states will eventually converge toward a fixed point.\sidenote{In that matter, \textcite{zhou_20c} states that such fixed point is uniquely defined with the assumption that $\mathsf{aggregate}$ is a contraction map in \refeq{update-aggregate}. By definition a contraction map is a function such that there is some non negative real number $0\leq k<1$ such that for all vector $x$ and $y$, $d(f(x),f(y))\leq k\,d(x,y)$, with $d$ a distance metric over our vector space.} We also hypothesize that some tokens require more iterations than others and that this convergence process will depend on the word and its context. Indeed, many studies show that the weighted graph formed by attention weights is not homogeneous. Some tokens contribute in large proportion to the update of the other, while some have a marginal or null contribution to the attention weights.
+We hypothesize that tokens’ hidden states will eventually converge toward a fixed point.\sidenote{Concerning this, \textcite{zhou_20c} states that such fixed point is uniquely defined with the assumption that $\mathsf{aggregate}$ is a contraction map in \refeq{update-aggregate}. By definition a contraction map is a function such that there is some non negative real number $0\leq k<1$ such that for all vector $x$ and $y$, $d(f(x),f(y))\leq k\,d(x,y)$, with $d$ a distance metric over our vector space.} We also hypothesize that some tokens require more iterations than others and that this convergence process will depend on the word and its context. Indeed, many studies show that the weighted graph formed by attention weights is not homogeneous. Some tokens contribute in large proportion to the update of another token, while some have a marginal or null contribution to the attention weights.
 
 % As observed in \labsec{sec:parses-impact}, these tree might have little in common
 
@@ -383,7 +383,7 @@ We hypothesize that token hidden states will eventually converge toward a fixed 
 % \bcomment{State your problem immediately and provide your hypothesis}{then refs to the literature} 
 We proposed to formalize transformers as graph neural networks. In light of this interpretation, we justified the possibility of sharing parameters across layers. We also formulated two hypothesis: 
 \begin{itemize}
-    \item Token hidden states will eventually converge towards a fixed point;
+    \item Tokens’ hidden states will eventually converge towards a fixed point;
     \item Some nodes require more iterations than others, and this convergence process will depend on the token itself and its context.
 \end{itemize}
 This section aims to provide empirical evidence to support this hypothesis. We design a variant of \textsc{Albert} that dynamically adapts the number of layers for each token of the input. We analyze the distribution of these iterations during pre-training, fine-tuning, and inference. We organize the section as follows: after reviewing the related work (\refsec{transformer:related-work}), we detail the model (\refsec{transformers:architecture}) and the training methodology (\refsec{transformers:datum} and \refsec{transformers:pre-training}). In particular, we encourage our model to be parsimonious and limit the total number of iterations performed on each token. In \refsec{transformers:experiments}, we analyze iterations of the model during pre-training, fine-tuning, and inference.
@@ -393,7 +393,7 @@ This section aims to provide empirical evidence to support this hypothesis. We d
 
 Adapting the transformer depth is an active subject of research. In particular, deep transformer models are suspected of struggling to adapt to different difficulty levels. While large models correctly predict difficult examples, they over-calculate simpler inputs \parencite{liu_20}. This issue can be addressed using \textit{early-exit}: some samples might be sufficiently simple to classify using intermediate features. % non c'est bien intermediate
 
-Some models couple a classifier to each layer \parencite{zhou_20b, liu_20, xin_20}. After each layer, given the classifier output, the model either immediately returns the output or passes the sample to the next layer. 
+Some models add a classifier to each layer \parencite{zhou_20b, liu_20, xin_20}. After each layer, given the classifier output, the model either immediately returns the output or passes the sample to the next layer. 
 Exiting too late may even have negative impacts due to the network "over-thinking" the input \parencite{kaya_19}. 
 
 Ongoing research also refines the application of layers at the token level. \textcite{wang_20} build sentence embeddings by combining token representations from distinct layers. \textcite{elbayad_20} and \textcite{dehghani_19} successfully use dynamic layers depth at the token level for full transformers (encoder-decoder). However, to the best of our knowledge, our attempt is the first to apply such a mechanism to encoder only transformers and to provide an analysis of the process. 
@@ -417,7 +417,7 @@ We use weight tying across layers and apply the same transformation function at 
 
 For the first layer, $W^{(e)}$ is the token embedding matrix, and $W^{(p)}$ the position embedding matrix.
 
-We augment the model with a halting mechanism, which allows dynamically adjusting the number of iterations for each token (Eq. \ref{eq:halting-1} to \ref{eq:ponder-loss}). We directly adapted this mechanism from \textcite{graves_16}. The main distinction with the original version is using a transformer model instead of a recurrent state transition model. The mechanism works as follows: at each iteration $n$, we add the following operations after Eq.~\ref{eq:layers}. We assign a probability to stop $p^n_t$ for each token at index $t$ (Eq.~\ref{eq:halting-1}). 
+We augment the model with a halting mechanism, which allows the model to dynamically adjust the number of iterations for each token (Eq. \ref{eq:halting-1} to \ref{eq:ponder-loss}). We directly adapted this mechanism from \textcite{graves_16}. The main distinction with the original version is using a transformer model instead of a recurrent state transition model. The mechanism works as follows: at each iteration $n$, we add the following operations after Eq.~\ref{eq:layers}. We assign a probability to stop $p^n_t$ for each token at index $t$ (Eq.~\ref{eq:halting-1}). 
 
 % These probabilities are summed across layers and increase at each step. 
 Given this probability, we compute an updated weight $\lambda^n_t$ (Eq.~\ref{eq:halting-22}), which we use to compute the final state as the linear convex combination between the previous and current hidden state (Eq.~\ref{eq:halting-3}). 
@@ -448,7 +448,7 @@ As soon as the sum of the probability becomes greater than $1$, the update weigh
 \begin{center}
 \includegraphics[width=8cm]{images/model-3.png}
 \end{center}
-\caption{As in \textsc{Albert}  model, tokens are transformed through the iterative application of a transformer encoder layer. Our model's key specificity is the application of the halting mechanism, which dynamically adjusts the number of iterations for each token.
+\caption{As in the \textsc{Albert}  model, tokens are transformed through the iterative application of a transformer encoder layer. Our model's key specificity is the application of the halting mechanism, which dynamically adjusts the number of iterations for each token.
 }
 \labfig{transformers:model}
 \end{figure}
@@ -488,7 +488,7 @@ We now analyze our iterative model properties during pre-training (\refsec{trans
 \paragraph{Next sentence prediction (\textit{sop}) task} We format our inputs as ``\texttt{[CLS]} $x_1$ \texttt{[SEP]} $x_2$ \texttt{[SEP]}''. In 50\% of the case the two segments $x_1$ and $x_2$ are effectively consecutive in the text. In the other 50\%, the segments are swapped. 
 % The \textit{sop} task discriminates between the two cases.
 
-\paragraph{Ponder cost} We fix the time penalty factor $\tau$ empirically such that the ponder penalty represents around 10\% of the total loss. To estimate the ponder cost, we discard the remainder as $R \ll N$ for sufficient values of $N$. Given Eq.~\ref{eq:ponder-cost}, the ponder cost then corresponds to the total number of iterations in the sentence, which is given by $l \times T$, with $T$ the number of tokens in the sequence and $l$ the average iterations per token. We observe that \textsc{Albert} base loss converges to around 3.5. We calibrate $\tau$ such that  $\tau\mathcal{P} \approx 0.35 \approx \tau \times l \times T$. We train distinct models, listed in \reftab{transformers:pre-training}, that we calibrate such that their average number of iterations per token $l$ is respectively 3, 6, and 12. We refer to these models as respectively \textit{tiny}, \textit{small} and \textit{base}. 
+\paragraph{Ponder cost} We fix the time penalty factor $\tau$ empirically such that the ponder penalty represents around 10\% of the total loss. To estimate the ponder cost, we discard the remainder as $R \ll N$ for sufficient values of $N$. Given Eq.~\ref{eq:ponder-cost}, the ponder cost then corresponds to the total number of iterations in the sentence, which is given by $l \times T$, with $T$ the number of tokens in the sequence and $l$ the average iterations per token. We observe that \textsc{Albert} base loss converges to around 3.5. We calibrate $\tau$ such that  $\tau\mathcal{P} \approx 0.35 \approx \tau \times l \times T$. We train distinct models, listed in \reftab{transformers:pre-training}, which we calibrate such that their average number of iterations per token $l$ is respectively 3, 6, and 12. We refer to these models as \textit{tiny}, \textit{small} and \textit{base} respectively. 
 
 \subsection{Analysis of the pre-training}
 \labsec{transformers:analysis-pretraining}
@@ -570,7 +570,7 @@ We observe that the \texttt{[CLS]} token receives far more iterations than other
 
 % We interpret that the \texttt{[CLS]} token is used for the \textit{sop} objective, which depends on every other token in the sentence. The \texttt{[CLS]} token acts as an artificial root of the sentence and needs other tokens to converge before its.   
 
-We also observe an interesting behavior from the \texttt{[MASK]} which also benefits from more iterations than average tokens. As for the \texttt{[CLS]} token, we interpret that these tokens are crucial for the \textit{mlm} task. Looking further, we observe that \texttt{[MASK/random]} and \texttt{[MASK/MASK]} number of iterations is greater than \texttt{[MASK/original]}. In this case, although all tokens are targeted in the \textit{mlm} task, \texttt{[MASK/random]} and \texttt{[MASK/MASK]} are  obviously more difficult to identify.\sidenote{During inference, the model cannot make the distinction between \texttt{[MASK/original]} and unmasked tokens. However, we observe in \reftab{transformers:pre-training} that the two token types have a distinct mean number of iterations. We believe this is due to the distribution of the \texttt{[MASK]} tokens. Indeed, we follow the procedure from \textsc{Albert}  and use \textit{n-gram} masking. Therefore, \texttt{[MASK/original]} tokens tend to appear in the context of \texttt{[MASK]} tokens. This specific context increases the mean number of iterations.}
+We also observe an interesting behavior from the \texttt{[MASK]} which also benefits from more iterations than average tokens. As for the \texttt{[CLS]} token, we interpret that these tokens are crucial for the \textit{mlm} task. Looking further, we observe that the number of iterations for \texttt{[MASK/random]} and \texttt{[MASK/MASK]} is greater than \texttt{[MASK/original]}. In this case, although all tokens are targeted in the \textit{mlm} task, \texttt{[MASK/random]} and \texttt{[MASK/MASK]} are  obviously more difficult to identify.\sidenote{During inference, the model cannot make the distinction between \texttt{[MASK/original]} and unmasked tokens. However, we observe in \reftab{transformers:pre-training} that the two token types have a distinct mean number of iterations. We believe this is due to the distribution of the \texttt{[MASK]} tokens. Indeed, we follow the procedure from \textsc{Albert}  and use \textit{n-gram} masking. Therefore, \texttt{[MASK/original]} tokens tend to appear in the context of \texttt{[MASK]} tokens. This specific context increases the mean number of iterations.}
 %more explicit and less difficult to identify than
 
 The model seems to have an intuitive mechanism and distributes iterations for tokens that are either crucial for the pre-training task or present a certain difficulty level. This also appears in line with \textit{early-exit} mechanisms cited in \refsec{transformers:dynamic-depth}, that adapts the number of iterations, for the whole example, to better scale to each sample level of difficulty.
@@ -579,13 +579,54 @@ The model seems to have an intuitive mechanism and distributes iterations for to
 
 \paragraph{Natural Fixed point} We now analyze \textit{how} the token's hidden states evolve during our model iterative transformations. At each iteration $n$, the self-attentive mechanism \parencite{vaswani_17} computes the updated state $n+1$ as a weighted sum of the current states. This introduces a cyclic dependency as every token depends on each other during the iterative process. As convergence within a loopy structure is not guaranteed, we encourage the model to converge towards a fixed point \parencite{bai_19}.
 
-\begin{figure}[!htb]
-\begin{center}
-\includegraphics[width=8cm]{images/cosine-base-v3 (1).png}
-\end{center}
-\caption{Evolution of the cosine similarity between hidden states $h^n_t$ and $h^{n+1}_t$ from two consecutive iterations. We use our \textit{base} model and measure iterations on our development set at the end of the pre-training.}
-\labfig{fixed-point}
-\end{figure}
+% \begin{figure}[!htb]
+% \begin{center}
+% \includegraphics[width=8cm]{images/cosine-base-v4.png}
+% \end{center}
+% \caption{Evolution of the cosine distance between hidden states $h^n_t$ and $h^{n+1}_t$ from two consecutive iterations. We use our \textit{base} model and measure iterations on our development set at the end of the pre-training.}
+% \labfig{fixed-point}
+% \end{figure}
+% \begin{figure}[!htb]
+% \begin{center}
+% \includegraphics[width=\columnwidth]{figures/cosine-small-v4.png}
+% \end{center}
+% \caption{Evolution of the cosine distance between hidden states $h^n_t$ and $h^{n+1}_t$ from two consecutive iterations. We use our \textit{small} model and measure iterations on our development set, at the end of the pre-training.}
+% \label{fig:fixed-point-small}
+% \end{figure}
+% \begin{figure}[!htb]
+% \begin{center}
+% \includegraphics[width=\columnwidth]{figures/cosine-tiny-v4.png}
+% \end{center}
+% \caption{Evolution of the cosine distance between hidden states $h^n_t$ and $h^{n+1}_t$ from two consecutive iterations. We use our \textit{tiny} model and measure iterations on our development set, at the end of the pre-training.}
+% \label{fig:fixed-point-tiny}
+% \end{figure}
+
+\begin{figure*}[htb!]
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\columnwidth]{figures/cosine-base-v4.png}
+        \caption{\textit{base} model.}
+        \labfig{subfig:base}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}  
+        \centering 
+        \includegraphics[width=\columnwidth]{figures/cosine-small-v4.png}
+        \caption{\textit{small} model.}
+        \labfig{subfig:small}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}   
+        \centering 
+        \includegraphics[width=\columnwidth]{figures/cosine-tiny-v4.png}
+        \caption{\textit{tiny} model.}
+        \labfig{subfig:tiny}
+    \end{subfigure}
+    \hfill
+    \caption{Evolution of the cosine distance between hidden states $h^n_t$ and $h^{n+1}_t$ from two consecutive iterations. We use our \textit{base}, \textit{small} and \textit{tiny} models and measure iterations on our development set at the end of the pre-training.}
+    \labfig{fixed-point}
+\end{figure*}
 
 We obtain this property "for free" thanks to our architecture specificity. Indeed at each iteration, the hidden state is computed as a convex combination of the previous $n$ and current $n+1$ hidden state. The combination is controlled by $\lambda^n_t$  (Eq.~\ref{eq:halting-3}). If $\lambda^n_t$ is closed to $0$, then $h^n_t \approx h^{n+1}_t$ and by definition (Eq.~\ref{eq:halting-22}, \ref{eq:halting-r}) $\lambda^n_t$ will eventually be set to $0$ at a certain iteration.
 
@@ -605,7 +646,7 @@ During the pre-training phase, the model focuses on tokens either crucial for th
 
 \paragraph{Control test} To verify that our setup has reasonable performance, we evaluate it on the GLUE benchmark \parencite{wang_19}.
 % \sidenote{We provide experimental details in Appendix~\ref{appendix:glue}}. 
-Results from \reftab{glue-official} are scored by the evaluation server.\sidenote{\url{https://gluebenchmark.com/leaderboard}} As in \textcite{devlin_19}, we discard results for the WNLI task.\sidenote{See point (12) from \url{https://gluebenchmark.com/faq}.} For each task, we fine-tune the model on the train set and select the hyperparameters on the dev set using a grid search. We tune the learning rate between 5e-5, 3e-5, and 2e-5; batch size between 16 and 32, and epochs between 2, 3, or 4. To better compare our setup, we pre-train \textsc{Bert} and \textsc{Albert} model using our configuration, infrastructure, and datum.
+Results from \reftab{glue-official} are scored by the evaluation server.\sidenote{\url{https://gluebenchmark.com/leaderboard}} As in \textcite{devlin_19}, we discard results for the WNLI task.\sidenote{See point (12) from \url{https://gluebenchmark.com/faq}.} For each task, we fine-tune the model on the train set and select the hyperparameters on the dev set using a grid search. We tune the learning rate between 5e-5, 3e-5, and 2e-5; the batch size between 16 and 32, and epochs between 2, 3, or 4. To better compare our setup, we pre-train \textsc{Bert} and \textsc{Albert} model using our configuration, infrastructure, and data.
 
 \begin{table}[!htb]
 \small
@@ -627,7 +668,7 @@ Results from \reftab{glue-official} are scored by the evaluation server.\sidenot
 \labtab{glue-official}
 \end{table}
 
-We present results on the test set in \reftab{glue-official}. As expected, the average score decreases with the number of iterations. Indeed, we limit the number of computation operations performed by our model. Moreover, we build our model on top of \textsc{Albert}, which share parameters across layers, thus reducing the number of parameters compared with the original \textsc{Bert}  architecture. However, despite these additional constraints, results stay in a reasonable range. In particular, \textsc{Albert}-base with adaptative depth is very close to the version with a fixed depth. 
+We present results on the test set in \reftab{glue-official}. As expected, the average score decreases with the number of iterations. Indeed, we limit the number of computation operations performed by our model. Moreover, we build our model on top of \textsc{Albert}, which shares parameters across layers, thus reducing the number of parameters compared with the original \textsc{Bert}  architecture. However, despite these additional constraints, results stay in a reasonable range. In particular, \textsc{Albert}-base with adaptative depth is very close to the version with a fixed depth. 
 %Although, as detailed in Table~\ref{table:pre-training}, tokens perform in average only 10 iterations compared to 12 for \textsc{Albert}-base.
 
 %\sidenotetext{See (10) in \url{https://gluebenchmark.com/faq}.}
@@ -635,7 +676,7 @@ We present results on the test set in \reftab{glue-official}. As expected, the a
    %OpenAI GPT = (L=12. H=768. A=12); \textsc{Bert} base = (L=12. H=768. A=12); \textsc{Bert} large = (L=24. H=1024. A=16).  BERT and OpenAI GPT are single-model. single task. F1 scores are reported for QQP and MRPC. Spearman correlations are reported for STS-B. and accuracy scores are reported for the other tasks. We exclude entries that use BERT as one of their components.
 
 
-\paragraph{Probing tasks} \textcite{conneau_18} introduce probing tasks, which assess whether a model encodes elementary linguistic properties. Such tasks are detailed in \refsec{survey:probing} We consider semantic and syntactic tasks that do not introduce random replacements. In particular, a task that predicts the sequence of top constituents immediately below the sentence node (TopConst), a task that predicts the tense of the main-clause verb (Tense), and two tasks that predict the subject (resp. direct object) number in the main clause (SubjNum, resp. ObjNum). We provide examples for each of these tasks in \reftab{senteval:probing-examples}.
+\paragraph{Probing tasks} \textcite{conneau_18} introduce probing tasks, which assess whether a model encodes elementary linguistic properties. Such tasks are detailed in \refsec{survey:probing}. We consider semantic and syntactic tasks that do not introduce random replacements. In particular, a task that predicts the sequence of top constituents immediately below the sentence node (TopConst), a task that predicts the tense of the main-clause verb (Tense), and two tasks that predict the subject (resp. direct object) number in the main clause (SubjNum, resp. ObjNum). We provide examples for each of these tasks in \reftab{senteval:probing-examples}.
 
 \begin{table*}[!htb]
 \footnotesize
@@ -661,7 +702,7 @@ They obviously protect him from anything he won 't like . & S\_NP\_VP\_.\\
 Did it belong to the owner of the house ? & VBD\_NP\_VP\_.\\ 
 \bottomrule
 \end{tabularx}}
-\caption{\labtab{senteval:probing-examples} Examples from the tasks of the probing tasks \parencite{baroni_18} of the SentEval benchmark that we will use in our experiments. The top constituent task (\textbf{TopConst}), aims at predicting the top constituent immediately below the sentence root node. The \textbf{Tense} task aims at predicting the tense of the main clause verb. The subject and object number (respectively \textbf{SubjNum} and \textbf{ObjNum}) tasks focus on the number of respectively the subject and object of the main clause. All sentences are extracted from the Toronto Book Corpus \parencite{zhu_15}. The part-of-speech, constituency and dependency parsing information are provided with the Stanford Parser (2017-06-09 version), using the pre-trained PCFG model \parencite{klein_2003}. The top constituent task (\textbf{TopConst}) classifies sentences on the basis of their sequences of top constituents immediately below the sentence node. There are 19 classes for the most frequent top constructions, and one for all other constructions.}%
+\caption{\labtab{senteval:probing-examples} Examples from the tasks of the probing tasks \parencite{baroni_18} of the SentEval benchmark that we use in our experiments. The top constituent task (\textbf{TopConst}), aims at predicting the top constituent immediately below the sentence root node. The \textbf{Tense} task aims at predicting the tense of the main clause verb. The subject and object number (respectively \textbf{SubjNum} and \textbf{ObjNum}) tasks focus on the number of respectively the subject and object of the main clause. All sentences are extracted from the Toronto Book Corpus \parencite{zhu_15}. The part-of-speech, constituency and dependency parsing information are provided with the Stanford Parser (2017-06-09 version), using the pre-trained PCFG model \parencite{klein_2003}. The top constituent task (\textbf{TopConst}) classifies sentences on the basis of their sequences of top constituents immediately below the sentence node. There are 19 classes for the most frequent top constructions, and one for all other constructions.}%
 \end{table*}
 % \bcomment{for SUbjNum,ObjNum,Top Const please specify that the labels come from the Penn Treebank. I do not understand the labels for top const }{}
 
@@ -728,16 +769,16 @@ Did it belong to the owner of the house ? & VBD\_NP\_VP\_.\\
 % \label{table:probing}
 % \end{table}
 
-In our setup, we fine-tune the model on the task train set and select the hyperparameters on the dev set using a grid search. We use a 5e-5 learning rate and fine-tune the epochs between 1 to 5; we use a 32 batch size.
+In our setup, we fine-tune the model on the task train set and select the hyperparameters on the dev set using a grid search. We use a 5e-5 learning rate and fine-tune the epochs between 1 to 5; we use a batch size of 32.
 %we fine-tune the model on the task train set. We select the best number of training steps on the dev set. 
 Finally, we %perform inference and 
-compare in Table~\reftab{table:probing} the number of iterations performed for each token 
+compare in \reftab{table:probing} the number of iterations performed for each token 
 % measure the number of iterations performed for each token 
-on the Penn Tree Bank \parencite{marcus_94} converted to Stanford dependencies.\sidenote{Since we use sentence piece vocabulary, we assign to each piece the dependency tag from the whole token.}
+on the Penn Tree Bank \parencite{marcus_94} converted to Stanford dependencies.\sidenote{Since we use SentencePiece vocabulary, we assign to each piece the dependency tag from the whole token.}
 %\sidenote{We present the Tables for other model configurations in Appendix~\ref{appendix:probing}}.
 % We compare in Table~\ref{table:probing} the number of iterations performed for each token 
 
-We provide an accuracy baseline, obtained with the same setup but using \textsc{Albert}  without the dynamic halting mechanism. As in the previous experiment, we observe that for these tasks, our model achieves competitive performances despite using less computational operations.
+We provide an accuracy baseline, obtained with the same setup but using \textsc{Albert}  without the dynamic halting mechanism. As in the previous experiment, we observe that for these tasks, our model achieves competitive performances despite using fewer computational operations.
 
 Although all tasks achieve significant and comparable accuracies, they all require a distinct global mean of iterations. The Tense task, which can be solved from the verb only, is completed in only 5.4 iterations, while the TopConst task, which requires inferring some sentence structure, is performed in \textbf{7.2} iterations. This suggests the model can adapt itself to the complexity of the task and globally spare unnecessary iterations. 
 
