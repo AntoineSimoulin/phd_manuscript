@@ -243,7 +243,7 @@ We could imagine a supervised task that takes a sentence as input and directly o
 % We can, however, imagine a supervised task that takes a sentence as input and outputs an attribute that requires capturing the sentence's meaning to be predicted. We called such a task a \textit{proxy} task. 
 % Since it is not possible to train the encoder to directly predict the sentence meaning, we may consider to predict a sentence meaning related attribute that requires capturing the sentence meaning to be predicted. 
 
-Certainly, the nature of the proxy task is crucial to the procedure. This section makes a literature review of the common tasks used as a proxy objective to train sentence embeddings. Most of these proxy tasks involve predicting a relationship between two or more sentences. In theory, the model cannot predict the relationship without fully capturing the meaning of the considered sentences. All proxy objectives may impact the model's capacity to capture aspects of meaning or the amount of data necessary to train a model. In \refsec{training:supervised}, we obtain the relation between the sentences by labeling data. It is also possible to use a weaker signal in a self-supervised setting (\refsec{training:self-supervised}). Finally, it is possible to mix multiple training paradigms in a multi-task setup (\refsec{training:multi-task}).
+Certainly, the nature of the proxy task is crucial to the procedure. This section makes a literature review of the common tasks used as a proxy objective to train sentence embeddings. Most of these proxy tasks involve predicting a relationship between two or more sentences. In theory, the model cannot predict the relationship without fully capturing the meaning of the considered sentences. All proxy objectives may impact the model's capacity to capture aspects of meaning or the amount of data necessary to train a model. In \refsec{training:supervised}, we obtain the relation between the sentences by labeling data. It is also possible to use a weaker signal in a self-supervised setting (\refsec{training:self-supervised}). It is possible to mix multiple training paradigms in a multi-task setup (\refsec{training:multi-task}). Finally, we review a line of work focusing on learning cross-lingual sentence embeddings (\refsec{training:multi-task}).
 
 % In this regard, we follow a two-step procedure, illustrated in \reffig{training-sentence-embeddings}. First, we train the encoder on a \textit{proxy task}. We only perform this step once. We then use the encoder's sentence representations as input for a \textit{downstream task}. We do not update the encoder weights for downstream tasks. As a result, any downstream task will use the same representation of a given sentence\sidenote{This procedure presents similarities with the \textit{pre-training}/\textit{fine-tuning} modus operandi. In contrast to fine-tuning, we do not update encoder weights when we train the full architecture on the downstream task.}.
 
@@ -502,6 +502,53 @@ Some frameworks propose to combine the training objective mentioned above in a m
 The universal sentence encoder (USE) \parencite{cer_18} trains a transformer and Deep Averaging Network (DAN) on a multi-task setup: a skip-thought objective \parencite{kiros_15}, a conversational response prediction, and a supervised natural language inference classification task on the SNLI dataset \parencite{bowman_15, conneau_17}.
 
 \textcite{subramanian_18} also propose a multitask learning framework that trains a single model with multiple distinct objectives: context sentences generation (\refsec{training:self-supervised}), neural machine translation, constituency parsing and natural language inference (\refsec{training:supervised}).
+
+\subsection{Cross-lingual sentence embeddings}
+\labsec{training:multilingual}
+
+The majority of work presented previously focuses on English. Many approaches, in particular semi-supervised, may be generalized to other languages. An alternative would be to learn a \textit{one-for-all} multilingual model that encompasses a whole family of languages instead of learning separate models for each language. Languages with limited resources may benefit from collaborative training across multiple languages. The ability to represent sentences from different languages within the same representational space may also facilitate the zero-shot transfer between languages. The methods for training such cross-lingual representations are inherently close to mono-lignal ones. We review the more recent approaches below.
+
+\paragraph{LASER} \parencite{artetxe_19} is a method for embedding sentences that covers 93 languages. The method has gone through several iterations. The first version is close to Skip-thought \parencite{kiros_15}. When given a source sentence, Skip-thought will generate the previous and next sentence, while LASER will translate it in a target language. However, the training architecture is similar: an encoder $SE$ maps the source sentence into a fixed length vector $h_l = SE(s_l)$. Given the sentence vector, a sentence decoder $DE$ aims to generate the translation in a target language $DE(h_l) = s_{k}$.  At inference, the decoder is discarded, and the encoder is kept to embed sentences in any of the training languages. Both the encoder and decoder are trained to maximize the sum of the log-probabilities for the target sentences conditioned on the encoder representation:
+
+\begin{equation*}
+    \mathcal{L} = \sum_t \log P(w_{k}^t | w_{k}^{<t}, h_l)
+\end{equation*}
+
+It is important to note that the system relies on a single encoder and decoder, shared for every language. Additionally, the encoder does not receive any explicit information regarding the language of the input, allowing it to learn language-independent representations.  The encoder consists of a BiLSTM encoder with 1 to 5 layers, each 512-dimensional. sentence embeddings are obtained by applying a max-pooling operation over the output of a BiLSTM encoder.
+
+The method covers 93 languages. The method is limited to English and Spanish as target languages because the vast majority of data is aligned with these languages and considering all possible language pairs is intractable. The training data includes 223 million parallel sentences from multiple sources available on the OPUS Web site \parencite{tiedemann_12}.
+
+Laser was recently improved into LASER 2 \& 3 \parencite{heffernan_22}. With the new iteration, the authors added 50 low-resource African languages and generally improved the performance.
+The update moves away from the \textit{one-for-all} but instead learns multiple models for different families of languages. The architecture of the model also evolves toward a 12-layer transformer. The training method relies on the distillation approach from \textcite{reimers_20}, which allows to extend an existing sentence embedding space to new languages. This supervised teacher-student approach involves comparing the teacher's sentence representation against the student's target language sentence representation in order to extend the embedding space.
+
+\paragraph{LaBSE} \parencite{feng_22} is also a cross-lingual sentence embedding method. It is trained using a translation ranking loss, which directly maximize the similarity of translation pairs in a shared embedding space. The method uses a dual encoder, which encodes the source and target sentences separately. Given the embedding of the source and target sentence, $f(s)$ and $g(s^+)$ respectively, the model is trained using a translation ranking task with in-batch negative sampling.The approach presents similarities with Quickthought \parencite{logeswaran_18} and Sentence \bert \parencite{reimers_19}. but with implements some tricks as the authors systematically explore the combination with the best of existing methods for learning sentence embeddings. Given a batch of $N$ sentences $s^i_l$, and their translations into a target language $s^i_k$, the training objective is to maximize the probability to associate each sentence with its true translation over all $N-1$ alternatives in the same batch: $p(s^i_k | s^i_l, s^1_k \cdots s^N_k)$. The conditional probability is estimated as follows:
+
+\begin{equation*}
+    p(s^i_k | s^i_l, s^1_k \cdots s^N_k) = \frac{e^{f(s^i_l)^{\top}g(s^i_k)}}{e^{f(s^i_l)^Tg(s^i_k)}+\sum_{j=1, j\neqi}^Ne^{f(s^j_l)^Tg(s^j_k)}}    
+\end{equation*}
+
+The parameters from $f$ and $g$ are trained to maximize the probability of identifying the correct translation for each sentence in the training batch:
+
+\begin{equation*}
+    \mathcal{L} = \sum_{i \in \llbracket1,N\rrbracket} \log p(s^i_k | s^i_l, s^1_k \cdots s^N_k)
+\end{equation*}
+
+Since the loss $\mathcal{L}$ is asymmetric and depends on the direction to which the softmax applied (over the source or the target sentences), the authors use the sum of the source-to-target, $\mathcal{L}$, and target-to-source, $\mathcal{L}'$, losses~\parencite{yang_19}:
+
+\begin{equation}
+    \bar{\mathcal{L}} = \mathcal{L} + \mathcal{L}'
+\label{eq:softmax_ams_combined}
+\end{equation}
+
+Finally, the methods implement an additive margin softmax, which introduces a margin $m$ around positive pairs to improve the separation between translations and nearby non-translations \parencite{yang_19}. The final conditional probability is thus estimated as follows:
+
+\begin{equation*}
+    p(s^i_k | s^i_l, s^1_k \cdots s^N_k) = \frac{e^{f(s^i_l)^{\top}g(s^i_k) -m}}{e^{f(s^i_l)^Tg(s^i_k)-m}+\sum_{j=1, j\neqi}^Ne^{f(s^j_l)^Tg(s^j_k)}}    
+\end{equation*}
+
+Finally, contrastive learning benefit from large training batch sizes \parencite{guo_18, chen_20a, qu_21} and the author introduce a method called \textit{cross-accelerator negative sampling}, which allows us to better distribute the softmax computation across multiple cores and achieve larger batch size.
+
+LaBSE uses transformer encoders, and use the l2 normalized \textbf{CLS} token representations from the last transformer block as sentence embedding. For the pre-training, they collected monolingual 17B monolingual sentences from CommonCrawl\sidenote{\url{https://commoncrawl.org/}} and Wikipedia\sidenote{\url{https://dumps.wikimedia.org/frwiki/}} and 6B translation pairs from web pages.
 
 \section{Evaluating sentence embeddings}
 \labsec{evaluation}
