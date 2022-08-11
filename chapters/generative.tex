@@ -349,11 +349,11 @@ Out of Vocabulary (\%) & & & 2.6 & 0.4 & & & 0.8 & 1.2 \\
 % et remplacés par la marque <unk> pour l'ensemble du corpus.}
 \end{table*}
 
-Since the pre-training and evaluation corpora are close, we do not fine-tune the model. We directly present the perplexity measured on the test set in \reftab{generative:lm-scores}. We point out that we evaluate the perplexity based on the tokenization inherent to the model. The latter is the same for $\text{GPT}_{fr}$-124M et 1B but may be different for other models. The results in \reftab{generative:lm-scores} highlight the performance of our $\text{GPT}_{fr}$-1B model. 
+Since the pre-training and evaluation corpora are close, we do not fine-tune the model. We directly present the perplexity measured on the test set in \reftab{generative:lm-scores}. We point out that we evaluate the perplexity based on the tokenization inherent to the model. The latter is the same for $\text{GPT}_{fr}$-124M et 1B but may be different for other models. The results in \reftab{generative:lm-scores} highlight the performance of our $\text{GPT}_{fr}$-1B model compare with the $\text{GPT}_{fr}$-124M version.. 
 % are therefore given for illustrative purposes but
 %\bcomment{the table is unclear}{}
 
-\begin{table*}[!ht]
+\begin{table}[!ht]
 \footnotesize
 \centering {
 \begin{tabularx}{16cm}{@{}l | Y Y @{}}
@@ -364,15 +364,15 @@ Since the pre-training and evaluation corpora are close, we do not fine-tune the
  & \textbf{$\text{GPT}_{fr}$-124M} & \textbf{$\text{GPT}_{fr}$-1B} \\
 \midrule
 \midrule
-WikiText-35-FR or WikiText-72-FR (ppl) & 109.2 & \textbf{12.9} \\
+WikiText-FR (ppl) & 109.2 & \textbf{12.9} \\
 \bottomrule
 \end{tabularx}}
 \caption{\labtab{generative:lm-scores}Perplexity of our models. We do not update the models on the training set and the perplexity is directly measured on the test set which are identical for two benchmarks WikiText-35-FR and WikiText-72-FR.}
-\end{table*}
+\end{table}
 
-We also considered a language models with 5-grams and kneser-ney smoothing \parencite{ney_94} using the SRILM tool \parencite{stolcke_02} as baseline. The approaches are not directly comparable because the tokenization is different and our model is trained on a much larger volume of data. But the model may be used to assess the distinction between the two benchmarks WikiText-35-FR and WikiText-72-FR.
+We also considered a language models with 5-grams and kneser-ney smoothing \parencite{ney_94} using the SRILM tool \parencite{stolcke_02} as baseline. The results are not directly comparable with the one from \reftab{generative:lm-scores} because the tokenization is different and our model is trained on a much larger volume of data. We detail the results in \reftab{generative:lm-scores-2}, which assess the distinction between the two benchmarks WikiText-35-FR and WikiText-72-FR.
 
-\begin{table*}[!ht]
+\begin{table}[!ht]
 \footnotesize
 \centering {
 \begin{tabularx}{16cm}{@{}l | Y @{}}
@@ -387,8 +387,8 @@ WikiText-35-FR (ppl) & 166.7 \\
 WikiText-72-FR (ppl) & \textbf{99.1} \\
 \bottomrule
 \end{tabularx}}
-\caption{\labtab{generative:lm-scores}Perplexity of our models. We train the $n$-gram model on the respective training set. The perplexity is directly measured on the test set which are identical for two benchmarks.}
-\end{table*}
+\caption{\labtab{generative:lm-scores-2}Perplexity of our models. We train the $n$-gram model on the respective training set. The perplexity is directly measured on the test set which are identical for two benchmarks.}
+\end{table}
 
 % \bcomment{Prédiction zeo shot et résumé automatique pour dire que on va s'intéresser à cette propriété et rappel section 2.2 C'est l'inétert du mdoèle. Commentaire avec ce qu'on donne comme input. et formattage de la tache. Dire que le modèle n'est pas entraîné. Dire que forme de requête et setup très différent de d'habitude.}
 
