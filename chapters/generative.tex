@@ -105,7 +105,7 @@ This difference in design has important implications for both architectures' tra
 With $U$ the context of $u_t, \forall t \in \llbracket 1, T \rrbracket$. Given the contextualized representations of each token from \refeq{generative:layers-eq}, we can compute the conditional probabilities associated with each token given \refeq{generative:token-proba}.
 
 \begin{equation}
-    P\left(u_t \middle| U \right) = \softmax(h_t^N W_e^T) \labeq{generative:token-proba} \\
+    P\left(u_t \middle| U \right) = \softmax(h_t^N W_e^{\top}) \labeq{generative:token-proba} \\
     % \mathcal{L}(U) = \sum_i log P\left(u_{i} \middle| u_{i-k} \cdots u_{i-1}; \Theta\right)
 \end{equation}
 
@@ -145,7 +145,7 @@ On the one hand, when encoding a fixed-length text for downstream tasks, \gpt de
 % P\left(y \middle| x^1 \cdots x^m\right)
 \begin{align}
     h_{m+2}^N &= \textrm{GPT}(x_1 \cdots x_m [SEP]) \labeq{generative:gpt-lm} \\
-    \hat{y} &= \softmax(h_{m+2}^N W_e^T) \labeq{generative:token-proba-m+1} \\
+    \hat{y} &= \softmax(h_{m+2}^N W_e^{\top}) \labeq{generative:token-proba-m+1} \\
     \mathcal{L} &= y \log(\hat{y}) \labeq{generative:cross-entropy}
 \end{align}
 
@@ -166,7 +166,7 @@ In this configuration, it is not necessary to modify the model's architecture or
     & \quad x^1_1 \cdots x^1_m [SEP] y^1 \nonumber \\
     & \quad x^2_1 \cdots x^2_m [SEP] y^2 \nonumber \\
     & \quad x_1 \cdots x_m [SEP]) \labeq{generative:few-shot}\\
-    \hat{y} &= \softmax(h^N W_e^T) \labeq{generative:few-shot-proba-m+1}
+    \hat{y} &= \softmax(h^N W_e^{\top}) \labeq{generative:few-shot-proba-m+1}
 \end{align}
 
 For example, if we aim at solving a question answering task, we can format the following prompt to answer the question "Que célèbre-t-on le 14 juillet ?": 
@@ -250,7 +250,7 @@ We then create a second corpus to train our model with above one billion paramet
 % \begin{align}
 %     h_0 &= UW_e+W_p \\
 %     h_i &= \textrm{transformeur\_decodeur}(h_{i-1}), \quad \forall i \in [1,n] \\
-%     P\left(u \middle| U \right) &= softmax(h_n W_e^T )
+%     P\left(u \middle| U \right) &= softmax(h_n W_e^{\top} )
 % \end{align}
 % \end{gather}
 

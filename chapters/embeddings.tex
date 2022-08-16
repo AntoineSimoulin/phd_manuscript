@@ -201,7 +201,7 @@ Q_h & = H W_Q^{(h)}, \quad K_h = H W_K^{(h)}, \quad V_h = H W_V^{(h)}, \\
 % K^{(h)}(x_i) &= W^T_{h, k}x_i, \\
 % V^{(h)}(x_i) &= W^T_{h, v}x_i, \\
 \alpha^{(h)}_{i,j} &= \softmax_j \left(\frac{Q_h K_h^{\top}}{\sqrt{k}} \right) \labeq{transformer:alpha}\\
-h'_t &= \sum_{h=1}^HW^{(h)}_{C}\sum_{j=1}^T\alpha^{(h)}_{t,j}V_h \labeq{transformer:mha-last}\\
+h'_t &= \sum_{h=1}^HW^{(h)}_{C}\sum_{j=1}^{\top}\alpha^{(h)}_{t,j}V_h \labeq{transformer:mha-last}\\
 h_t &= \textrm{LayerNorm}(h_t + h'_t; \gamma_1, \beta_1) \labeq{transformer:ffn-start}\\
 h'_t &= W_2^{\top}\relu(W_1^{\top}h_t)\\
 h_t &= \textrm{LayerNorm}(h_t + h'_t; \gamma_2, \beta_2) \labeq{transformer:ffn-last}
@@ -479,7 +479,7 @@ The method takes inspiration from the distributional hypothesis successfully app
 %TODO Peut être remplacer les + et - par des i et i+ 1...
 
 \begin{equation*}
-    p(s^+ | s, s^-_1 \cdots s^-_K) = \frac{e^{f(s)^Tg(s^+)}}{e^{f(s)^Tg(s^+)}+\sum_{i=1}^Ne^{f(s)^Tg(s^-_i)}}    
+    p(s^+ | s, s^-_1 \cdots s^-_K) = \frac{e^{f(s)^{\top}g(s^+)}}{e^{f(s)^{\top}g(s^+)}+\sum_{i=1}^Ne^{f(s)^{\top}g(s^-_i)}}    
 \end{equation*}
 
 The parameters from $f$ and $g$ are trained to maximize the probability of identifying the correct context sentences for each sentence in the training data $D$:
@@ -506,49 +506,50 @@ The universal sentence encoder (USE) \parencite{cer_18} trains a transformer and
 \subsection{Cross-lingual sentence embeddings}
 \labsec{training:multilingual}
 
-The majority of work presented previously focuses on English. Many approaches, in particular semi-supervised, may be generalized to other languages. An alternative would be to learn a \textit{one-for-all} multilingual model that encompasses a whole family of languages instead of learning separate models for each language. Languages with limited resources may benefit from collaborative training across multiple languages. The ability to represent sentences from different languages within the same representational space may also facilitate the zero-shot transfer between languages. The methods for training such cross-lingual representations are inherently close to mono-lignal ones. We review the more recent approaches below.
+The majority of work presented previously focuses on English. Many approaches, in particular semi-supervised, may be generalized to other languages. An alternative would be to learn a \textit{one-for-all} multilingual model that encompasses a whole family of languages instead of learning separate models for each language. Languages with limited resources may benefit from collaborative training across multiple languages. The ability to represent sentences from different languages within the same representational space may also facilitate the zero-shot transfer between languages. The methods for training such cross-lingual representations are inherently close to mono-lingual ones. We review the more recent approaches below.
 
-\paragraph{LASER} \parencite{artetxe_19} is a method for embedding sentences that covers 93 languages. The method has gone through several iterations. The first version is close to Skip-thought \parencite{kiros_15}. When given a source sentence, Skip-thought will generate the previous and next sentence, while LASER will translate it in a target language. However, the training architecture is similar: an encoder $SE$ maps the source sentence into a fixed length vector $h_l = SE(s_l)$. Given the sentence vector, a sentence decoder $DE$ aims to generate the translation in a target language $DE(h_l) = s_{k}$.  At inference, the decoder is discarded, and the encoder is kept to embed sentences in any of the training languages. Both the encoder and decoder are trained to maximize the sum of the log-probabilities for the target sentences conditioned on the encoder representation:
+\paragraph{LASER} is a method for embedding sentences which covers 93 languages \parencite{artetxe_19}. The method has gone through several iterations. The first version is close to Skip-thought \parencite{kiros_15}. Skip-thought will generate the previous and next sentence when given a source sentence, while LASER will translate it into a target language. However, the training architecture is similar; an encoder $SE$ maps the source sentence into a fixed length vector $h_l = SE(s_l)$. Given the sentence vector, a sentence decoder $DE$ aims to generate the translation in a target language $DE(h_l) = s_{k}$.  We discard the decoder at inference and keep the encoder to embed sentences in any of the training languages. We train both the encoder and decoder to maximize the sum of the log-probabilities for the target sentences conditioned on the encoder representation:
 
 \begin{equation*}
     \mathcal{L} = \sum_t \log P(w_{k}^t | w_{k}^{<t}, h_l)
 \end{equation*}
 
-It is important to note that the system relies on a single encoder and decoder, shared for every language. Additionally, the encoder does not receive any explicit information regarding the language of the input, allowing it to learn language-independent representations.  The encoder consists of a BiLSTM encoder with 1 to 5 layers, each 512-dimensional. sentence embeddings are obtained by applying a max-pooling operation over the output of a BiLSTM encoder.
-
-The method covers 93 languages. The method is limited to English and Spanish as target languages because the vast majority of data is aligned with these languages and considering all possible language pairs is intractable. The training data includes 223 million parallel sentences from multiple sources available on the OPUS Web site \parencite{tiedemann_12}.
+It is important to note that the system relies on a single encoder and decoder, shared for every language. Additionally, the encoder does not receive any explicit information regarding the language of the input, allowing it to learn language-independent representations.  The encoder consists of a BiLSTM encoder with 1 to 5 layers, each 512-dimensional. Sentence embeddings are obtained by applying a max-pooling operation over the output of a BiLSTM encoder. The method covers 93 languages in total. However, during training, the method is limited to English and Spanish as target languages because the vast majority of data is aligned with these languages, and considering all possible language pairs would be intractable. The training data includes 223 million parallel sentences from multiple sources available on the OPUS Web site \parencite{tiedemann_12}.
 
 Laser was recently improved into LASER 2 \& 3 \parencite{heffernan_22}. With the new iteration, the authors added 50 low-resource African languages and generally improved the performance.
-The update moves away from the \textit{one-for-all} but instead learns multiple models for different families of languages. The architecture of the model also evolves toward a 12-layer transformer. The training method relies on the distillation approach from \textcite{reimers_20}, which allows to extend an existing sentence embedding space to new languages. This supervised teacher-student approach involves comparing the teacher's sentence representation against the student's target language sentence representation in order to extend the embedding space.
+The update moves away from the \textit{one-for-all} but instead learns multiple models for different families of languages. The architecture of the model also evolves toward a 12-layer transformer. The training method relies on the distillation approach from \textcite{reimers_20}, which allows extending an existing sentence embedding space to new languages. This supervised teacher-student approach compares the teacher's sentence representation against the student's target language sentence representation in order to extend the embedding space.
 
-\paragraph{LaBSE} \parencite{feng_22} is also a cross-lingual sentence embedding method. It is trained using a translation ranking loss, which directly maximize the similarity of translation pairs in a shared embedding space. The method uses a dual encoder, which encodes the source and target sentences separately. Given the embedding of the source and target sentence, $f(s)$ and $g(s^+)$ respectively, the model is trained using a translation ranking task with in-batch negative sampling.The approach presents similarities with Quickthought \parencite{logeswaran_18} and Sentence \bert \parencite{reimers_19}. but with implements some tricks as the authors systematically explore the combination with the best of existing methods for learning sentence embeddings. Given a batch of $N$ sentences $s^i_l$, and their translations into a target language $s^i_k$, the training objective is to maximize the probability to associate each sentence with its true translation over all $N-1$ alternatives in the same batch: $p(s^i_k | s^i_l, s^1_k \cdots s^N_k)$. The conditional probability is estimated as follows:
+\paragraph{LaBSE} is also a cross-lingual sentence embedding method \parencite{feng_22}. Similar to LASER, it aims to translate sentences from a source into a target language. However, it uses a discriminative rather than a generative objective. A translation ranking loss directly maximizes the similarity of translation pairs in a shared embedding space. The method uses a dual encoder, which encodes the source and target sentences separately. 
+% Given the embedding of the source and target sentence, $f(s_s)$ and $g(s_t)$ respectively, the model is trained using a translation ranking task with in-batch negative sampling. 
+Given a batch of $N$ sentences $s^i_l$, and their translations into a target language $s^i_k$, the training objective is to maximize the probability to associate each sentence with its true translation over all $N-1$ alternatives in the same batch: $p(s^i_k | s^i_l, s^1_k \cdots s^N_k)$. The conditional probability is estimated as follows:
 
 \begin{equation*}
-    p(s^i_k | s^i_l, s^1_k \cdots s^N_k) = \frac{e^{f(s^i_l)^{\top}g(s^i_k)}}{e^{f(s^i_l)^Tg(s^i_k)}+\sum_{j=1, j\neqi}^Ne^{f(s^j_l)^Tg(s^j_k)}}    
+    p(s^i_k | s^i_l, s^1_k \cdots s^N_k) = \frac{e^{f(s^i_l)^{\top}g(s^i_k)}}{e^{f(s^i_l)^{\top} g(s^i_k)}+\sum_{j=1, j\neq i}^Ne^{f(s^i_l)^{\top}g(s^j_k)}} 
 \end{equation*}
 
-The parameters from $f$ and $g$ are trained to maximize the probability of identifying the correct translation for each sentence in the training batch:
+The parameters from the two parts of the dual encoder, $f$ and $g$ are trained to maximize the probability of identifying the correct translation for each sentence in the training batch:
 
 \begin{equation*}
     \mathcal{L} = \sum_{i \in \llbracket1,N\rrbracket} \log p(s^i_k | s^i_l, s^1_k \cdots s^N_k)
 \end{equation*}
 
-Since the loss $\mathcal{L}$ is asymmetric and depends on the direction to which the softmax applied (over the source or the target sentences), the authors use the sum of the source-to-target, $\mathcal{L}$, and target-to-source, $\mathcal{L}'$, losses~\parencite{yang_19}:
+The approach presents similarities with Quickthought \parencite{logeswaran_18} and Sentence-\bert \parencite{reimers_19}. The authors enhance the method by systematically exploring the combination with the best existing methods for learning sentence embeddings. % Given a batch of $N$ sentences $s^i_l$, and their translations into a target language $s^i_k$, the training objective is to maximize the probability to associate each sentence with its true translation over all $N-1$ alternatives in the same batch: $p(s^i_k | s^i_l, s^1_k \cdots s^N_k)$. The conditional probability is estimated as follows:
+Since the loss $\mathcal{L}$ is asymmetric and depends on the direction to which the softmax is applied (over the source or the target sentences), the authors use the sum of the source-to-target, $\mathcal{L}$, and target-to-source, $\mathcal{L}'$, losses~\parencite{yang_19}:
 
 \begin{equation}
     \bar{\mathcal{L}} = \mathcal{L} + \mathcal{L}'
 \label{eq:softmax_ams_combined}
 \end{equation}
 
-Finally, the methods implement an additive margin softmax, which introduces a margin $m$ around positive pairs to improve the separation between translations and nearby non-translations \parencite{yang_19}. The final conditional probability is thus estimated as follows:
+The method also implements an additive margin softmax, which introduces a margin $m$ around positive pairs to improve the separation between translations and nearby non-translations \parencite{yang_19}. The final conditional probability is thus estimated as follows:
 
 \begin{equation*}
-    p(s^i_k | s^i_l, s^1_k \cdots s^N_k) = \frac{e^{f(s^i_l)^{\top}g(s^i_k) -m}}{e^{f(s^i_l)^Tg(s^i_k)-m}+\sum_{j=1, j\neqi}^Ne^{f(s^j_l)^Tg(s^j_k)}}    
+    p(s^i_k | s^i_l, s^1_k \cdots s^N_k) = \frac{e^{f(s^i_l)^{\top}g(s^i_k) -m}}{e^{f(s^i_l)^{\top}g(s^i_k)-m}+\sum_{j=1, j\neq i}^Ne^{f(s^i_l)^{\top}g(s^j_k)}}    
 \end{equation*}
 
-Finally, contrastive learning benefit from large training batch sizes \parencite{guo_18, chen_20a, qu_21} and the author introduce a method called \textit{cross-accelerator negative sampling}, which allows us to better distribute the softmax computation across multiple cores and achieve larger batch size.
+Finally, contrastive learning benefits from large training batch sizes \parencite{guo_18, chen_20a, qu_21} and the authors introduce a method called \textit{cross-accelerator negative sampling}, which allows to better distribute the softmax computation across multiple cores and achieve larger batch size.
 
-LaBSE uses transformer encoders, and use the l2 normalized \textbf{CLS} token representations from the last transformer block as sentence embedding. For the pre-training, they collected monolingual 17B monolingual sentences from CommonCrawl\sidenote{\url{https://commoncrawl.org/}} and Wikipedia\sidenote{\url{https://dumps.wikimedia.org/frwiki/}} and 6B translation pairs from web pages.
+LaBSE uses transformer encoders and the l2 normalized \texttt{[CLS]} token representations from the last transformer block as sentence embedding. For the pre-training, they collected monolingual 17B monolingual sentences from CommonCrawl\sidenote{\url{https://commoncrawl.org/}} and Wikipedia\sidenote{\url{https://dumps.wikimedia.org/frwiki/}}. They pre-trained the model using a masked language model (mlm) \parencite{devlin_19} and translation language model (tlm) \parencite{conneau_19} task. They finalize the pre-training of the models using  the translation ranking task with in-batch negative sampling on 6B translation pairs from web pages.
 
 \section{Evaluating sentence embeddings}
 \labsec{evaluation}
@@ -617,11 +618,18 @@ DisSent Books 8 & $4096$ & --- & 79.8 & 85.0 & \textbf{93.4} & \textbf{\underlin
 \midrule
 \multicolumn{13}{c}{\textit{Pre-trained transformers}} \\\midrule
 \textsc{Bert}-base [CLS] & $768$ & 96 & 78.7 & 84.9 & 94.2 & 88.2 & \textbf{91.4} & 71.1 & --- & 75.7$^\dagger$ & --- & ---\\
-\textsc{Bert}-base [NLI] & $768$ & 96 & \textbf{\underline{83.6}} & \textbf{\underline{89.4}} & \textbf{\underline{94.4}} & \textbf{89.9} & 89.6 & \textbf{76.0} & --- & \textbf{84.4}$^\dagger$ & --- & ---\\
+\textsc{Bert}-base [NLI] & $768$ & 96 & \textbf{\underline{83.6}} & \textbf{\underline{89.4}} & \textbf{\underline{94.4}} & \textbf{89.9} & 89.6 & \textbf{76.0} & --- & \textbf{84.4}$^\dagger$ & --- & ---\\\midrule
+\multicolumn{13}{c}{\textit{Multi-lingual}} \\\midrule
+LASER-1$^\dagger$ & $1024$ & 120 & 72.4 & 78.1 & 90.4 & 84.1 & 83.2 & 72.6 & 79.0 & 80.5 & 75.0 & 36.0\\
+LASER-2$^\dagger$ & $1024$ & 120 & 74.7 & 77.2 & 91.1 & 88.0 & 81.6 & \textbf{77.0} & \textbf{83.7} & \textbf{82.9} & \textbf{77.6} & \textbf{32.2} \\
+% LASER-2$^\dagger$ & $768$ & 96 & \textbf{\underline{83.6}} & \textbf{\underline{89.4}} & \textbf{\underline{94.4}} & \textbf{89.9} & 89.6 & \textbf{76.0} & --- & \textbf{84.4}$^\dagger$ & --- & ---\\
+% LASER-3 & $768$ & 96 & \textbf{\underline{83.6}} & \textbf{\underline{89.4}} & \textbf{\underline{94.4}} & \textbf{89.9} & 89.6 & \textbf{76.0} & --- & \textbf{84.4}$^\dagger$ & --- & ---\\
+laBSE & $768$ & 96 & \textbf{79.1} & \textbf{86.7} & \textbf{93.6} & \textbf{89.6} & \textbf{92.6} & 74.4 & --- & --- & --- & ---\\
+
 \bottomrule
 \end{tabularx}}
 \caption{SentEval task results using fixed sentence encoder.
-We divided the table into sections. The first range of models uses self-supervised training objective. The second section present models trained on labelled or semi-automatically labeled data. The third section reports pre-trained transformers based-models. FastSent is reported from \textcite{hill_16}. Skipthoughts results from \parencite{kiros_15} Skipthoughts + LN which includes layer normalization method from \textcite{ba_16}. We considered the Quickthought results \parencite{logeswaran_18}. DisSent and Infersent are reported from \textcite{nie_19} and \textcite{conneau_17} respectively. Pre-trained transformers results are reported from \textcite{reimers_19}. The \textbf{Hrs} column indicates indicative training time, the \textbf{Dim} column corresponds to the sentence embedding dimension. $^\dagger$\, indicates models that we had to re-train. Best results in each section are shown in \textbf{bold}, best results overall are \underline{underlined}. Performance for \textbf{SICK-R} results are reported by convention as $\rho \text{ and } r \times 100$.}
+We divided the table into sections. The first range of models uses self-supervised training objective. The second section present models trained on labelled or semi-automatically labeled data. The third section reports pre-trained transformers based-models. FastSent is reported from \textcite{hill_16}. Skipthoughts results from \parencite{kiros_15} Skipthoughts + LN which includes layer normalization method from \textcite{ba_16}. We considered the Quickthought results \parencite{logeswaran_18}. DisSent and Infersent are reported from \textcite{nie_19} and \textcite{conneau_17} respectively. Pre-trained transformers results are reported from \textcite{reimers_19}. We report laBSE results from \parencite{feng_22}. We run the evaluation on SentEval for LASER 1 and 2 respectively \parencite{artetxe_19, heffernan_22}. The \textbf{Hrs} column indicates indicative training time, the \textbf{Dim} column corresponds to the sentence embedding dimension. $^\dagger$, indicates models that we had to re-train. Best results in each section are shown in \textbf{bold}, best results overall are \underline{underlined}. Performance for \textbf{SICK-R} results are reported by convention as $\rho \text{ and } r \times 100$.}
 \labtab{senteval}
 \end{table*}
 \subsection{Probing tasks}
