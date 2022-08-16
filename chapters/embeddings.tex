@@ -549,7 +549,7 @@ The method also implements an additive margin softmax, which introduces a margin
 
 Finally, contrastive learning benefits from large training batch sizes \parencite{guo_18, chen_20a, qu_21} and the authors introduce a method called \textit{cross-accelerator negative sampling}, which allows to better distribute the softmax computation across multiple cores and achieve larger batch size.
 
-LaBSE uses transformer encoders and the l2 normalized \texttt{[CLS]} token representations from the last transformer block as sentence embedding. For the pre-training, they collected monolingual 17B monolingual sentences from CommonCrawl\sidenote{\url{https://commoncrawl.org/}} and Wikipedia\sidenote{\url{https://dumps.wikimedia.org/frwiki/}}. They pre-trained the model using a masked language model (mlm) \parencite{devlin_19} and translation language model (tlm) \parencite{conneau_19} task. They finalize the pre-training of the models using  the translation ranking task with in-batch negative sampling on 6B translation pairs from web pages.
+LaBSE uses transformer encoders and the l2 normalized \texttt{[CLS]} token representations from the last transformer block as sentence embedding. For the pre-training, they collected monolingual 17B monolingual sentences from CommonCrawl\sidenote{\url{https://commoncrawl.org/}} and Wikipedia.\sidenote{\url{https://dumps.wikimedia.org/frwiki/}} They pre-trained the model using a masked language model (mlm) \parencite{devlin_19} and translation language model (tlm) \parencite{conneau_19} task. They finalize the pre-training of the models using  the translation ranking task with in-batch negative sampling on 6B translation pairs from web pages.
 
 \section{Evaluating sentence embeddings}
 \labsec{evaluation}
