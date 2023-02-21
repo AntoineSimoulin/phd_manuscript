@@ -59,3 +59,18 @@ The second work is released into the public domain with a Creative
 Commons Zero License.
 
 Read [MANIFEST.md](MANIFEST.md) for the details.
+
+## BibTeX entry and citation info
+
+If use for your scientific publication or your industrial applications, please use the following reference:
+
+```bibtex
+@phdthesis{DBLP:phd/hal/Simoulin22,
+  author    = {Antoine Simoulin},
+  title     = {Sentence embeddings and their relation with sentence structures. (Plongements
+               de phrases et leurs relations avec les structures de phrases)},
+  school    = {Universit{\'{e}} Paris Cit{\'{e}}, France},
+  year      = {2022},
+  url       = {https://tel.archives-ouvertes.fr/tel-03791935},
+}
+```
